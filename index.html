@@ -1331,6 +1331,7 @@ function syApply(o){syQuiet=true;
 /* on open, focus and connect: pick the newest version, or ask when both sides changed */
 async function syPullPublic(){if(!SY.repo){syShow("off");return;}
   try{const rem=await syGet();if(!rem){syShow("ro","");return;}
+    if(SY.dirty&&rem.sha!==SY.sha){syRemote=rem;$("#syncConflict").hidden=false;syShow("ro","");return;}
     if(rem.sha===SY.sha||SY.dirty){syShow("ro",SY.dirty?"Changes are saved in this browser only. Connect to save them to GitHub.":"");return;}
     syApply(rem.data);SY.sha=rem.sha;sySave();syShow("ro","Showing your progress from GitHub. Connect to save changes.");}
   catch(e){syShow("ro","");}}
