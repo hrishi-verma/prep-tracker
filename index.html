@@ -1301,19 +1301,19 @@ let syBoot=true,syQuiet=false,syTimer=null,syBusy=false,syAgain=false,syState="o
 const syOn=()=>!!(SY.token&&SY.repo);
 const b64e=str=>btoa(unescape(encodeURIComponent(str)));
 const b64d=b=>decodeURIComponent(escape(atob(b.replace(/\s/g,""))));
-const syHeaders=()=>({Authorization:"Bearer "+SY.token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"});
+const syHeaders=()=>Object.assign({Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},SY.token?{Authorization:"Bearer "+SY.token}:{});
 const syUrl=()=>`https://api.github.com/repos/${SY.repo}/contents/${SY.path}`;
 function syPayload(){return JSON.stringify({v:1,savedAt:new Date().toISOString(),lc:S,sd:SD,ai:AI});}
 function hasProgress(){return Object.keys(S.st||{}).length+Object.keys(S.labels||{}).length+Object.keys(SD.status||{}).length+(SD.log||[]).length+Object.keys(AI.status||{}).length>0;}
 function syAgo(){if(!SY.at)return "";const m=Math.round((Date.now()-SY.at)/60000);return m<1?"just now":m<60?m+" min ago":Math.round(m/60)+" hr ago";}
-function syShow(state,msg){syState=state;const p=$("#syncPill");if(!p)return;p.className="syncpill "+({ok:"ok",busy:"busy",err:"err"}[state]||"");
-  p.querySelector("span").textContent=state==="off"?"Sync off":state==="busy"?"Saving…":state==="ok"?"Saved "+syAgo():state==="offline"?"Offline, will sync":msg||"Sync problem";
+function syShow(state,msg){syState=state;const p=$("#syncPill");if(!p)return;p.className="syncpill "+({ok:"ok",busy:"busy",err:"err",ro:SY.dirty?"err":""}[state]||"");
+  p.querySelector("span").textContent=state==="off"?"Sync off":state==="busy"?"Saving…":state==="ok"?"Saved "+syAgo():state==="offline"?"Offline, will sync":state==="ro"?(SY.dirty?"Not saved online":"View only · Connect"):msg||"Sync problem";
   p.title=state==="ok"?"Saved to GitHub "+syAgo():msg||"";
   if(msg!==undefined)$("#syncMsg").textContent=msg;}
 /* any save after start-up marks the data as changed and schedules a push */
 const _save=save,_sdSave=sdSave,_aiSave=aiSave;
 save=function(){_save();syTouch();};sdSave=function(){_sdSave();syTouch();};aiSave=function(){_aiSave();syTouch();};
-function syTouch(){if(syBoot||syQuiet)return;if(!SY.dirty){SY.dirty=true;sySave();}if(!syOn())return;clearTimeout(syTimer);syTimer=setTimeout(syPush,2000);if(syState!=="err")syShow("busy");}
+function syTouch(){if(syBoot||syQuiet)return;if(!SY.dirty){SY.dirty=true;sySave();}if(!syOn()){if(SY.repo)syShow("ro","Changes are saved in this browser only. Connect to save them to GitHub.");return;}clearTimeout(syTimer);syTimer=setTimeout(syPush,2000);if(syState!=="err")syShow("busy");}
 async function syGet(){const r=await fetch(syUrl()+"?ref="+encodeURIComponent(SY.branch)+"&t="+Date.now(),{headers:syHeaders(),cache:"no-store"});
   if(r.status===404)return null;if(!r.ok)throw {status:r.status};const j=await r.json();return {sha:j.sha,data:JSON.parse(b64d(j.content))};}
 async function syPush(){if(!syOn())return;if(syBusy){syAgain=true;return;}syBusy=true;syShow("busy");
@@ -1329,7 +1329,12 @@ function syApply(o){syQuiet=true;
   S=Object.assign(BLANK(),o.lc||{});SD=Object.assign({status:{},log:[]},o.sd||{});AI=Object.assign({status:{},cap:{},build:{},notes:{}},o.ai||{});for(const f of ["cap","build","notes"])if(!AI[f])AI[f]={};
   migrate();_save();_sdSave();_aiSave();render();renderSD();renderAI();syQuiet=false;}
 /* on open, focus and connect: pick the newest version, or ask when both sides changed */
-async function syPull(first){if(!syOn()){syShow("off");return;}syStartTick();if(syBusy)return;
+async function syPullPublic(){if(!SY.repo){syShow("off");return;}
+  try{const rem=await syGet();if(!rem){syShow("ro","");return;}
+    if(rem.sha===SY.sha||SY.dirty){syShow("ro",SY.dirty?"Changes are saved in this browser only. Connect to save them to GitHub.":"");return;}
+    syApply(rem.data);SY.sha=rem.sha;sySave();syShow("ro","Showing your progress from GitHub. Connect to save changes.");}
+  catch(e){syShow("ro","");}}
+async function syPull(first){if(!syOn()){await syPullPublic();return;}syStartTick();if(syBusy)return;
   try{syShow("busy");const rem=await syGet();
     if(!rem){if(hasProgress()){SY.sha=null;await syPush();}else{syShow("ok","Connected. Nothing saved on GitHub yet.");}return;}
     if(rem.sha===SY.sha){if(SY.dirty)await syPush();else syShow("ok","");return;}
@@ -1349,7 +1354,7 @@ document.addEventListener("click",async e=>{
   if(a==="pull"&&syRemote){syApply(syRemote.data);SY.sha=syRemote.sha;SY.dirty=false;SY.at=Date.now();sySave();$("#syncConflict").hidden=true;syRemote=null;syShow("ok","");}
   if(a==="push"&&syRemote){SY.sha=syRemote.sha;sySave();$("#syncConflict").hidden=true;syRemote=null;await syPush();}
 });
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&syOn()&&!SY.dirty)syPull(false);});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&!SY.dirty)syPull(false);});
 window.addEventListener("pagehide",()=>{if(syTimer&&SY.dirty&&syOn()){clearTimeout(syTimer);syPush();}});
 window.addEventListener("online",()=>{if(syOn())syPull(false);});
 let syTick=null;function syStartTick(){if(syTick)return;syTick=setInterval(()=>{if(!syOn())return;if(SY.dirty&&!syBusy)syPush();else if(syState==="ok")syShow("ok");},30000);}
