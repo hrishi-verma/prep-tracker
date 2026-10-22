@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<!--
+  Rishi's LeetCode Tracker. Single-file app, no build step, no server.
+  If you are a person or an LLM about to edit this file: read the "About" tab
+  (section id="tab-about") first. It explains the purpose, the data model, the
+  storage key, and the rules that keep the user's saved progress intact.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rishi's Prep Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F7FB; --ink:#1C2140; --muted:#6B7191; --line:#E3E6F0; --card:#FFFFFF;
+  --solved:#1FA971; --revisit:#E8553A; --coding:#F2A916; --learned:#6C5CE7;
+  --solved-bg:#DDF5EA; --revisit-bg:#FDE3DC; --coding-bg:#FDF0CC; --learned-bg:#E6E2FC;
+  --easy:#1FA971; --medium:#F2A916; --hard:#E8553A;
+  --accent:#2F6BFF; --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.45}
+a{color:inherit}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:22px 18px 80px}
+
+/* header */
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px}
+header h1{margin:0;font-size:30px;font-weight:900;letter-spacing:-.4px}
+header h1 span{display:block;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:0}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;display:flex;gap:6px;align-items:center}
+.stat b{font-size:16px}
+.stat.fire{background:linear-gradient(135deg,#FFB86B,#FF5E7E);color:#fff;border:none}
+
+/* tabs */
+nav{display:flex;gap:6px;margin-bottom:18px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{padding:8px 16px;border-radius:999px;font-weight:700;color:var(--muted);white-space:nowrap;flex:none}
+nav button.on{background:var(--ink);color:#fff}
+nav.sub{background:none;border:none;padding:0;gap:4px;margin:-8px 0 16px;border-radius:0}
+nav.sub button{padding:6px 12px;font-size:14px}
+nav.sub button.on{background:#E3E7F4;color:var(--ink)}
+nav button:focus-visible,.chip:focus-visible,.btn:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px}
+section.tab{display:none}section.tab.on{display:block}
+
+h2{font-size:18px;font-weight:900;margin:22px 0 10px}
+h2 small{font-weight:700;color:var(--muted);font-size:13px;margin-left:8px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+
+/* today tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+@media (min-width:960px){.tiles{grid-template-columns:repeat(5,1fr)}}
+.tile{background:var(--card);border-radius:16px;padding:12px 12px 10px;border:2px solid var(--line);position:relative;display:flex;flex-direction:column;gap:6px;transition:transform .12s}
+.tile .pat{font-size:12px;font-weight:700;color:#fff;padding:3px 9px;border-radius:999px;width:max-content;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .num{font-size:12px;color:var(--muted);font-weight:700}
+.tile .title{font-weight:900;font-size:15px;line-height:1.25;flex:1}
+.tile .title a{text-decoration:none}
+.tile .title a:hover{text-decoration:underline;color:var(--accent)}
+.tile.solved{border-color:var(--solved);background:var(--solved-bg)}
+.tile.revisit{border-color:var(--revisit);background:var(--revisit-bg)}
+.tile.coding{border-color:var(--coding);background:var(--coding-bg)}
+.tile.learned{border-color:var(--learned);background:var(--learned-bg)}
+.tile .carried{position:absolute;top:10px;right:12px;font-size:11px;font-weight:900;color:var(--revisit)}
+.diff{font-size:11px;font-weight:900;padding:2px 7px;border-radius:6px;color:#fff;letter-spacing:.2px}
+.diff.E{background:var(--easy)}.diff.M{background:var(--medium)}.diff.H{background:var(--hard)}
+
+/* label chips */
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.chip{font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--muted);line-height:1.2}
+.chip.s{border-color:var(--solved);color:var(--solved)}
+.chip.r{border-color:var(--revisit);color:var(--revisit)}
+.chip.c{border-color:var(--coding);color:var(--coding)}
+.chip.l{border-color:var(--learned);color:var(--learned)}
+.chip.s.on{background:var(--solved);color:#fff}
+.chip.r.on{background:var(--revisit);color:#fff}
+.chip.c.on{background:var(--coding);color:#fff}
+.chip.l.on{background:var(--learned);color:#fff}
+.chip.note{margin-left:auto}
+.chip.sv{border-color:var(--line);color:var(--muted);background:#fff}
+.chip.sv:hover{border-color:#B9C0D4;color:var(--ink)}
+.chip.sv.on{background:var(--solved);border-color:var(--solved);color:#fff}
+.tiles.opt .tile{border-style:dashed}
+.tiles.opt .tile:not(.solved):not(.unsolved){background:#FBFBFD}
+.tile .tnote{position:absolute;top:10px;right:10px;margin:0;padding:3px 8px;font-size:11px}
+.tile.unsolved{border-color:var(--revisit);background:var(--revisit-bg)}
+select.lsel.unsolved{border-color:var(--revisit);color:var(--revisit);background-color:var(--revisit-bg)}
+.patpill{font-size:14px;color:#fff;padding:3px 12px;border-radius:999px;margin-left:6px;vertical-align:1px}
+.ctr{display:inline-flex;align-items:center;border:2px solid var(--learned);border-radius:999px;overflow:hidden;background:#fff;flex:none}
+.ctr b{min-width:24px;text-align:center;font-size:13px;color:var(--learned)}
+.ctr button{font-size:12px;font-weight:900;padding:4px 9px;color:var(--learned)}
+.ctr button[data-inc]{background:var(--learned);color:#fff}
+.ctr button:disabled{opacity:.3;cursor:default}
+.rev{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.rev .id{width:46px;font-size:12px;color:var(--muted);font-weight:800;flex:none}
+.rev .t{flex:1;min-width:0;font-weight:700}
+.rev .t a{text-decoration:none}
+.rev .t a:hover{text-decoration:underline;color:var(--accent)}
+.rev .t small{display:block;font-size:11px;color:var(--muted);font-weight:700}
+.rev.done{opacity:.65}
+.revlist{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.revlist .rev{border:none;border-top:1px solid var(--line);border-radius:0;margin:0;padding:10px 14px}
+.revlist .rev:first-child{border-top:none}
+.rev .t small{font-size:12px;margin-top:2px}
+#tab-today,#tab-all,#tab-progress{--x:0}
+.tile a:focus-visible,.rev a:focus-visible,.qrow a:focus-visible,.ctr button:focus-visible,#search:focus-visible,details.pat summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px}
+.ctl{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.grow{font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
+.grow i{font-style:normal;color:var(--solved);letter-spacing:1px;font-size:10px}
+.grow.wk{color:var(--solved)}.grow.done{color:#A87400}
+.chip.cold{border-color:#D99A00;color:#A87400}.chip.cold:hover{background:#FFF4D6}
+details.donetoday{margin-top:10px}
+details.donetoday summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--muted);margin-bottom:6px}
+.chip.note.has{border-color:var(--ink);color:var(--ink)}
+textarea.notes{width:100%;margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:8px;min-height:64px;resize:vertical;background:#fff}
+textarea.notes:focus{outline:2px solid #9DB8FF}
+
+.btn{padding:8px 14px;border-radius:10px;font-weight:800;font-size:13px;background:var(--ink);color:#fff}
+.btn.ghost{background:#fff;border:2px solid var(--line);color:var(--ink)}
+.btn.ok{background:var(--solved)}.btn.no{background:var(--revisit)}
+.btn:disabled{opacity:.4;cursor:default}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* retry list */
+.retry{background:#fff;border:2px solid var(--revisit);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.retry .info{flex:1;min-width:200px}
+.retry .stage{font-size:12px;color:var(--revisit);font-weight:900}
+.empty{background:#fff;border:2px dashed var(--line);border-radius:var(--radius);padding:18px;color:var(--muted);text-align:center;font-weight:700}
+
+/* all questions */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.toolbar input[type=search]{flex:1;min-width:200px;padding:9px 12px;border:2px solid var(--line);border-radius:10px;background:#fff}
+.filters{display:flex;gap:5px;flex-wrap:wrap}
+.filters .chip.none{border-color:var(--muted);color:var(--muted)}
+.filters .chip.none.on{background:var(--muted);color:#fff}
+details.pat{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+details.pat summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;font-weight:900}
+details.pat summary::-webkit-details-marker{display:none}
+details.pat summary .dot{width:12px;height:12px;border-radius:4px;flex:none}
+details.pat summary .name{flex:1}
+details.pat summary .count{font-size:12px;color:var(--muted);font-weight:700}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;display:flex;width:120px;flex:none}
+.bar i{display:block;height:100%}
+.bar .bs{background:var(--solved)}.bar .br{background:var(--revisit)}.bar .bc{background:var(--coding)}.bar .bl{background:var(--learned)}
+.qrow{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.qrow .id{width:46px;font-size:12px;color:var(--muted);font-weight:800;flex:none}
+.qrow .t{flex:1;min-width:180px;font-weight:700}
+.qrow .t a{text-decoration:none}
+.qrow .t a:hover{text-decoration:underline;color:var(--accent)}
+.qrow.today{background:#F0F4FF}
+.qrow .badge{font-size:11px;font-weight:900;color:var(--accent)}
+.qrow .chips{margin:0}
+select.lsel{font:inherit;font-weight:800;font-size:12px;padding:5px 28px 5px 10px;border-radius:999px;border:2px solid var(--muted);background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B7191'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--muted);appearance:none;-webkit-appearance:none;cursor:pointer}
+select.lsel.solved{border-color:var(--solved);color:var(--solved);background-color:var(--solved-bg)}
+select.lsel.revisit{border-color:var(--revisit);color:var(--revisit);background-color:var(--revisit-bg)}
+select.lsel.coding{border-color:var(--coding);color:#8a5a00;background-color:var(--coding-bg)}
+select.lsel.learned{border-color:var(--learned);color:var(--learned);background-color:var(--learned-bg)}
+select.lsel:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px}
+.qrow .extra{width:100%}
+.guess{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.guess input{padding:6px 10px;border:1px solid var(--line);border-radius:8px;min-width:160px}
+.reveal{font-size:12px;font-weight:800;color:var(--accent)}
+.hidden-pat{font-size:12px;font-weight:800;color:var(--learned)}
+
+/* progress */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.card h3{margin:0 0 10px;font-size:14px;font-weight:900}
+.big{font-size:38px;font-weight:900;line-height:1}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;font-weight:800;margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.legend .s::before{background:var(--solved)}.legend .r::before{background:var(--revisit)}.legend .c::before{background:var(--coding)}.legend .l::before{background:var(--learned)}
+.bar.wide{width:100%;height:14px}
+.prow{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13px;font-weight:700}
+.prow .name{flex:1}
+.prow .bar{width:140px}
+.upc{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line);font-size:13px;font-weight:700}
+.upc:first-child{border-top:none}
+.rules{font-size:13px;color:var(--muted)}
+.rules li{margin-bottom:4px}
+
+/* heatmap */
+.heatwrap{overflow-x:auto;padding-bottom:6px}
+.heatwrap>div{width:max-content}
+.heat{display:flex;gap:3px}
+.heat .col{display:flex;flex-direction:column;gap:3px}
+.heat .cell{width:13px;height:13px;border-radius:3px;background:#E8EBF3;flex:none}
+.heat .c1{background:#B9E8CF}.heat .c2{background:#6FD0A0}.heat .c3{background:#2BB673}.heat .c4{background:#137A4E}
+.heat .cell.today{outline:2px solid var(--ink);outline-offset:-2px}
+.heat .cell.future{visibility:hidden}
+.months{display:flex;gap:3px;font-size:11px;color:var(--muted);font-weight:800;margin-bottom:4px;height:14px}
+.months span{width:13px;flex:none;white-space:nowrap}
+.hlegend{display:flex;gap:4px;align-items:center;font-size:11px;color:var(--muted);font-weight:800;margin-top:6px;justify-content:flex-end}
+.hlegend i{width:13px;height:13px;border-radius:3px;display:inline-block;background:#E8EBF3}
+.log .more{display:block;margin:8px auto 0;font-size:12px;font-weight:800;color:var(--accent)}
+.log .upc b{font-size:15px}
+.log .upc .mini{display:flex;gap:4px}
+.log .upc .mini span{font-size:11px;font-weight:900;padding:1px 6px;border-radius:6px;color:#fff}
+/* system design */
+.sd-tracks{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-bottom:22px}
+#sdTracks details.pat summary .name small{font-size:12px;color:var(--muted);font-weight:700;margin-left:8px}
+#sdTracks details.pat[open]>summary{border-bottom:1px solid var(--line)}
+.trow .no.ok{background:var(--solved);color:#fff}
+.btn.acc{background:var(--accent);min-height:40px;padding:8px 18px}.btn.acc:hover{background:#1F55E0}
+.track{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.track .th{display:flex;align-items:center;gap:10px;padding:12px 14px;font-weight:900;border-bottom:1px solid var(--line)}
+.track .th .dot{width:12px;height:12px;border-radius:4px;flex:none}
+.track .th .name{flex:1}
+.track .th .count{font-size:12px;color:var(--muted);font-weight:700}
+.trow{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)}
+.trow:first-child{border-top:none}
+.trow .no{width:26px;height:26px;border-radius:50%;background:#EEF0F6;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);font-weight:800;flex:none}
+.trow .t{flex:1;min-width:0;font-weight:800;font-size:14px}
+.trow .t a{text-decoration:none;color:var(--ink)}
+.trow .ext{font-size:11px;color:var(--muted);margin-left:4px}
+.trow .t a:hover{text-decoration:underline;color:var(--accent)}
+.trow .t small{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-top:2px}
+.trow.done{background:#F3FBF7}
+select.ssel{font:inherit;font-weight:800;font-size:12px;min-height:32px;padding:0 28px 0 12px;border-radius:999px;border:1.5px solid transparent;flex:none;background:#EEF0F6 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B7191'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--muted);appearance:none;-webkit-appearance:none;cursor:pointer}
+select.ssel:hover{border-color:#C9CEDD}
+select.ssel.s1{background-color:#FDF0CC;color:#7A4F00;border-color:#F2D58A}
+select.ssel.s2{background-color:var(--solved-bg);color:#137A4E;border-color:#9EDDBF}
+#tab-sd select:focus-visible,#tab-sd a:focus-visible,#tab-sd summary:focus-visible,#tab-sd textarea:focus-visible,#tab-sd button:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px}
+.logbox{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:18px}
+.logbox textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:10px;padding:10px;resize:vertical;background:#F8F9FD}
+.logbox textarea:focus{outline:2px solid #9DB8FF;background:#fff}
+.logbox .row-actions{margin-top:8px;align-items:center}
+.logbox .stamp{font-size:12px;color:var(--muted);font-weight:800;margin-left:auto}
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:3px;background:var(--line);border-radius:2px}
+.tday{position:relative;margin-bottom:18px}
+.tday::before{content:"";position:absolute;left:-24px;top:4px;width:15px;height:15px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
+.tday .dh{font-weight:900;font-size:14px;margin-bottom:6px}
+.tday .dh small{color:var(--muted);font-weight:700;margin-left:6px}
+.tday .gap{font-size:12px;color:var(--muted);font-weight:700;margin:10px 0 0;padding:6px 0;border-top:1px dashed var(--line)}
+.lcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.lcard .meta{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--muted);font-weight:800;margin-top:6px}
+.lcard .meta{font-size:12px}
+.lcard .meta button{font-size:12px;font-weight:800;color:var(--muted);padding:4px 6px;margin:-4px 0;border-radius:6px;min-height:28px}
+.lcard .meta button.del:hover{color:var(--revisit)}
+.lcard .meta button:hover{color:var(--ink);text-decoration:underline}
+.lcard textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;padding:8px}
+.heat .cell.sd{box-shadow:inset 0 0 0 2px #2F6BFF}
+/* ai fluency */
+#tab-ai .hint.intro{margin:0 0 12px}
+.aistats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.aistat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.aistat b{display:block;font-size:22px;line-height:1.1}
+.aistat span{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-top:3px}
+.resume{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:2px solid var(--accent);border-radius:var(--radius);padding:14px 16px;margin-bottom:6px}
+.resume .nt{flex:1;min-width:220px}
+.resume .lbl{display:block;font-size:11px;font-weight:900;color:#1F4FD1;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px}
+.resume b{display:block;font-size:18px;line-height:1.25}
+details.step.cur{border:2px solid var(--accent)}
+details.step.cur summary .snum{background:var(--accent);color:#fff}
+.nowtag{font-size:11px;font-weight:900;color:#fff;background:var(--accent);border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:2px;white-space:nowrap}
+details.nwrap{margin-top:4px}
+details.nwrap>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--muted);padding:6px 0;min-height:32px}
+details.nwrap>summary::-webkit-details-marker{display:none}
+details.nwrap>summary:hover{color:var(--ink)}
+details.nwrap>summary .chev{width:16px;height:16px}
+details.nwrap>summary .chev::before{left:5px;top:4px}
+details.nwrap[open]>summary .chev::before{transform:rotate(90deg)}
+details.nwrap .has{color:var(--solved)}
+details.sec2 summary .name small{display:block;margin:2px 0 0;font-size:12px;color:var(--muted);font-weight:700}
+details.sec2[open]>summary .chev::before{transform:rotate(90deg)}
+details.sec2 .sbody{background:#fff}
+details.sec2 .rules p{margin:0 0 8px;font-size:14px}
+details.sec2 .rules p:last-child{margin:0}
+#aiLib details.pat{margin-bottom:6px}
+.nextup{background:#fff;border:2px solid var(--accent);border-radius:var(--radius);padding:16px;margin-bottom:8px}
+.nhead{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.nhead .nt{flex:1;min-width:220px}
+.nhead .lbl{display:block;font-size:11px;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px}
+.nhead b{display:block;font-size:19px;line-height:1.25}
+.nmeta{display:flex;align-items:center;gap:10px;margin-top:6px;font-size:12px;color:var(--muted);font-weight:700}
+.nmeta .bar{width:140px}
+.btn.cta{display:inline-flex;flex-direction:column;align-items:flex-start;text-decoration:none;background:var(--accent);padding:9px 16px;border-radius:12px;font-size:14px;min-height:44px;justify-content:center;max-width:100%}
+.btn.cta small{font-size:11px;font-weight:700;opacity:.85;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn.cta:hover{background:#1F55E0}
+.why{color:var(--muted);font-size:13px;margin:0 0 10px}
+.ailist{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;margin-bottom:10px}
+.airow{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)}
+.ailist>.airow:first-child,.ordiv+.airow{border-top:none}
+.airow.st2{background:#F3FBF7}
+.airow .t{flex:1;min-width:0}
+.airow .t a{font-weight:800;font-size:14px;color:var(--ink);text-decoration:none}
+.airow .t a:hover{color:var(--accent);text-decoration:underline}
+.airow .ext{font-size:11px;color:var(--muted);margin-left:3px;text-decoration:none;display:inline-block}
+.airow small{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-top:2px}
+.airow.low .t a{color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:800;border:1px solid var(--line);border-radius:5px;padding:0 6px;margin-left:6px;color:#545A78;vertical-align:1px;white-space:nowrap;line-height:17px}
+.tag.low{color:#8a5a00;border-color:#F2D58A;background:#FFFBEF}
+.ordiv{display:flex;align-items:center;gap:10px;padding:2px 14px;font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;border-top:1px solid var(--line)}
+.ordiv::before,.ordiv::after{content:"";flex:1;height:1px;background:var(--line)}
+select.aisel{font:inherit;font-weight:800;font-size:12px;min-height:32px;padding:0 28px 0 12px;border-radius:999px;border:1.5px solid transparent;background:#EEF0F6 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B7191'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--muted);appearance:none;-webkit-appearance:none;cursor:pointer;flex:none}
+select.aisel:hover{border-color:#C9CEDD}
+select.aisel.s1{background-color:#FDF0CC;color:#7A4F00;border-color:#F2D58A}
+select.aisel.s2{background-color:var(--solved-bg);color:#137A4E;border-color:#9EDDBF}
+#tab-ai select:focus-visible,#tab-ai input:focus-visible,#tab-ai textarea:focus-visible,#tab-ai summary:focus-visible,#tab-ai a:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px}
+.buildchk{display:flex;gap:10px;align-items:flex-start;font-size:13px;font-weight:700;color:#4B3FB8;margin:0 0 10px;cursor:pointer;background:#F4F2FE;border:1px solid #E1DCFB;border-radius:12px;padding:10px 12px}
+.buildchk b{color:var(--learned);margin-right:4px}
+.buildchk input,.caplist input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--learned);flex:none}
+.caplist{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px 14px;margin-bottom:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px 12px}
+.caplist label{display:flex;gap:10px;align-items:center;font-size:14px;font-weight:700;padding:7px 0;cursor:pointer;min-height:36px}
+.caplist input{accent-color:var(--solved);margin:0}
+.nlabel{display:block;font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:2px 0 4px}
+.ainote{min-height:0;margin:0;font-size:14px}
+details.step summary .snum{width:26px;height:26px;border-radius:50%;background:#EEF0F6;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none;color:var(--muted)}
+details.step.sdone summary .snum{background:var(--solved);color:#fff}
+details.step summary .name small{font-size:12px;color:var(--muted);font-weight:700;margin-left:8px}
+details.step .core{font-size:11px;font-weight:900;color:#1F4FD1;background:#E3ECFF;border-radius:5px;padding:1px 6px;margin-left:8px;vertical-align:2px}
+details.step .sbody{padding:12px 14px 14px;border-top:1px solid var(--line);background:#FAFBFD}
+details.pat summary:hover .name{color:var(--accent)}
+details.sec{margin-top:6px}
+details.sec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:8px}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary h2{margin:18px 0 10px}
+details.sec>summary:hover h2{color:var(--accent)}
+.chev{width:20px;height:20px;border-radius:6px;background:#EEF0F6;flex:none;position:relative}
+.chev::before{content:"";position:absolute;left:7px;top:6px;border:4px solid transparent;border-left:6px solid var(--muted);transition:transform .15s;transform-origin:3px 4px}
+details.sec[open] .chev::before{transform:rotate(90deg)}
+.skrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;font-weight:700}
+.skrow:first-child{border-top:none}
+.skrow .name{flex:1;min-width:0}
+.skrow .name small{display:block;font-size:11px;color:var(--muted)}
+.skrow .tier,.skrow .cov{font-size:11px;font-weight:900;border-radius:999px;padding:3px 0;white-space:nowrap;text-align:center;flex:none}
+.skrow .tier{width:112px}.skrow .cov{width:96px}
+.skrow .prog{width:150px;display:flex;align-items:center;gap:8px;flex:none}
+.skrow .prog .bar{flex:1;width:auto}
+.skrow .count{width:30px;text-align:right;font-size:12px;color:var(--muted)}.skrow .count.na{width:auto}
+.skhead{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding-top:0}
+.skhead .tier,.skhead .cov{background:none!important;color:var(--muted);font-size:11px}
+.tier.t1{background:#E3ECFF;color:var(--accent)}.tier.t2{background:#E6E2FC;color:var(--learned)}.tier.t3{background:#FDF0CC;color:#7A4F00}
+.cov{background:#EEF0F6;color:var(--muted)}
+.cov.excellent,.cov.strong{background:var(--solved-bg);color:#137A4E}.cov.good{background:#EEF7E8;color:#3F7A22}.cov.thin{background:var(--revisit-bg);color:#B8391F}
+.gaph{margin:0;padding:22px 0 8px;font-size:14px;border-top:1px solid var(--line)}
+.gaprow{gap:14px;align-items:flex-start}.gaprow b{flex:none;width:200px;font-size:13px}.gaprow .hint{flex:1;font-size:13px}
+@media (max-width:600px){
+ .tag.minor{display:none}
+ .nextup{padding:14px}.nhead{gap:12px}.btn.cta{width:100%}.btn.cta small{max-width:100%}
+ .aistats{gap:6px}.aistat{padding:10px}.aistat b{font-size:18px}.aistat span{font-size:11px}
+ .resume{padding:12px 14px}.resume b{font-size:16px}
+ .nowtag{display:none}
+ .trow{padding:10px 12px;gap:10px}
+ .qrow{padding:10px 12px}.qrow .t{flex-basis:calc(100% - 56px);min-width:0}.qrow>.chips{margin-left:56px}
+ .revlist .rev{flex-wrap:wrap;padding:10px 12px}.revlist .rev .t{flex-basis:calc(100% - 56px)}.revlist .rev .ctl{margin-left:56px}
+ #sdTracks details.pat summary .name small,.logbox .stamp{display:none}
+ select.ssel{min-height:38px;padding-left:10px}
+ .nmeta .bar{width:90px}
+ .airow{padding:10px 12px;gap:10px}
+ select.aisel{min-height:38px;padding-left:10px;font-size:12px}
+ .skhead{display:none}
+ .skrow{flex-wrap:wrap;gap:6px 8px}.skrow .name{flex-basis:100%}.skrow .tier{width:auto;padding:3px 8px}.skrow .cov{width:auto;padding:3px 8px}.skrow .prog{flex:1;width:auto}
+ .gaprow{flex-direction:column;gap:2px}.gaprow b{width:auto}
+ details.step summary .bar{width:50px}details.step summary{gap:8px}
+}
+/* about */
+.about{max-width:720px}
+.about h3{font-size:16px;font-weight:900;margin:22px 0 6px}
+.about h3:first-child{margin-top:0}
+.about p{margin:0 0 10px}
+.about ul{margin:0 0 10px 18px;padding:0}
+.about li{margin-bottom:4px}
+.about code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#EEF0F7;padding:1px 5px;border-radius:5px}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(28,33,64,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal.on{display:flex}
+.modal .box{background:#fff;border-radius:18px;padding:22px;max-width:420px;width:100%}
+.modal h3{margin:0 0 6px;font-size:18px;font-weight:900}
+.modal label{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-weight:700;cursor:pointer}
+.modal input[type=checkbox]{width:18px;height:18px;margin-top:2px}
+
+footer{margin-top:40px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:12px}
+footer .btn{font-size:12px;padding:6px 10px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:600px){#patHead small{display:block;margin:4px 0 0}.rev .id{width:34px}.rev{flex-wrap:wrap}.rev .t{flex:1 1 150px}.rev .ctl{margin-left:auto}.rev{gap:8px;padding:9px 10px}header h1{font-size:24px}.bar{width:80px}.prow .bar{width:90px}}
+
+/* ===== vivid theme layer: one color per section, set by body[data-sec] ===== */
+:root{--shadow:0 1px 2px rgba(28,33,64,.05),0 8px 22px -10px rgba(28,33,64,.16);--shadow-h:0 2px 4px rgba(28,33,64,.06),0 16px 30px -12px rgba(28,33,64,.26);
+ --g:linear-gradient(120deg,#FF8A3D 0%,#FF4F6D 100%);--th:#F0612E;--th-ink:#B8400F;--th-bg:#FFF0E8}
+body[data-sec="sd"]{--g:linear-gradient(120deg,#2F6BFF 0%,#12B5D6 100%);--th:#2F6BFF;--th-ink:#1F4FD1;--th-bg:#E8F0FF}
+body[data-sec="ai"]{--g:linear-gradient(120deg,#7C4DFF 0%,#D946EF 100%);--th:#7C4DFF;--th-ink:#5A2FD3;--th-bg:#F1EAFF}
+body[data-sec="about"]{--g:linear-gradient(120deg,#1C2140 0%,#4C5689 100%);--th:#4C5689;--th-ink:#1C2140;--th-bg:#ECEEF7}
+body{background:radial-gradient(1100px 420px at 50% -140px,var(--th-bg),transparent 72%) no-repeat,var(--bg);min-height:100vh}
+.hero{position:relative;overflow:hidden;background:var(--g);color:#fff;border-radius:24px;padding:24px 24px 18px;margin-bottom:16px;box-shadow:0 18px 36px -18px var(--th)}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
+.hero::before{width:260px;height:260px;right:-60px;top:-120px}
+.hero::after{width:140px;height:140px;right:150px;bottom:-90px;background:rgba(255,255,255,.09)}
+.hero header{margin-bottom:16px;position:relative}
+.hero header h1{font-size:32px;text-shadow:0 2px 12px rgba(0,0,0,.12)}
+.hero header h1 span{color:rgba(255,255,255,.85);margin-top:2px}
+.hero nav{position:relative;margin:0;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(6px)}
+.hero nav button{color:rgba(255,255,255,.92);transition:background .15s}
+.hero nav button:hover{background:rgba(255,255,255,.16)}
+.hero nav button.on{background:#fff;color:var(--th-ink);box-shadow:0 3px 10px rgba(0,0,0,.14)}
+.hero nav button:focus-visible{outline-color:#fff}
+nav.sub{margin:0 0 16px}
+nav.sub button{transition:background .15s,color .15s}
+nav.sub button:hover{color:var(--th-ink)}
+nav.sub button.on{background:var(--th-bg);color:var(--th-ink)}
+h2::before{content:"";display:inline-block;width:5px;height:18px;border-radius:3px;background:var(--g);margin-right:10px;vertical-align:-3px}
+/* surfaces */
+.tile,.aistat,details.pat,.revlist,.ailist,.card,.logbox,.lcard,.qlist,.resume{box-shadow:var(--shadow)}
+.aistat,details.pat,.revlist,.card,.logbox,.lcard{border-color:#E8EAF3}
+.tile{transition:transform .16s ease,box-shadow .16s ease}
+.tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
+details.pat{transition:box-shadow .16s}
+details.pat:hover{box-shadow:var(--shadow-h)}
+details.pat>summary{transition:background .15s}
+details.pat>summary:hover{background:#FAFBFF}
+/* summary tiles with icons */
+.aistats{gap:12px}
+.aistat{display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:center;border:none;padding:14px 16px;border-radius:16px}
+.aistat::before{content:var(--ic,"•");grid-row:1 / 3;width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--icbg,#EEF0F6)}
+.aistat b{font-size:24px;letter-spacing:-.3px}
+body[data-sec="lc"] .aistat:nth-child(1){--ic:"✅";--icbg:#DDF5EA}
+body[data-sec="lc"] .aistat:nth-child(2){--ic:"🔁";--icbg:#ECE8FF}
+body[data-sec="lc"] .aistat:nth-child(3){--ic:"🔥";--icbg:#FFE8DB}
+body[data-sec="sd"] .aistat:nth-child(1){--ic:"💡";--icbg:#FFF4CC}
+body[data-sec="sd"] .aistat:nth-child(2){--ic:"✏️";--icbg:#E8F0FF}
+body[data-sec="sd"] .aistat:nth-child(3){--ic:"📝";--icbg:#E3F7EC}
+body[data-sec="ai"] .aistat:nth-child(1){--ic:"🎯";--icbg:#F1EAFF}
+body[data-sec="ai"] .aistat:nth-child(2){--ic:"⏳";--icbg:#FFF0E8}
+body[data-sec="ai"] .aistat:nth-child(3){--ic:"📚";--icbg:#E8F0FF}
+/* call-to-action and current item take the section color */
+.resume{border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--g) border-box}
+.resume .lbl{color:var(--th-ink)}
+.btn.cta,.btn.acc{background:var(--g);box-shadow:0 8px 18px -8px var(--th);transition:transform .15s,box-shadow .15s,filter .15s}
+.btn.cta:hover,.btn.acc:hover{background:var(--g);filter:brightness(1.06);transform:translateY(-1px)}
+details.step.cur{border-color:var(--th)}
+details.step.cur summary .snum{background:var(--th)}
+.nowtag{background:var(--g)}
+body[data-sec="ai"] details.step .core{color:var(--th-ink);background:var(--th-bg)}
+.resume .bar,.nmeta .bar{background:#ECEEF5}
+/* progress and solved get a lively green */
+.bar{background:#ECEEF5}
+.bar .bs{background:linear-gradient(90deg,#17A56A,#3DDC97)}
+.chip.sv.on{background:linear-gradient(120deg,#17A56A,#2CC985);border-color:transparent;box-shadow:0 4px 12px -4px rgba(23,165,106,.6)}
+.tile.solved{background:linear-gradient(160deg,#E4F8EE,#F4FCF8)}
+/* a small pop when you mark something */
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.22)}70%{transform:scale(.96)}100%{transform:scale(1)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(31,169,113,.55)}100%{box-shadow:0 0 0 14px rgba(31,169,113,0)}}
+.pop{animation:pop .38s ease}
+.tile.glow{animation:glow .7s ease-out}
+@media (prefers-reduced-motion:reduce){.pop,.tile.glow{animation:none}.tile:hover,.btn.cta:hover{transform:none}}
+@media (max-width:600px){
+ .hero{padding:18px 12px 12px;border-radius:20px}
+ .hero header h1{font-size:26px}
+ .hero nav{gap:0;padding:3px}.hero nav button{padding:7px 9px;font-size:13px}
+ .aistats{gap:8px}
+ .aistat{grid-template-columns:1fr;padding:10px 12px}
+ .aistat::before{grid-row:auto;width:30px;height:30px;font-size:15px;border-radius:10px;margin-bottom:6px}
+ .aistat b{font-size:18px}
+}
+
+/* ===== section bodies: color with structure ===== */
+body{--page:#FFF8F3;--blob:#FFE9DC}
+body[data-sec="sd"]{--page:#F4F8FF;--blob:#E0ECFF}
+body[data-sec="ai"]{--page:#F9F5FF;--blob:#EEE3FF}
+body[data-sec="about"]{--page:#F6F7FB;--blob:#E8EAF4}
+html{background:var(--page,#FCFCFE)}
+body{background:radial-gradient(800px 520px at 0% 0%,var(--blob),transparent 65%),radial-gradient(700px 520px at 100% 100%,var(--blob),transparent 65%),var(--page);background-attachment:fixed;transition:background-color .3s}
+/* accordions take their own hue */
+details.pat[style*="--h"]>summary .dot{width:6px;height:24px;border-radius:4px}
+details.pat[style*="--h"]>summary .bar .bs,.prow[style*="--h"] .bar .bs{background:linear-gradient(90deg,hsl(var(--h) 68% 44%),hsl(var(--h) 75% 60%))}
+details.pat[style*="--h"]>summary .count{color:hsl(var(--h) 55% 36%);font-weight:900}
+details.pat[style*="--h"][open]>summary{background:linear-gradient(90deg,hsl(var(--h) 85% 96%),#fff 70%)}
+details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
+/* today's tiles: pattern-colored top edge, hue on hover */
+#tiles .tile,#optTiles .tile{box-shadow:inset 0 4px 0 hsl(var(--h,220) 70% 52%),var(--shadow);overflow:hidden}
+#tiles .tile:hover,#optTiles .tile:hover{box-shadow:inset 0 4px 0 hsl(var(--h,220) 70% 52%),var(--shadow-h);border-color:hsl(var(--h,220) 60% 70%)}
+#tiles .tile.solved,#optTiles .tile.solved{border-color:var(--solved)}
+.tile .title a{color:var(--ink)}
+/* progress ring replaces the first tile's icon */
+.aistat.ring::before{content:"";background:conic-gradient(var(--th) calc(var(--p,0)*1%),#ECEEF5 0);-webkit-mask:radial-gradient(farthest-side,transparent 62%,#000 64%);mask:radial-gradient(farthest-side,transparent 62%,#000 64%);border-radius:50%}
+/* revision rows: stripe shows the stage */
+.revlist .rev{position:relative}
+.revlist .rev::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:var(--learned)}
+.revlist .rev.wk::before{background:var(--solved)}
+.revlist .rev.slip::before{background:var(--revisit)}
+.revlist .rev:hover{background:#FAFAFF}
+/* list rows get a soft hover everywhere */
+.trow,.airow,.qrow{transition:background .12s}
+.trow:not(.done):hover,.airow:not(.st2):hover,.qrow:hover{background:#FAFBFF}
+/* log timeline in the section color */
+.tday::before{background:var(--g);box-shadow:0 0 0 3px var(--th-bg)}
+.timeline::before{background:linear-gradient(var(--th-bg),#E3E6F0)}
+.lcard{border-left:3px solid var(--th)}
+/* summary pills and chips in today's header */
+.patpill{box-shadow:0 4px 12px -4px rgba(0,0,0,.25)}
+.empty{background:linear-gradient(135deg,#fff,var(--th-bg));border-color:hsl(0 0% 85%)}
+
+/* progress summary cards */
+#progressTop .card{position:relative;overflow:hidden;border:none;padding:16px 18px}
+#progressTop .card::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:var(--th-bg);opacity:.9}
+#progressTop .card>*{position:relative;z-index:1}
+#progressTop .card h3{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--th-ink)}
+#progressTop .big{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:40px}
+#progressTop .card:nth-child(2) .big{background:linear-gradient(120deg,#6C5CE7,#A78BFA);-webkit-background-clip:text;background-clip:text}
+#progressTop .card:nth-child(3) .big{background:linear-gradient(120deg,#17A56A,#3DDC97);-webkit-background-clip:text;background-clip:text}
+
+/* github sync */
+[hidden]{display:none!important}
+.hero header{align-items:flex-start}
+.syncpill{position:relative;display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;font-weight:800;font-size:12px;white-space:nowrap}
+.syncpill:hover{background:rgba(255,255,255,.28)}
+.syncpill i{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.6}
+.syncpill.ok i{background:#5BF0A8;opacity:1}.syncpill.busy i{background:#FFE07A;opacity:1;animation:pulse 1s infinite}.syncpill.err i{background:#FFB3B3;opacity:1}
+@keyframes pulse{50%{opacity:.3}}
+.syncpanel{margin-bottom:16px;box-shadow:var(--shadow)}
+.syncpanel code{background:var(--th-bg);padding:1px 5px;border-radius:5px;font-size:12px}
+.syncgrid{display:grid;grid-template-columns:1fr 160px;gap:10px}
+.syncgrid label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.syncgrid label.wide{grid-column:1/-1}
+.syncgrid input{font-size:14px;font-weight:700;color:var(--ink);text-transform:none;letter-spacing:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#F8F9FD}
+.syncgrid input:focus{outline:2px solid #9DB8FF;background:#fff}
+.syncbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:#FFF6E0;border:1px solid #F2D58A;border-radius:14px;padding:12px 14px;margin-bottom:16px;font-size:14px}
+.syncbar span{flex:1;min-width:240px}
+@media (max-width:600px){.syncgrid{grid-template-columns:1fr}.syncpill span{display:none}.syncpill{padding:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<header>
+  <h1>Prep Tracker<span id="dateLine"></span></h1>
+  <button class="syncpill" id="syncPill" type="button" aria-controls="syncPanel" aria-expanded="false"><i></i><span>Sync off</span></button>
+</header>
+
+<nav id="mainNav">
+  <button class="on" data-sec="lc">LeetCode</button>
+  <button data-sec="sd">System Design</button>
+  <button data-sec="ai">AI Fluency</button>
+  <button data-sec="about">About</button>
+</nav>
+</div>
+<div class="syncbar" id="syncConflict" hidden>
+  <span><b>Two versions found.</b> GitHub has progress from another device, and this device has changes that are not on GitHub yet.</span>
+  <button class="btn acc" type="button" data-sync="pull">Use GitHub's version</button>
+  <button class="btn ghost" type="button" data-sync="push">Keep this device's</button>
+</div>
+<div class="card syncpanel" id="syncPanel" hidden>
+  <h3>Save to GitHub</h3>
+  <p class="hint">Every change saves to <code>data.json</code> in your repo about 2 seconds after you make it. The token stays in this browser only.</p>
+  <div class="syncgrid">
+    <label>Repository<input id="syncRepo" placeholder="owner/repo" autocomplete="off" spellcheck="false"></label>
+    <label>Branch<input id="syncBranch" placeholder="data" autocomplete="off" spellcheck="false"></label>
+    <label class="wide">Access token<input id="syncToken" type="password" placeholder="github_pat_..." autocomplete="off" spellcheck="false"></label>
+  </div>
+  <div class="row-actions">
+    <button class="btn acc" type="button" data-sync="connect">Connect</button>
+    <button class="btn ghost" type="button" data-sync="now">Sync now</button>
+    <button class="btn ghost" type="button" data-sync="off">Disconnect</button>
+    <span class="hint" id="syncMsg" style="margin:0"></span>
+  </div>
+</div>
+<nav class="sub" id="subNav">
+  <button class="on" data-tab="today">Today</button>
+  <button data-tab="all">All questions</button>
+  <button data-tab="progress">Progress</button>
+</nav>
+
+<!-- TODAY -->
+<section class="tab on" id="tab-today">
+  <div class="aistats" id="stats"></div>
+  <h2 id="patHead"></h2>
+  <p class="hint">Required first. The pattern moves on once all five are solved.</p>
+  <div class="tiles" id="tiles"></div>
+  <div id="revBlock"></div>
+  <div id="optWrap">
+    <h2>Optional <small id="optMeta"></small></h2>
+    <div class="tiles opt" id="optTiles"></div>
+  </div>
+</section>
+
+<!-- ALL -->
+<section class="tab" id="tab-all">
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="Search by number, title or pattern">
+    <div class="filters" id="filters">
+      <button class="chip none on" data-f="all">All</button>
+      <button class="chip none" data-f="none">Not solved</button>
+      <button class="chip s" data-f="solved">Solved</button>
+      <button class="chip l" data-f="never">Never revised</button>
+    </div>
+  </div>
+  <div id="patterns"></div>
+</section>
+
+<!-- PROGRESS -->
+<section class="tab" id="tab-progress">
+  <div class="grid2" id="progressTop"></div>
+  <h2>Activity <small id="actMeta"></small></h2>
+  <div class="card"><div class="heatwrap" id="heatwrap"><div class="months" id="months"></div><div class="heat" id="heat"></div></div><div class="hlegend"><i style="background:#E8EBF3;box-shadow:inset 0 0 0 2px #2F6BFF"></i> System design day &nbsp; Less <i></i><i class="c1" style="background:#B9E8CF"></i><i style="background:#6FD0A0"></i><i style="background:#2BB673"></i><i style="background:#137A4E"></i> More</div></div>
+  <h2>Daily log</h2>
+  <div class="card log" id="dailyLog"></div>
+  <h2>By pattern</h2>
+  <div class="card" id="progressPatterns"></div>
+  <h2>How it works</h2>
+  <div class="card rules">
+    <p>One pattern a day: 5 required, 5 optional. Click <b style="color:var(--solved)">Solved</b> when you solve one. The pattern moves on once all 5 required are solved.</p>
+    <p>Everything you attempt joins the revision list the next day. Solve it again and press <b style="color:var(--learned)">+1</b>. 🌱 🌿 🪴 daily for 5 revisions, then 🌳 weekly. Once weekly, <b style="color:#A87400">Know it cold</b> retires it as ⭐ Perfected.</p>
+    <p>Skip a due revision 2 days running and it <b style="color:var(--revisit)">slips</b>: it goes to the top of the list and starts the climb again.</p>
+    <p>Questions done before the switch count as Solved and join revision after their first +1.</p>
+  </div>
+</section>
+
+
+<!-- SYSTEM DESIGN -->
+<section class="tab" id="tab-sd">
+  <div class="aistats" id="sdStats"></div>
+  <div id="sdNext"></div>
+  <h2>Tracks <small id="sdMeta"></small></h2>
+  <div id="sdTracks"></div>
+
+  <h2>Log <small id="sdLogMeta"></small></h2>
+  <div class="logbox">
+    <label class="nlabel" for="sdText">What did you do today?</label>
+    <textarea id="sdText" placeholder="e.g. Redrew the rate limiter from memory, missed the sliding window log"></textarea>
+    <div class="row-actions">
+      <button class="btn acc" id="sdLogBtn">Add to log</button>
+      <span class="stamp">⌘ + Enter also adds it</span>
+    </div>
+  </div>
+  <div class="timeline" id="sdTimeline"></div>
+</section>
+
+<!-- AI FLUENCY -->
+<section class="tab" id="tab-ai">
+  <p class="hint intro">Free path to SWE, ML and AI engineer roles. Core steps are the minimum; a capstone with measured results beats certificates.</p>
+  <div class="aistats" id="aiStats"></div>
+  <div id="aiNext"></div>
+  <h2>Learning path <small id="aiPathMeta"></small></h2>
+  <div id="aiPath"></div>
+  <h2>Reference</h2>
+  <details class="pat sec2" data-k="sec-skills"><summary><span class="chev" aria-hidden="true"></span><span class="name">Skills employers want<small>Demand, free coverage and your progress</small></span></summary>
+  <div class="sbody" id="aiSkills"></div></details>
+  <details class="pat sec2" data-k="sec-lib"><summary><span class="chev" aria-hidden="true"></span><span class="name">All resources<small id="aiLibMeta"></small></span></summary>
+  <div class="sbody" id="aiLib"></div></details>
+  <details class="pat sec2" data-k="sec-know"><summary><span class="chev" aria-hidden="true"></span><span class="name">Good to know<small>Costs, certificates, resume tips</small></span></summary>
+  <div class="sbody rules">
+    <p>Claude Code practice needs a paid Claude plan or API credits. The API course and notebooks make paid API calls, cheap with small models.</p>
+    <p>DeepLearning.AI videos are free; graded labs and certificates need Pro ($25 to $30 a month). Hugging Face certificates are free. Microsoft samples may need Azure.</p>
+    <p>Claude Certified Architect exam is paid ($125) and may need a partner organisation. Optional.</p>
+    <p>On the resume, put agents, RAG, MCP and evals next to measured results, not in a bare skills list. Forward-deployed and solutions engineer roles at AI-native companies fit a full-stack SWE profile.</p>
+    <p>The Anthropic catalog changes fast. Checked October 2026.</p>
+  </div></details>
+</section>
+
+<!-- ABOUT -->
+<section class="tab" id="tab-about">
+<div class="card about">
+
+<h3>What this is</h3>
+<p>A personal LeetCode practice tracker for Hrishikesh (Rishi) Verma. One HTML file, no server, no framework, no build step. It was written in September 2026 in a conversation with Claude and reworked in October 2026. Rishi owns it. It exists so Rishi can work through a fixed list of LeetCode questions pattern by pattern while preparing for software engineering interviews.</p>
+
+<h3>Why it was made</h3>
+<p>Rishi had already solved about 400 LeetCode problems. The remaining gap was not volume, it was pattern fluency: seeing a new problem and knowing which technique it belongs to, then coding it cleanly. So the tracker is built around patterns. The list is 35 pattern blocks of 10 questions (5 required, 5 optional) plus a mixed block of 40 where the pattern is hidden: 390 questions, none of them in Rishi's solved list at the time they were added.</p>
+
+<h3>The method the tracker enforces</h3>
+<ul>
+<li>One pattern a day. Today shows the pattern name, its 5 required questions and its 5 optional ones. The pattern stays until all 5 required questions have a status, so a missed day never skips a pattern.</li>
+<li>Required questions 1 to 3 are for studying the solution and building a template, 4 and 5 are attempted cold. Questions 6 to 10 are optional extra practice.</li>
+<li>The mixed block comes last, 5 required a day. For each one Rishi types his pattern guess before revealing the real one.</li>
+<li>GregMat-style revision: every question attempted shows up in "Revise today" from the next day on. Rishi solves it again and presses +1. A question is revised daily until its climb reaches 5, then weekly. Only a weekly question can be retired with "Know it cold" (shown as Perfected; "Bring back" undoes it). If a due revision is skipped for 2 days running, the question slips and its climb restarts at 0; the total count is kept. Pressing +1 on a slipped question marks it Solved again. Plant icons show the stage: seedling, herb, potted plant (daily), tree (weekly), star (perfected).</li>
+</ul>
+
+<h3>Status and revision counter</h3>
+<ul>
+<li>Each question is either Solved or not. There is one <b>Solved</b> button (click again to undo); no Unsolved button and no dropdown. This was Rishi's explicit choice: keep it binary.</li>
+<li>Each solved question has a revision counter starting at 0. +1 records one revision today and drops it from today's list; the minus undoes a mistaken click.</li>
+<li>A question that slipped (missed revision) is stored with status "unsolved" so it stays in revision; it is shown as "slipped" in red and listed first. It still counts as done for moving to the next pattern.</li>
+</ul>
+<p>Before October 2026 there were three labels (Solved, Revisit, Coding issue) and a 2/7/21 day retry cycle. Both were removed. Any old label now reads as Solved. Questions attempted before the switch are listed in <code>v2.legacy</code> and only join daily revision after their first +1, because Rishi had forgotten them. Do not bring the Learned label or the retry cycle back.</p>
+
+<h3>How the page is organised</h3>
+<ul>
+<li>The top bar has three sections, LeetCode, System Design and AI Fluency, plus About. LeetCode has its own sub-tabs below it.</li>
+<li><b>Today</b>: today's pattern with required and optional tiles, then the revision list.</li>
+<li><b>All questions</b>: every pattern as a collapsible block with a progress bar, search, filters (including Never revised), and per question a status dropdown, revision counter and note.</li>
+<li><b>Header</b>: the app is titled Prep Tracker; LeetCode, System Design and AI Fluency each open with three summary tiles in the same style.</li>
+<li><b>Progress</b>: overall percentage, revision totals, streak, activity heatmap (new plus revised), daily log, per-pattern bars.</li>
+<li><b>System Design</b>: a separate tracker with its own storage key <code>sd-tracker-v1</code>. Three tracks (collapsible, with a progress bar each) with a status dropdown per item, summary tiles and an Up next bar on top (the Telusko one-shot video in 10 units, Alex Xu Vol 1 in 16 chapters, Alex Xu Vol 2 in 13 chapters), and a free-text log: Rishi writes what he did, presses Log, and the entry becomes a dated card on a timeline. Nothing in the log is pre-written; gaps between days are shown as gaps. The log is deliberately free text with no tagging.</li>
+<li><b>AI Fluency</b>: built from Rishi's research doc on a free learning path to SWE, ML and AI engineer roles (October 2026). Own storage key <code>ai-tracker-v1</code>: <code>status</code> (resource id to 0 not started, 1 in progress, 2 completed) and <code>cap</code> (capstone checklist item to true), <code>build</code> (step key to true when its build is done; steps with a build only count as done once it is ticked) and <code>notes</code> (step key to free text). Step keys (<code>k</code> in <code>AI_PATH</code>) are permanent. Hours left come from each step's <code>hrs</code>. Skills, All resources and Good to know start collapsed to keep the page calm; <code>AI_LOW</code> marks low-priority resources. Rishi gave Claude a free hand on this tab's design (October 2026). Sections: Next up (first unfinished step), Learning path (11 steps in <code>AI_PATH</code>, core steps 1, 2, 4, 5, 7, 11; a step is done when its required resources are completed, "a|b" means either, "id?" is optional), Skills employers want (<code>AI_SKILLS</code>: demand tier, free coverage, progress from mapped resources) plus gaps (<code>AI_GAPS</code>), All resources (<code>AI_LIB</code>, grouped by provider), and Good to know. Resource ids are permanent keys; some are old Skilljar slugs whose url now points at academy.claude.com. To add courses later (RAG, other providers), add items to <code>AI_LIB</code> and reference them from steps or skills. Audience-specific Academy courses (educators, students, nonprofits, small business, creative work, Cowork, enterprise rollout) are left out on purpose.</li>
+<li><b>About</b>: this page.</li>
+</ul>
+
+<h3>Where the data lives and how to keep it safe</h3>
+<p>Progress is not stored in this file. It is stored in the browser's localStorage under three keys: <code>lc-tracker-v1</code> for LeetCode, <code>sd-tracker-v1</code> for System Design and <code>ai-tracker-v1</code> for AI Fluency. Export and Import handle all three together. Replacing the HTML file with a newer version keeps all progress as long as that key and the data shape survive. Rules for anyone editing this file:</p>
+<ul>
+<li>Never rename the storage key.</li>
+<li>Never rename or delete a field inside the saved object. Add new fields instead.</li>
+<li>If a change in data shape is unavoidable, add a conversion step inside the <code>migrate()</code> function that runs on load, so old data is transformed rather than lost.</li>
+<li>Keep Export and Import working. They are the user's safety net.</li>
+<li>Question ids are the keys for all saved data. Adding questions is safe; changing an existing id is not.</li>
+</ul>
+<p>Saved fields. Current: <code>st</code> (question id to status, first attempt date <code>f</code> and last change date), <code>rc</code> (question id to revision count <code>n</code>, dates <code>h</code>, <code>last</code>, climb <code>k</code>, next <code>due</code>, undo stack <code>u</code>, last lapse <code>lap</code>, retired date <code>ret</code>), <code>lapsedOn</code> (date the daily lapse check last ran), <code>rlog</code> (date to revisions that day), <code>log</code> (date to questions first attempted that day), <code>day</code> (today's pattern and question ids), <code>v2</code> (switch date and legacy ids), <code>notes</code>, <code>guess</code>. Old and kept untouched: <code>labels</code> (read as Solved when no <code>st</code> entry), <code>sched</code>, <code>rv</code>.</p>
+
+<h3>How the code is laid out</h3>
+<p>Everything is in one script block at the bottom of the file. <code>PATTERNS</code> holds the question list as pattern name plus an array of [id, title, difficulty, optional hidden pattern hint]; in each normal pattern the first 5 are required and the next 5 optional. <code>st()</code> reads status, <code>setStatus()</code> writes it. <code>ensureToday()</code> picks the day's pattern. <code>revUp()</code>, <code>revDown()</code>, <code>lapse()</code>, <code>retire()</code>, <code>inPool()</code> and <code>revDue()</code> run revision. <code>render()</code> redraws everything from state after each change. LeetCode links are generated from the title by slugifying it.</p>
+
+<h3>Design intent</h3>
+<p>Colorful and friendly, one page, quick to act on. Each pattern has its own hue so tiles are recognisable at a glance. Solved is green, slipped red, revision purple, used consistently everywhere. Keep the page compact. Rishi prefers short text and dislikes being overwhelmed, so avoid adding walls of explanation to the interface itself.</p>
+
+<h3>Things to keep in mind when changing it</h3>
+<ul>
+<li>Do not use em dashes anywhere in the text.</li>
+<li>Keep it a single HTML file with no external dependencies other than the Google Font, which has a system fallback.</li>
+<li>Do not add browser storage other than the three existing localStorage keys.</li>
+<li>Any new feature should serve pattern fluency or honest self-assessment. Cosmetic additions are low priority.</li>
+</ul>
+
+</div>
+</section>
+
+<footer>
+  <button class="btn ghost" id="exportBtn">Export backup</button>
+  <label class="btn ghost" for="importFile">Import backup</label>
+  <input type="file" id="importFile" accept="application/json" style="display:none">
+  <button class="btn ghost" id="resetBtn">Reset everything</button>
+  <span id="storeNote"></span>
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const PATTERNS = [
+["Hashing & Frequency",[[205,"Isomorphic Strings","E"],[290,"Word Pattern","E"],[380,"Insert Delete GetRandom O(1)","M"],[451,"Sort Characters By Frequency","M"],[523,"Continuous Subarray Sum","M"],[383,"Ransom Note","E"],[1207,"Unique Number of Occurrences","E"],[554,"Brick Wall","M"],[2352,"Equal Row and Column Pairs","M"],[1497,"Check If Array Pairs Are Divisible by k","M"]]],
+["Two Pointers",[[977,"Squares of a Sorted Array","E"],[844,"Backspace String Compare","E"],[16,"3Sum Closest","M"],[18,"4Sum","M"],[611,"Valid Triangle Number","M"],[905,"Sort Array By Parity","E"],[1679,"Max Number of K-Sum Pairs","M"],[923,"3Sum With Multiplicity","M"],[948,"Bag of Tokens","M"],[2563,"Count the Number of Fair Pairs","M"]]],
+["Sliding Window",[[643,"Maximum Average Subarray I","E"],[438,"Find All Anagrams in a String","M"],[713,"Subarray Product Less Than K","M"],[76,"Minimum Window Substring","H"],[239,"Sliding Window Maximum","H"],[1052,"Grumpy Bookstore Owner","M"],[2024,"Maximize the Confusion of an Exam","M"],[1208,"Get Equal Substrings Within Budget","M"],[2779,"Maximum Beauty of an Array After Applying Operation","M"],[995,"Minimum Number of K Consecutive Bit Flips","H"]]],
+["Prefix Sum",[[1480,"Running Sum of 1d Array","E"],[724,"Find Pivot Index","E"],[525,"Contiguous Array","M"],[974,"Subarray Sums Divisible by K","M"],[1074,"Number of Submatrices That Sum to Target","H"],[303,"Range Sum Query - Immutable","E"],[1991,"Find the Middle Index in Array","E"],[1371,"Find the Longest Substring Containing Vowels in Even Counts","M"],[2483,"Minimum Penalty for a Shop","M"],[1442,"Count Triplets That Can Form Two Arrays of Equal XOR","M"]]],
+["Binary Search",[[278,"First Bad Version","E"],[981,"Time Based Key-Value Store","M"],[1011,"Capacity To Ship Packages Within D Days","M"],[1482,"Minimum Number of Days to Make m Bouquets","M"],[410,"Split Array Largest Sum","H"],[1539,"Kth Missing Positive Number","E"],[852,"Peak Index in a Mountain Array","M"],[2187,"Minimum Time to Complete Trips","M"],[1760,"Minimum Limit of Balls in a Bag","M"],[154,"Find Minimum in Rotated Sorted Array II","H"]]],
+["Monotonic Stack",[[496,"Next Greater Element I","E"],[503,"Next Greater Element II","M"],[316,"Remove Duplicate Letters","M"],[84,"Largest Rectangle in Histogram","H"],[85,"Maximal Rectangle","H"],[1475,"Final Prices With a Special Discount in a Shop","E"],[581,"Shortest Unsorted Continuous Subarray","M"],[2866,"Beautiful Towers II","M"],[2289,"Steps to Make Array Non-decreasing","M"],[1944,"Number of Visible People in a Queue","H"]]],
+["Intervals",[[57,"Insert Interval","M"],[435,"Non-overlapping Intervals","M"],[452,"Minimum Number of Arrows to Burst Balloons","M"],[986,"Interval List Intersections","M"],[729,"My Calendar I","M"],[228,"Summary Ranges","E"],[436,"Find Right Interval","M"],[731,"My Calendar II","M"],[2406,"Divide Intervals Into Minimum Number of Groups","M"],[1851,"Minimum Interval to Include Each Query","H"]]],
+["Heap / Priority Queue",[[1046,"Last Stone Weight","E"],[215,"Kth Largest Element in an Array","M"],[621,"Task Scheduler","M"],[767,"Reorganize String","M"],[295,"Find Median from Data Stream","H"],[1337,"The K Weakest Rows in a Matrix","E"],[692,"Top K Frequent Words","M"],[658,"Find K Closest Elements","M"],[1405,"Longest Happy String","M"],[502,"IPO","H"]]],
+["Tree DFS",[[1026,"Maximum Difference Between Node and Ancestor","M"],[437,"Path Sum III","M"],[1372,"Longest ZigZag Path in a Binary Tree","M"],[1519,"Number of Nodes in the Sub-Tree With the Same Label","M"],[968,"Binary Tree Cameras","H"],[1315,"Sum of Nodes with Even-Valued Grandparent","M"],[1325,"Delete Leaves With a Given Value","M"],[1123,"Lowest Common Ancestor of Deepest Leaves","M"],[2385,"Amount of Time for Binary Tree to Be Infected","M"],[1373,"Maximum Sum BST in Binary Tree","H"]]],
+["Trie",[[648,"Replace Words","M"],[211,"Design Add and Search Words Data Structure","M"],[677,"Map Sum Pairs","M"],[1268,"Search Suggestions System","M"],[212,"Word Search II","H"],[720,"Longest Word in Dictionary","M"],[820,"Short Encoding of Words","M"],[3043,"Find the Length of the Longest Common Prefix","M"],[2416,"Sum of Prefix Scores of Strings","H"],[1032,"Stream of Characters","H"]]],
+["Backtracking",[[93,"Restore IP Addresses","M"],[216,"Combination Sum III","M"],[473,"Matchsticks to Square","M"],[1239,"Maximum Length of a Concatenated String with Unique Characters","M"],[698,"Partition to K Equal Sum Subsets","M"],[784,"Letter Case Permutation","M"],[526,"Beautiful Arrangement","M"],[2305,"Fair Distribution of Cookies","M"],[52,"N-Queens II","H"],[980,"Unique Paths III","H"]]],
+["Graph BFS",[[733,"Flood Fill","E"],[433,"Minimum Genetic Mutation","M"],[1091,"Shortest Path in Binary Matrix","M"],[909,"Snakes and Ladders","M"],[1129,"Shortest Path with Alternating Colors","M"],[1306,"Jump Game III","M"],[1926,"Nearest Exit from Entrance in Maze","M"],[2368,"Reachable Nodes With Restrictions","M"],[1345,"Jump Game IV","H"],[864,"Shortest Path to Get All Keys","H"]]],
+["Topological Sort",[[2115,"Find All Possible Recipes from Given Supplies","M"],[2192,"All Ancestors of a Node in a Directed Acyclic Graph","M"],[2050,"Parallel Courses III","H"],[2392,"Build a Matrix With Conditions","H"],[1857,"Largest Color Value in a Directed Graph","H"],[2924,"Find Champion II","M"],[1203,"Sort Items by Groups Respecting Dependencies","H"],[2127,"Maximum Employees to Be Invited to a Meeting","H"],[1591,"Strange Printer II","H"],[2328,"Number of Increasing Paths in a Grid","H"]]],
+["Union Find",[[990,"Satisfiability of Equality Equations","M"],[1319,"Number of Operations to Make Network Connected","M"],[721,"Accounts Merge","M"],[1584,"Min Cost to Connect All Points","M"],[959,"Regions Cut By Slashes","M"],[1061,"Lexicographically Smallest Equivalent String","M"],[2316,"Count Unreachable Pairs of Nodes in an Undirected Graph","M"],[839,"Similar String Groups","H"],[685,"Redundant Connection II","H"],[1579,"Remove Max Number of Edges to Keep Graph Fully Traversable","H"]]],
+["Shortest Path",[[1631,"Path With Minimum Effort","M"],[1334,"Find the City With the Smallest Number of Neighbors at a Threshold Distance","M"],[1976,"Number of Ways to Arrive at Destination","M"],[1368,"Minimum Cost to Make at Least One Valid Path in a Grid","H"],[778,"Swim in Rising Water","H"],[2812,"Find the Safest Path in a Grid","M"],[2976,"Minimum Cost to Convert String I","M"],[2290,"Minimum Obstacle Removal to Reach Corner","H"],[1928,"Minimum Cost to Reach Destination in Time","H"],[882,"Reachable Nodes In Subdivided Graph","H"]]],
+["Greedy",[[1029,"Two City Scheduling","M"],[763,"Partition Labels","M"],[134,"Gas Station","M"],[406,"Queue Reconstruction by Height","M"],[135,"Candy","H"],[455,"Assign Cookies","E"],[846,"Hand of Straights","M"],[1899,"Merge Triplets to Form Target Triplet","M"],[945,"Minimum Increment to Make Array Unique","M"],[330,"Patching Array","H"]]],
+["1D Dynamic Programming",[[139,"Word Break","M"],[152,"Maximum Product Subarray","M"],[300,"Longest Increasing Subsequence","M"],[416,"Partition Equal Subset Sum","M"],[377,"Combination Sum IV","M"],[413,"Arithmetic Slices","M"],[376,"Wiggle Subsequence","M"],[673,"Number of Longest Increasing Subsequence","M"],[1048,"Longest String Chain","M"],[32,"Longest Valid Parentheses","H"]]],
+["2D Dynamic Programming",[[1143,"Longest Common Subsequence","M"],[221,"Maximal Square","M"],[494,"Target Sum","M"],[72,"Edit Distance","M"],[115,"Distinct Subsequences","H"],[1035,"Uncrossed Lines","M"],[712,"Minimum ASCII Delete Sum for Two Strings","M"],[576,"Out of Boundary Paths","M"],[1463,"Cherry Pickup II","H"],[174,"Dungeon Game","H"]]],
+["Bit Manipulation",[[371,"Sum of Two Integers","M"],[201,"Bitwise AND of Numbers Range","M"],[260,"Single Number III","M"],[1318,"Minimum Flips to Make a OR b Equal to c","M"],[421,"Maximum XOR of Two Numbers in an Array","M"],[461,"Hamming Distance","E"],[477,"Total Hamming Distance","M"],[1310,"XOR Queries of a Subarray","M"],[2433,"Find The Original Array of Prefix Xor","M"],[1611,"Minimum One Bit Operations to Make Integers Zero","H"]]],
+["Matrix",[[48,"Rotate Image","M"],[73,"Set Matrix Zeroes","M"],[240,"Search a 2D Matrix II","M"],[289,"Game of Life","M"],[498,"Diagonal Traverse","M"],[566,"Reshape the Matrix","E"],[867,"Transpose Matrix","E"],[59,"Spiral Matrix II","M"],[1878,"Rotating the Box","M"],[885,"Spiral Matrix III","M"]]],
+["Linked List",[[2181,"Merge Nodes in Between Zeros","M"],[1669,"Merge In Between Linked Lists","M"],[430,"Flatten a Multilevel Doubly Linked List","M"],[2487,"Remove Nodes From Linked List","M"],[2074,"Reverse Nodes in Even Length Groups","M"],[1721,"Swapping Nodes in a Linked List","M"],[2807,"Insert Greatest Common Divisors in Linked List","M"],[2816,"Double a Number Represented as a Linked List","M"],[2058,"Find the Minimum and Maximum Number of Nodes Between Critical Points","M"],[1670,"Design Front Middle Back Queue","M"]]],
+["String Parsing",[[151,"Reverse Words in a String","M"],[8,"String to Integer (atoi)","M"],[43,"Multiply Strings","M"],[1249,"Minimum Remove to Make Valid Parentheses","M"],[227,"Basic Calculator II","M"],[12,"Integer to Roman","M"],[38,"Count and Say","M"],[640,"Solve the Equation","M"],[224,"Basic Calculator","H"],[68,"Text Justification","H"]]],
+["Monotonic Deque / Window II",[[1658,"Minimum Operations to Reduce X to Zero","M"],[1438,"Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit","M"],[1696,"Jump Game VI","M"],[395,"Longest Substring with At Least K Repeating Characters","M"],[862,"Shortest Subarray with Sum at Least K","H"],[2762,"Continuous Subarrays","M"],[1888,"Minimum Number of Flips to Make the Binary String Alternating","M"],[1425,"Constrained Subsequence Sum","H"],[1499,"Max Value of Equation","H"],[2398,"Maximum Number of Robots Within Budget","H"]]],
+["Monotonic Stack II",[[907,"Sum of Subarray Minimums","M"],[2104,"Sum of Subarray Ranges","M"],[456,"132 Pattern","M"],[962,"Maximum Width Ramp","M"],[1856,"Maximum Subarray Min-Product","M"],[1996,"The Number of Weak Characters in the Game","M"],[1124,"Longest Well-Performing Interval","M"],[1793,"Maximum Score of a Good Subarray","H"],[2454,"Next Greater Element IV","H"],[2281,"Sum of Total Strength of Wizards","H"]]],
+["Difference Array / Prefix Sum II",[[1094,"Car Pooling","M"],[1109,"Corporate Flight Bookings","M"],[2381,"Shifting Letters II","M"],[1314,"Matrix Block Sum","M"],[1590,"Make Sum Divisible by P","M"],[1854,"Maximum Population Year","E"],[2536,"Increment Submatrices by One","M"],[3355,"Zero Array Transformation I","M"],[1526,"Minimum Number of Increments on Subarrays to Form a Target Array","H"],[2132,"Stamping the Grid","H"]]],
+["Knapsack DP",[[518,"Coin Change II","M"],[279,"Perfect Squares","M"],[474,"Ones and Zeroes","M"],[1049,"Last Stone Weight II","M"],[879,"Profitable Schemes","H"],[2787,"Ways to Express an Integer as Sum of Powers","M"],[2915,"Length of the Longest Subsequence That Sums to Target","M"],[1981,"Minimize the Difference Between Target and Chosen Elements","M"],[2585,"Number of Ways to Earn Points","H"],[956,"Tallest Billboard","H"]]],
+["State Machine DP",[[740,"Delete and Earn","M"],[309,"Best Time to Buy and Sell Stock with Cooldown","M"],[714,"Best Time to Buy and Sell Stock with Transaction Fee","M"],[123,"Best Time to Buy and Sell Stock III","H"],[188,"Best Time to Buy and Sell Stock IV","H"],[1567,"Maximum Length of Subarray With Positive Product","M"],[790,"Domino and Tromino Tiling","M"],[2369,"Check if There is a Valid Partition For The Array","M"],[1220,"Count Vowels Permutation","H"],[552,"Student Attendance Record II","H"]]],
+["String DP",[[647,"Palindromic Substrings","M"],[516,"Longest Palindromic Subsequence","M"],[583,"Delete Operation for Two Strings","M"],[97,"Interleaving String","M"],[10,"Regular Expression Matching","H"],[467,"Unique Substrings in Wraparound String","M"],[1653,"Minimum Deletions to Make String Balanced","M"],[1312,"Minimum Insertion Steps to Make a String Palindrome","H"],[132,"Palindrome Partitioning II","H"],[44,"Wildcard Matching","H"]]],
+["Interval / Game DP",[[375,"Guess Number Higher or Lower II","M"],[1039,"Minimum Score Triangulation of Polygon","M"],[1140,"Stone Game II","M"],[312,"Burst Balloons","H"],[1547,"Minimum Cost to Cut a Stick","H"],[877,"Stone Game","M"],[1690,"Stone Game VII","M"],[1406,"Stone Game III","H"],[664,"Strange Printer","H"],[1000,"Minimum Cost to Merge Stones","H"]]],
+["Bitmask DP",[[2044,"Count Number of Maximum Bitwise-OR Subsets","M"],[1986,"Minimum Number of Work Sessions to Finish the Tasks","M"],[464,"Can I Win","M"],[1799,"Maximize Score After N Operations","H"],[847,"Shortest Path Visiting All Nodes","H"],[2741,"Special Permutations","M"],[1879,"Minimum XOR Sum of Two Arrays","H"],[1255,"Maximum Score Words Formed by Letters","H"],[1434,"Number of Ways to Wear Different Hats to Each Other","H"],[691,"Stickers to Spell Word","H"]]],
+["Design",[[1472,"Design Browser History","M"],[1146,"Snapshot Array","M"],[355,"Design Twitter","M"],[2034,"Stock Price Fluctuation","M"],[460,"LFU Cache","H"],[641,"Design Circular Deque","M"],[1396,"Design Underground System","M"],[2349,"Design a Number Container System","M"],[1845,"Seat Reservation Manager","M"],[432,"All O`one Data Structure","H"]]],
+["Grid BFS II",[[542,"01 Matrix","M"],[1162,"As Far from Land as Possible","M"],[934,"Shortest Bridge","M"],[773,"Sliding Puzzle","H"],[1293,"Shortest Path in a Grid with Obstacles Elimination","H"],[1020,"Number of Enclaves","M"],[1765,"Map of Highest Peak","M"],[1559,"Detect Cycles in 2D Grid","M"],[2577,"Minimum Time to Visit a Cell In a Grid","H"],[675,"Cut Off Trees for Golf Event","H"]]],
+["Graph Advanced",[[1466,"Reorder Routes to Make All Paths Lead to the City Zero","M"],[2360,"Longest Cycle in a Graph","M"],[815,"Bus Routes","H"],[332,"Reconstruct Itinerary","H"],[1192,"Critical Connections in a Network","H"],[1615,"Maximal Network Rank","M"],[2101,"Detonate the Maximum Bombs","M"],[2092,"Find All People With Secret","H"],[1697,"Checking Existence of Edge Length Limited Paths","H"],[1489,"Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree","H"]]],
+["Array In-Place Tricks",[[442,"Find All Duplicates in an Array","M"],[665,"Non-decreasing Array","M"],[31,"Next Permutation","M"],[670,"Maximum Swap","M"],[179,"Largest Number","M"],[448,"Find All Numbers Disappeared in an Array","E"],[645,"Set Mismatch","E"],[556,"Next Greater Element III","M"],[769,"Max Chunks To Make Sorted","M"],[324,"Wiggle Sort II","M"]]],
+["Math",[[50,"Pow(x, n)","M"],[204,"Count Primes","M"],[172,"Factorial Trailing Zeroes","M"],[29,"Divide Two Integers","M"],[166,"Fraction to Recurring Decimal","M"],[263,"Ugly Number","E"],[264,"Ugly Number II","M"],[223,"Rectangle Area","M"],[1015,"Smallest Integer Divisible by K","M"],[149,"Max Points on a Line","H"]]],
+["Mixed revision",[
+[1657,"Determine if Two Strings Are Close","M","Hashing"],[1010,"Pairs of Songs With Total Durations Divisible by 60","M","Hashing"],[1456,"Maximum Number of Vowels in a Substring of Given Length","M","Sliding Window"],[921,"Minimum Add to Make Parentheses Valid","M","Greedy / Stack"],[2300,"Successful Pairs of Spells and Potions","M","Binary Search"],[1329,"Sort the Matrix Diagonally","M","Matrix"],[1642,"Furthest Building You Can Reach","M","Heap + Greedy"],[1218,"Longest Arithmetic Subsequence of Given Difference","M","DP + Hash"],[1254,"Number of Closed Islands","M","Grid DFS"],[165,"Compare Version Numbers","M","String Parsing"],[1493,"Longest Subarray of 1's After Deleting One Element","M","Sliding Window"],[373,"Find K Pairs with Smallest Sums","M","Heap"],[1339,"Maximum Product of Splitted Binary Tree","M","Tree DFS"],[646,"Maximum Length of Pair Chain","M","Greedy / Intervals"],[1202,"Smallest String With Swaps","M","Union Find"],[983,"Minimum Cost For Tickets","M","1D DP"],[1673,"Find the Most Competitive Subsequence","M","Monotonic Stack"],[1283,"Find the Smallest Divisor Given a Threshold","M","Binary Search on Answer"],[1457,"Pseudo-Palindromic Paths in a Binary Tree","M","Tree DFS + Bitmask"],[137,"Single Number II","M","Bit Manipulation"],[1838,"Frequency of the Most Frequent Element","M","Sliding Window + Sort"],[678,"Valid Parenthesis String","M","Greedy"],[947,"Most Stones Removed with Same Row or Column","M","Union Find"],[1155,"Number of Dice Rolls With Target Sum","M","2D DP"],[2096,"Step-By-Step Directions From a Binary Tree Node to Another","M","LCA"],[1834,"Single-Threaded CPU","M","Heap + Sort"],[1443,"Minimum Time to Collect All Apples in a Tree","M","Tree DFS"],[2013,"Detect Squares","M","Design + Hashing"],[378,"Kth Smallest Element in a Sorted Matrix","M","Binary Search / Heap"],[1130,"Minimum Cost Tree From Leaf Values","M","Monotonic Stack"],[1361,"Validate Binary Tree Nodes","M","Graph / Union Find"],[2140,"Solving Questions With Brainpower","M","1D DP"],[1786,"Number of Restricted Paths From First to Last Node","M","Dijkstra + DP"],[1353,"Maximum Number of Events That Can Be Attended","M","Greedy + Heap"],[329,"Longest Increasing Path in a Matrix","H","DFS + Memo"],[1095,"Find in Mountain Array","H","Binary Search"],[1235,"Maximum Profit in Job Scheduling","H","DP + Binary Search"],[354,"Russian Doll Envelopes","H","LIS"],[632,"Smallest Range Covering Elements from K Lists","H","Heap"],[871,"Minimum Number of Refueling Stops","H","Heap + Greedy"]]]
+];
+const HUES=[210,150,25,340,265,190,45,300,120,0,230,80,320,170,10,250,140,35,290,200,60,330,110,240,20,160,280,95,350,215,130,305,55,185,275,5];
+const Q=[]; const BYID={};
+PATTERNS.forEach((p,pi)=>p[1].forEach((it,i)=>{const q={id:it[0],title:it[1],diff:it[2],hint:it[3]||null,pi,pattern:p[0],order:Q.length,mixed:pi===PATTERNS.length-1};Q.push(q);BYID[q.id]=q;}));
+Q.forEach(q=>{const i=Q.filter(x=>x.pi===q.pi&&x.order<q.order).length;q.idx=i;q.req=q.mixed||i<5;});
+/* one toggle: Solved or not. Internally a missed revision stores "unsolved" (shown as slipped). */
+const LABELS={solved:"Solved"};
+const LCLS={solved:"s"};
+
+/* ---------------- STATE ---------------- */
+/* Saved shape is additive only. Old fields (labels, sched, rv, log) are never rewritten here.
+   New fields: st (status), rc (revision counter), rlog (revisions per date), day (today's pattern), v2 (switch date + legacy ids). */
+const KEY="lc-tracker-v1";
+const BLANK=()=>({labels:{},notes:{},guess:{},sched:{},rv:{},log:{},st:{},rc:{},rlog:{},day:null,v2:null});
+let S=BLANK();
+let storeOK=true;
+function load(){try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){storeOK=false;}migrate();}
+function migrate(){let n=0;for(const id in S.labels){if(S.labels[id].s==="learned"){S.labels[id].s="revisit";if(!S.rv[id])S.rv[id]={stage:0,due:addDays(S.labels[id].d||today(),2),hist:[]};n++;}}
+  for(const k of ["st","rc","rlog"])if(!S[k]){S[k]={};n++;}
+  /* v2: everything attempted before the switch counts as Solved and joins revision only after its first +1 */
+  if(!S.v2){S.v2={at:today(),legacy:Object.keys(S.labels).map(Number)};n++;}
+  if(n)save();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){storeOK=false;}}
+const pad=n=>String(n).padStart(2,"0");
+function dstr(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function today(){return dstr(new Date());}
+function addDays(s,n){const [y,m,d]=s.split("-").map(Number);const t=new Date(y,m-1,d+n);return dstr(t);}
+function nice(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});}
+function slug(t){return t.toLowerCase().replace(/-/g," ").replace(/[^a-z0-9 ]/g,"").trim().replace(/\s+/g,"-");}
+function lcUrl(q){return "https://leetcode.com/problems/"+slug(q.title)+"/";}
+
+/* status: new field wins; any old label (Solved, Revisit, Coding issue) reads as Solved */
+function st(id){const x=S.st[id];if(x)return x.s||null;return S.labels[id]?"solved":null;}
+function first(id){const x=S.st[id];if(x&&x.f)return x.f;return S.labels[id]?S.labels[id].d:null;}
+const lab=st;
+const legacy=id=>!!(S.v2&&S.v2.legacy.includes(Number(id)));
+const revN=id=>S.rc[id]?S.rc[id].n:0;
+const act=d=>(S.log[d]||0)+(S.rlog[d]||0);
+
+function ensureToday(){
+  const t=today();if(S.lapsedOn!==t){S.lapsedOn=t;lapse();save();}
+  if(S.day&&S.day.d===t)return;
+  let pi=-1;for(let p=0;p<PATTERNS.length;p++){if(Q.some(q=>q.pi===p&&q.req&&!st(q.id))){pi=p;break;}}
+  let req=[],opt=[];
+  if(pi>=0){const qs=Q.filter(q=>q.pi===pi);
+    if(qs[0].mixed)req=qs.filter(q=>!st(q.id)).slice(0,5).map(q=>q.id);
+    else{req=qs.filter(q=>q.req).map(q=>q.id);opt=qs.filter(q=>!q.req).map(q=>q.id);}}
+  S.day={d:t,pi,req,opt};save();
+}
+function setStatus(id,s){
+  const t=today();const prev=st(id);const f=first(id);
+  if(prev===s)s="";
+  S.st[id]={s:s||"",f:f||(s?t:undefined),d:t};
+  if(s&&!f)S.log[t]=(S.log[t]||0)+1;
+  save();render();
+}
+/* revision ladder: daily until climb k reaches 5, then weekly; weekly ones can be retired.
+   rc[id] = {n total revisions, h dates, last, k climb, due, u undo stack, lap lapse date, ret retired date} */
+const WEEKLY_AT=5;
+const climb=id=>{const r=S.rc[id];return r?(r.k!=null?r.k:r.n):0;};
+const retired=id=>!!(S.rc[id]&&S.rc[id].ret);
+const weekly=id=>climb(id)>=WEEKLY_AT;
+function dueOf(id){const r=S.rc[id];if(r&&r.due)return r.due;if(r&&r.last)return addDays(r.last,1);const f=first(id);return f?addDays(f,1):null;}
+function dayDiff(a,b){const p=x=>{const [y,m,d]=x.split("-").map(Number);return Date.UTC(y,m-1,d);};return Math.round((p(b)-p(a))/86400000);}
+/* in the revision pool: attempted before today, not retired, and (if from before the switch) revised at least once */
+function inPool(id){if(!st(id)||retired(id))return false;if(legacy(id)&&revN(id)<1)return false;const f=first(id);return !!f&&f<today();}
+/* a due revision skipped 2 days in a row makes the question slip (stored as "unsolved") and restarts its climb */
+function lapse(){const t=today();let n=0;
+  Q.forEach(q=>{const id=q.id;if(!inPool(id))return;const d=dueOf(id);if(!d||dayDiff(d,t)<2)return;
+    const r=S.rc[id]||(S.rc[id]={n:0,h:[]});r.k=0;r.due=t;r.lap=t;S.st[id]={s:"unsolved",f:first(id),d:t};n++;});
+  if(n)setTimeout(()=>toast(`${n} question${n===1?"":"s"} slipped. They are at the top of Revise today`),400);}
+function revUp(id){const t=today();const r=S.rc[id]||{n:0,h:[]};const k0=climb(id);
+  (r.u=r.u||[]).push({k:k0,due:dueOf(id),last:r.last||null,s:st(id)});if(r.u.length>30)r.u.shift();
+  r.n++;r.h.push(t);r.last=t;r.k=k0+1;r.due=addDays(t,r.k>=WEEKLY_AT?7:1);S.rc[id]=r;
+  if(st(id)==="unsolved")S.st[id]={s:"solved",f:first(id),d:t};
+  S.rlog[t]=(S.rlog[t]||0)+1;save();render();
+  toast(r.k===WEEKLY_AT?"🌳 Weekly now. Retire it once you know it cold":r.k>WEEKLY_AT?"See you in a week":`Day ${r.k} of ${WEEKLY_AT} before weekly`);}
+function revDown(id){const r=S.rc[id];if(!r||!r.n)return;r.n--;const x=r.h.pop();if(x&&S.rlog[x]){S.rlog[x]--;if(!S.rlog[x])delete S.rlog[x];}
+  const u=r.u&&r.u.pop();
+  if(u){r.k=u.k;r.due=u.due;r.last=u.last;if(u.s&&u.s!==st(id))S.st[id]={s:u.s,f:first(id),d:today()};}
+  else{r.k=Math.max(0,climb(id)-1);r.last=r.h[r.h.length-1]||null;r.due=today();}
+  save();render();}
+function retire(id){const r=S.rc[id];if(!r||!weekly(id))return;r.ret=today();save();render();toast("⭐ Perfected. Retired from revision");}
+function unretire(id){const r=S.rc[id];if(!r)return;delete r.ret;r.due=today();save();render();toast("Back in revision");}
+function revDue(){const t=today();return Q.filter(q=>inPool(q.id)&&dueOf(q.id)<=t)
+  .sort((a,b)=>{const u=x=>st(x.id)==="unsolved"?0:1;
+    return u(a)-u(b)||climb(a.id)-climb(b.id)||(dueOf(a.id)<dueOf(b.id)?-1:dueOf(a.id)>dueOf(b.id)?1:0)||a.order-b.order;});}
+function revDone(){const t=today();return Q.filter(q=>S.rc[q.id]&&S.rc[q.id].last===t);}
+function streak(){
+  let n=0,d=today();if(!act(d))d=addDays(d,-1);
+  while(act(d)){n++;d=addDays(d,-1);}return n;
+}
+
+/* ---------------- RENDER ---------------- */
+const $=s=>document.querySelector(s);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function chips(id,withNote){
+  const l=st(id);let h='<div class="chips">';
+  h+=solvedBtn(id);
+  if(withNote)h+=`<button class="chip note ${S.notes[id]?"has":""}" data-note="${id}">Note</button>`;
+  return h+"</div>";
+}
+function plant(id){if(retired(id))return '<span class="grow done" title="Retired">⭐ Perfected</span>';const k=climb(id);
+  if(k>=WEEKLY_AT)return `<span class="grow wk" title="Weekly. Next ${nice(dueOf(id))}">🌳 Weekly</span>`;
+  return `<span class="grow" title="Daily: ${k} of ${WEEKLY_AT} before weekly">${k===0?"🌱":k<3?"🌿":"🪴"} <i>${"●".repeat(k)}${"○".repeat(WEEKLY_AT-k)}</i></span>`;}
+function ctl(id,withPlant){if(!st(id))return "";
+  if(retired(id))return `<span class="ctl">${plant(id)}<button class="chip" data-unret="${id}">Bring back</button></span>`;
+  return `<span class="ctl">${withPlant?plant(id):""}${ctr(id)}${weekly(id)?`<button class="chip cold" data-ret="${id}">Know it cold</button>`:""}</span>`;}
+function ctr(id){if(!st(id))return "";const n=revN(id);
+  return `<span class="ctr" title="Times revised"><button data-dec="${id}" ${n?"":"disabled"} aria-label="Undo revision">−</button><b>${n}</b><button data-inc="${id}" aria-label="Revised once more">+1</button></span>`;}
+function noteBox(id,open){return `<textarea class="notes" data-nid="${id}" placeholder="Approach, mistake, invariant..." style="${open?"":"display:none"}">${esc(S.notes[id]||"")}</textarea>`;}
+const openNotes=new Set();
+/* gray "Solved?" until clicked, then green "✓ Solved" */
+function solvedBtn(id){const on=st(id)==="solved";return `<button class="chip sv ${on?"on":""}" data-l="solved" data-id="${id}" aria-pressed="${on}">${on?"✓ Solved":"Solved?"}</button>`;}
+function dropdown(id){
+  return `<div class="chips">${solvedBtn(id)}${ctl(id,true)}<button class="chip note ${S.notes[id]?"has":""}" data-note="${id}">Note</button></div>`;}
+function tile(id){const q=BYID[id],l=st(id);
+  return `<div class="tile ${l||""}"><span class="num">#${q.id} <span class="diff ${q.diff}">${q.diff}</span></span><div class="title"><a href="${lcUrl(q)}" target="_blank" rel="noopener">${esc(q.title)}</a></div>${q.mixed?`<div class="guess"><input data-guess="${id}" placeholder="Your pattern guess" value="${esc(S.guess[id]||"")}"><button class="reveal" data-reveal="${id}">${revealed.has(id)?esc(q.hint):"Reveal pattern"}</button></div>`:""}${chips(id,false)}<button class="chip note tnote ${S.notes[id]?"has":""}" data-note="${id}">Note</button>${noteBox(id,openNotes.has(id))}</div>`;}
+
+function render(){
+  ensureToday();
+  const t=today();
+  $("#dateLine").textContent=nice(t);
+  const counts={solved:0,unsolved:0};Q.forEach(q=>{const l=st(q.id);if(l)counts[l]++;});
+  const done=counts.solved+counts.unsolved;const due=revDue();
+  const sk=streak();
+  $("#stats").innerHTML=`<div class="aistat ring" style="--p:${counts.solved/Q.length*100}"><b>${counts.solved}/${Q.length}</b><span>questions solved</span></div><div class="aistat"><b>${due.length}</b><span>to revise today</span></div><div class="aistat"><b>${sk} day${sk===1?"":"s"}</b><span>streak</span></div>`;
+
+  /* today's pattern */
+  const D=S.day;
+  if(D.pi<0){$("#patHead").innerHTML="Every pattern is done";$("#tiles").innerHTML='<div class="empty">Nothing new left. Keep revising below.</div>';$("#optWrap").style.display="none";}
+  else{
+    const doneReq=D.req.filter(id=>st(id)).length;
+    $("#patHead").innerHTML=`Today's pattern <span class="patpill" style="background:hsl(${HUES[D.pi]},70%,45%)">${esc(PATTERNS[D.pi][0])}</span> <small>${doneReq} of ${D.req.length} required done${doneReq===D.req.length?" · next pattern tomorrow":""}</small>`;
+    $("#tiles").innerHTML=D.req.map(tile).join("");$("#tiles").style.setProperty("--h",HUES[D.pi]);$("#optTiles").style.setProperty("--h",HUES[D.pi]);
+    $("#optWrap").style.display=D.opt.length?"":"none";
+    $("#optMeta").textContent=`${D.opt.filter(id=>st(id)).length} of ${D.opt.length} done`;
+    $("#optTiles").innerHTML=D.opt.map(tile).join("");
+  }
+
+  /* revision */
+  const rd=revDone();
+  let rh=`<h2>Revise today <small>${due.length} left · ${rd.length} revised today</small></h2>`;
+  const row=(q,cls)=>{const r=S.rc[q.id];
+    return `<div class="rev ${cls} ${st(q.id)==="unsolved"?"slip":climb(q.id)>=WEEKLY_AT?"wk":"dly"}"><span class="id">#${q.id}</span><span class="t"><a href="${lcUrl(q)}" target="_blank" rel="noopener">${esc(q.title)}</a> <span class="diff ${q.diff}">${q.diff}</span><small>${plant(q.id)} · ${esc(q.pattern)}${st(q.id)==="unsolved"?' · <b style="color:var(--revisit)">slipped</b>':""}</small></span>${ctl(q.id,false)}</div>`;};
+  rh+=due.length?`<p class="hint">Solve it again without notes, then press +1. Daily for ${WEEKLY_AT} revisions, then weekly. Skip a due one 2 days running and it slips and starts over.</p>`+`<div class="revlist">${due.map(q=>row(q,"")).join("")}</div>`
+    :`<div class="empty">${rd.length?"All revised for today.":"Nothing to revise yet. Questions you attempt show up here the next day."}</div>`;
+  if(rd.length)rh+=`<details class="donetoday"><summary>Revised today (${rd.length})</summary><div class="revlist">${rd.map(q=>row(q,"done")).join("")}</div></details>`;
+  const waiting=Q.filter(q=>st(q.id)&&legacy(q.id)&&revN(q.id)<1).length;
+  if(waiting)rh+=`<p class="hint" style="margin-top:10px">${waiting} older question${waiting===1?"":"s"} join revision after their first +1 in All questions (filter: Never revised).</p>`;
+  $("#revBlock").innerHTML=rh;
+
+  renderAll();
+  renderProgress();
+  $("#storeNote").textContent=!storeOK?"This browser is not saving progress. Use Export and Import to keep your data.":(typeof syOn==="function"&&syOn())?"Progress saves here and to GitHub automatically.":"Progress saves in this browser. Connect GitHub (top right) to keep it online.";
+}
+const revealed=new Set();
+let filter="all",query="";
+const openPats=new Set();
+function renderAll(){
+  const D=S.day||{req:[],opt:[]};const todaySet=new Set([...D.req,...D.opt]);
+  let h="";
+  PATTERNS.forEach((p,pi)=>{
+    const qs=Q.filter(q=>q.pi===pi).filter(q=>{
+      const sv=st(q.id)==="solved";
+      if(filter==="never"){if(!st(q.id)||revN(q.id)>0)return false;}
+      else if(filter==="solved"&&!sv)return false;
+      else if(filter==="none"&&sv)return false;
+      if(query){const s=(q.id+" "+q.title+" "+q.pattern).toLowerCase();if(!s.includes(query))return false;}
+      return true;});
+    if(!qs.length)return;
+    const all=Q.filter(q=>q.pi===pi);const c={solved:0,unsolved:0};all.forEach(q=>{const l=st(q.id);if(l)c[l]++;});
+    const tot=all.length,d=c.solved;
+    const bar=`<div class="bar"><i class="bs" style="width:${c.solved/tot*100}%"></i></div>`;
+    const idx=pi+1;
+    h+=`<details class="pat" style="--h:${HUES[pi]}" data-pi="${pi}" ${openPats.has(pi)||query||filter!=="all"?"open":""}><summary><span class="dot" style="background:hsl(${HUES[pi]},70%,45%)"></span><span class="name">${idx<=35?idx+". ":""}${esc(p[0])}</span>${bar}<span class="count">${d}/${tot}</span></summary>`;
+    qs.forEach(q=>{const stage=q.mixed?"":(q.idx<3?"study":q.idx<5?"attempt cold":"optional");
+      h+=`<div class="qrow ${todaySet.has(q.id)?"today":""}"><span class="id">#${q.id}</span><span class="t"><a href="${lcUrl(q)}" target="_blank" rel="noopener">${esc(q.title)}</a> <span class="diff ${q.diff}">${q.diff}</span> ${todaySet.has(q.id)?'<span class="badge">today</span>':""}${stage?`<span class="hint" style="margin:0 0 0 6px;font-size:11px">${stage}</span>`:""}</span>${dropdown(q.id)}<div class="extra">${q.mixed?`<div class="guess"><input data-guess="${q.id}" placeholder="Your pattern guess" value="${esc(S.guess[q.id]||"")}"><button class="reveal" data-reveal="${q.id}">${revealed.has(q.id)?'<span class="hidden-pat">'+esc(q.hint)+'</span>':"Reveal pattern"}</button></div>`:""}${noteBox(q.id,openNotes.has(q.id))}</div></div>`;});
+    h+="</details>";
+  });
+  $("#patterns").innerHTML=h||'<div class="empty">No questions match.</div>';
+}
+function renderProgress(){
+  const c={solved:0,unsolved:0};Q.forEach(q=>{const l=st(q.id);if(l)c[l]++;});
+  const d=c.solved,tot=Q.length;
+  const pct=k=>c[k]/tot*100;
+  const totalRev=Object.values(S.rc).reduce((a,r)=>a+(r.n||0),0);
+  const pool=Q.filter(q=>inPool(q.id)).length;
+  const reqLeft=Q.filter(q=>q.req&&!st(q.id));const patLeft=new Set(reqLeft.filter(q=>!q.mixed).map(q=>q.pi)).size;const mixLeft=reqLeft.filter(q=>q.mixed).length;
+  $("#progressTop").innerHTML=`<div class="card"><h3>Overall</h3><div class="big">${Math.round(d/tot*100)}%</div><div class="hint">${d} of ${tot} solved, ${tot-d} left</div><div class="bar wide" style="margin-top:8px"><i class="bs" style="width:${pct("solved")}%"></i></div></div>
+  <div class="card"><h3>Revision</h3><div class="big">${totalRev}</div><div class="hint">revisions in total · ${revDue().length} due today<br>${Q.filter(q=>inPool(q.id)&&!weekly(q.id)).length} daily · ${Q.filter(q=>inPool(q.id)&&weekly(q.id)).length} weekly · ${Q.filter(q=>st(q.id)&&retired(q.id)).length} perfected</div></div>
+  <div class="card"><h3>Pace</h3><div class="big">${streak()}</div><div class="hint">day streak · ${Object.keys(S.log).concat(Object.keys(S.rlog)).filter((k,i,a)=>a.indexOf(k)===i&&act(k)>0).length} active days · about ${patLeft+Math.ceil(mixLeft/5)} pattern days left</div></div>`;
+  let ph="";
+  PATTERNS.forEach((p,pi)=>{const all=Q.filter(q=>q.pi===pi);const cc={solved:0,unsolved:0};all.forEach(q=>{const l=st(q.id);if(l)cc[l]++;});const n=all.length;
+    ph+=`<div class="prow" style="--h:${HUES[pi]}"><span class="dot" style="width:10px;height:10px;border-radius:3px;background:hsl(${HUES[pi]},70%,45%)"></span><span class="name">${esc(p[0])}</span><div class="bar"><i class="bs" style="width:${cc.solved/n*100}%"></i></div><span class="count" style="width:36px;text-align:right;color:var(--muted)">${cc.solved}/${n}</span></div>`;});
+  $("#progressPatterns").innerHTML=ph;
+  renderActivity();
+}
+
+let logAll=false;
+function renderActivity(){
+  const t=today();const lvl=n=>n===0?"":n<3?"c1":n<6?"c2":n<10?"c3":"c4";
+  const [y,m,d]=t.split("-").map(Number);const td=new Date(y,m-1,d);
+  const start=new Date(td);start.setDate(td.getDate()-181);start.setDate(start.getDate()-start.getDay());
+  let cols="",months="",lastM=-1;const cur=new Date(start);
+  const sdDays=new Set(SD.log.map(e=>e.d));
+  while(cur<=td){
+    let col='<div class="col">';const mLabel=cur.getMonth()!==lastM;if(mLabel){months+=`<span>${cur.toLocaleDateString(undefined,{month:"short"})}</span>`;lastM=cur.getMonth();}else months+="<span></span>";
+    for(let i=0;i<7;i++){const ds=dstr(cur);const nw=S.log[ds]||0,rv=S.rlog[ds]||0,n=nw+rv;const fut=cur>td;const sd=sdDays.has(ds);
+      col+=`<div class="cell ${lvl(n)} ${ds===t?"today":""} ${fut?"future":""} ${sd?"sd":""}" title="${nice(ds)}: ${nw} new, ${rv} revised${sd?", system design logged":""}"></div>`;cur.setDate(cur.getDate()+1);}
+    cols+=col+"</div>";
+  }
+  $("#heat").innerHTML=cols;$("#months").innerHTML=months;
+  const days=Object.keys(S.log).concat(Object.keys(S.rlog)).filter((k,i,a)=>a.indexOf(k)===i&&act(k)>0).sort().reverse();
+  const total=days.reduce((a,k)=>a+act(k),0);
+  const best=days.reduce((a,k)=>act(k)>act(a)?k:a,days[0]);
+  const wk=addDays(t,-6);const week=days.filter(k=>k>=wk).reduce((a,k)=>a+act(k),0);
+  $("#actMeta").textContent=days.length?`${total} in ${days.length} days · ${week} this week · best day ${act(best)} (${nice(best)})`:"nothing yet";
+  const shown=logAll?days:days.slice(0,10);
+  $("#dailyLog").innerHTML=days.length?shown.map(k=>{
+    const c={solved:0,unsolved:0};Q.forEach(q=>{const l=st(q.id);if(l&&first(q.id)===k)c[l]++;});const rv=S.rlog[k]||0;
+    return `<div class="upc"><span><b>${nice(k)}</b>${k===t?' <span class="badge" style="font-size:11px;color:var(--accent);font-weight:900">today</span>':""}</span><span class="mini">${c.solved?`<span style="background:var(--solved)">${c.solved} solved</span>`:""}${rv?`<span style="background:var(--learned)">${rv} revised</span>`:""}</span></div>`;}).join("")+(days.length>10?`<button class="more" data-logall="1">${logAll?"Show less":"Show all "+days.length+" days"}</button>`:"")
+    :'<div class="hint" style="margin:0">Mark your first question and it shows up here.</div>';
+  const el=$("#heatwrap");el.scrollLeft=el.scrollWidth;
+}
+
+/* ---------------- SYSTEM DESIGN ---------------- */
+const VID="https://www.youtube.com/watch?v=Vnm-ycSfJx4&t=";
+const SD_TRACKS=[
+ {key:"video",name:"Telusko one-shot video",hue:210,kind:"concept",items:[
+  ["Mindset and the Alien Bank walkthrough","0:03 to 0:35",204],
+  ["Application types and requirements","0:35 to 0:56",2122],
+  ["DNS and its architecture","0:56 to 1:08",3377],
+  ["API types, GraphQL, gRPC (skip 1:21 to 1:47)","1:08 to 1:21",4105],
+  ["NoSQL and its types (skip 1:47 to 2:08)","2:08 to 2:27",7714],
+  ["Caching: strategies and eviction","2:27 to 2:53",8851],
+  ["Load balancing: algorithms and health checks","2:53 to 3:20",10394],
+  ["Replication and partitioning","3:20 to 3:57",12025],
+  ["CAP, message queues, pub-sub","3:57 to 4:27",14240],
+  ["Faults, observability, streaming case study","4:27 to 5:05",16052]]},
+ {key:"v1",name:"Alex Xu Vol 1",hue:25,items:[
+  ["Scale from zero to millions of users","concept"],["Back-of-the-envelope estimation","concept"],["A framework for system design interviews","concept"],
+  ["Design a rate limiter","design"],["Design consistent hashing","design"],["Design a key-value store","design"],["Design a unique ID generator","design"],
+  ["Design a URL shortener","design"],["Design a web crawler","design"],["Design a notification system","design"],["Design a news feed system","design"],
+  ["Design a chat system","design"],["Design a search autocomplete system","design"],["Design YouTube","design"],["Design Google Drive","design"],["The learning continues","concept"]]},
+ {key:"v2",name:"Alex Xu Vol 2",hue:265,kind:"design",items:[
+  ["Proximity service"],["Nearby friends"],["Google Maps"],["Distributed message queue"],["Metrics monitoring and alerting"],["Ad click event aggregation"],
+  ["Hotel reservation system"],["Distributed email service"],["S3-like object storage"],["Real-time gaming leaderboard"],["Payment system"],["Digital wallet"],["Stock exchange"]]}
+];
+const SD_STAGES={concept:["Not started","Watched / Read","Explained cold"],design:["Not started","Read","Redrawn cold"]};
+const SDKEY="sd-tracker-v1";
+let SD={status:{},log:[]};
+function sdLoad(){try{const r=localStorage.getItem(SDKEY);if(r)SD=Object.assign(SD,JSON.parse(r));}catch(e){storeOK=false;}}
+function sdSave(){try{localStorage.setItem(SDKEY,JSON.stringify(SD));}catch(e){storeOK=false;}}
+function sdKind(tr,it){return tr.kind||it[1];}
+/* next item: anything in progress first, then the first not started, in track order */
+function sdNextItem(){let first=null;for(const tr of SD_TRACKS)for(let i=0;i<tr.items.length;i++){const st=SD.status[tr.key+"-"+i]||0;
+  if(st===1)return {tr,i,st};if(st===0&&!first)first={tr,i,st};}return first;}
+const openSD=new Set();let sdAuto=null;
+function renderSD(){
+  let h="",done=0,tot=0;const cnt={concept:[0,0],design:[0,0]};
+  const nx=sdNextItem();
+  if(nx&&sdAuto!==nx.tr.key){sdAuto=nx.tr.key;openSD.add("sd-"+nx.tr.key);}
+  SD_TRACKS.forEach(tr=>{
+    let rows="",d=0;
+    tr.items.forEach((it,i)=>{const id=tr.key+"-"+i,kind=sdKind(tr,it),st=SD.status[id]||0;tot++;cnt[kind][1]++;if(st===2){done++;d++;cnt[kind][0]++;}
+      const title=tr.key==="video"?`<a href="${VID}${it[2]}s" target="_blank" rel="noopener">${esc(it[0])}<span class="ext" aria-label="opens in a new tab">↗</span></a><small>${it[1]}</small>`:esc(it[0]);
+      rows+=`<div class="trow ${st===2?"done":""}"><span class="no ${st===2?"ok":""}">${st===2?"✓":i+1}</span><span class="t">${title}</span><select class="ssel s${st}" data-sd="${id}" aria-label="Status of ${esc(it[0])}">${SD_STAGES[kind].map((s,k)=>`<option value="${k}" ${st===k?"selected":""}>${s}</option>`).join("")}</select></div>`;});
+    const k="sd-"+tr.key,n=tr.items.length;
+    h+=`<details class="pat" style="--h:${tr.hue}" data-k="${k}" ${openSD.has(k)?"open":""}><summary><span class="dot" style="background:hsl(${tr.hue},70%,45%)"></span><span class="name">${tr.name}<small>${tr.key==="video"?"5 hr video":n+" chapters"}</small></span><div class="bar"><i class="bs" style="width:${d/n*100}%"></i></div><span class="count">${d}/${n}</span></summary>${rows}</details>`;
+  });
+  $("#sdTracks").innerHTML=h;
+  $("#sdMeta").textContent=`${done} of ${tot} complete`;
+  const logDays=new Set(SD.log.map(e=>e.d)),last=SD.log.length?SD.log.reduce((a,e)=>e.d>a?e.d:a,""):"";
+  const ago=last?Math.round((new Date(today()+"T00:00")-new Date(last+"T00:00"))/86400000):-1;
+  $("#sdStats").innerHTML=`<div class="aistat ring" style="--p:${cnt.concept[0]/cnt.concept[1]*100}"><b>${cnt.concept[0]}/${cnt.concept[1]}</b><span>concepts explained cold</span></div><div class="aistat"><b>${cnt.design[0]}/${cnt.design[1]}</b><span>designs redrawn cold</span></div><div class="aistat"><b>${ago<0?"None":ago===0?"Today":ago===1?"Yesterday":ago+" days ago"}</b><span>last log · ${logDays.size} day${logDays.size===1?"":"s"} logged</span></div>`;
+  if(!nx)$("#sdNext").innerHTML='<div class="empty">Every track is done.</div>';
+  else{const it=nx.tr.items[nx.i],kind=sdKind(nx.tr,it),isV=nx.tr.key==="video";
+    const nd=nx.tr.items.filter((_,i)=>(SD.status[nx.tr.key+"-"+i]||0)===2).length,n=nx.tr.items.length;
+    const what=nx.st===1?`Next: ${kind==="concept"?"explain it cold":"redraw it cold"}`:(isV?"Watch it":"Read it");
+    $("#sdNext").innerHTML=`<div class="resume"><div class="nt"><span class="lbl">${nx.st===1?"In progress":"Up next"} · ${esc(nx.tr.name)}</span><b>${esc(it[0])}</b><div class="nmeta"><div class="bar"><i class="bs" style="width:${nd/n*100}%"></i></div><span>${nd} of ${n} done · ${what}</span></div></div>${isV?`<a class="btn cta" href="${VID}${it[2]}s" target="_blank" rel="noopener">Play from ${it[1].split(" ")[0]}<small>Opens YouTube ↗</small></a>`:`<a class="btn cta" href="#sdTracks" data-sdopen="sd-${nx.tr.key}">Open track<small>${esc(nx.tr.name)}</small></a>`}</div>`;}
+  $("#sdLogMeta").textContent=SD.log.length?`${SD.log.length} ${SD.log.length===1?"entry":"entries"}`:"";
+  /* timeline */
+  const byDay={};SD.log.forEach(e=>{(byDay[e.d]=byDay[e.d]||[]).push(e);});
+  const days=Object.keys(byDay).sort().reverse();
+  let t="";
+  days.forEach((d,i)=>{
+    const prev=days[i+1];let gap="";
+    if(prev){const [y1,m1,d1]=d.split("-").map(Number),[y2,m2,d2]=prev.split("-").map(Number);const g=Math.round((new Date(y1,m1-1,d1)-new Date(y2,m2-1,d2))/86400000);if(g>1)gap=`<div class="gap">${g-1} day${g-1===1?"":"s"} with no log</div>`;}
+    const cards=byDay[d].slice().sort((a,b)=>b.ts-a.ts).map(e=>sdEditing===e.id
+      ?`<div class="lcard"><textarea data-sdedit="${e.id}">${esc(e.text)}</textarea><div class="meta"><button data-sdsave="${e.id}">Save</button><button data-sdcancel="1">Cancel</button></div></div>`
+      :`<div class="lcard">${esc(e.text)}<div class="meta"><span>${new Date(e.ts).toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"})}</span><button data-sdeditbtn="${e.id}">Edit</button><button class="del" data-sddel="${e.id}">Delete</button></div></div>`).join("");
+    t+=`<div class="tday"><div class="dh">${nice(d)}${d===today()?'<small>today</small>':""}<small>${byDay[d].length} ${byDay[d].length===1?"entry":"entries"}</small></div>${cards}${gap}</div>`;
+  });
+  $("#sdTimeline").innerHTML=t||'<div class="empty">Nothing logged yet. Write what you did above and press Add to log.</div>';
+}
+let sdEditing=null;
+function sdAdd(){const v=$("#sdText").value.trim();if(!v){toast("Write something first");return;}
+  SD.log.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),d:today(),ts:Date.now(),text:v});sdSave();$("#sdText").value="";renderSD();renderActivity();toast("Logged");}
+
+/* ---------------- AI FLUENCY ---------------- */
+/* Source: Rishi's research doc "Free AI Learning Path for a SWE targeting SWE / ML / AI Engineer roles" (Oct 2026).
+   Resource: [id, title, url, time, level, note]. Ids are permanent keys into AI.status; never change one, add new ones instead.
+   The first 15 ids came from the earlier version of this tab (some are old Skilljar slugs; the url field points to the current page). */
+const AI_LIB=[
+ {key:"academy",name:"Anthropic Academy",src:"Academy",hue:25,items:[
+  ["claude-code-in-action","Claude Code in Action","https://academy.claude.com/courses/claude-code-in-action","1 hr","Intermediate","Long hands-off sessions, lean CLAUDE.md, hooks, headless runs, Agent SDK, CI. Badge"],
+  ["claude-code-101","Claude Code 101","https://academy.claude.com/courses/claude-code-101","1.5 hr","Beginner","Skim for gaps only. Badge"],
+  ["introduction-to-subagents","Introduction to subagents","https://academy.claude.com/courses/introduction-to-subagents","45 min","Intermediate","Context isolation and delegation"],
+  ["introduction-to-agent-skills","Introduction to agent skills","https://academy.claude.com/courses/introduction-to-agent-skills","1 hr","Intermediate","Build, share and debug SKILL.md skills"],
+  ["ai-native-sdlc-playbook","The AI-native SDLC playbook","https://academy.claude.com/courses/ai-native-sdlc-playbook","1 hr","Advanced","Plan mode, CLAUDE.md vs skill vs hook, evals in CI, AI PR review"],
+  ["claude-platform-101","Claude Platform 101","https://academy.claude.com/courses/claude-platform-101","1.5 hr","Beginner","First API calls and the Console. Badge"],
+  ["claude-with-the-anthropic-api","Building with the Claude API","https://academy.claude.com/courses/building-with-the-claude-api","9 hr","Intermediate","Prompting, evals, tool use, RAG, agents, MCP, caching. Needs API key. Badge"],
+  ["introduction-to-model-context-protocol","Introduction to Model Context Protocol","https://academy.claude.com/courses/introduction-to-model-context-protocol","1 hr","Intermediate","MCP servers and clients in Python. Badge"],
+  ["model-context-protocol-advanced-topics","MCP: Advanced topics","https://academy.claude.com/courses/model-context-protocol-advanced-topics","1.5 hr","Advanced","Sampling, notifications, roots, STDIO vs StreamableHTTP. Badge"],
+  ["ai-fluency-framework-foundations","AI Fluency: Framework & Foundations","https://academy.claude.com/courses/ai-fluency-framework-foundations","4 hr","All levels","The 4D framework: delegation, description, discernment, diligence. Badge"],
+  ["ai-capabilities-and-limitations","AI capabilities and limitations","https://academy.claude.com/courses/ai-capabilities-and-limitations","3.5 hr","Beginner","How LLMs work: next-token prediction, context limits. Badge"],
+  ["ai-fluency-for-builders","AI Fluency for builders","https://academy.claude.com/courses/ai-fluency-for-builders","9 lessons","All levels","From problem to shipped solution"],
+  ["building-effective-human-agent-teams","Building effective human-agent teams","https://academy.claude.com/courses/building-effective-human-agent-teams","45 min","All levels","Beta. Team and multiplayer AI. Badge"],
+  ["claude-101","Claude 101","https://academy.claude.com/courses/claude-101","2.5 hr","Beginner","Skip or skim, you already use chat AI"],
+  ["claude-with-amazon-bedrock","Claude with Amazon Bedrock","https://academy.claude.com/courses/claude-with-amazon-bedrock","8 hr","Intermediate","API course on AWS. Only if a target employer runs on AWS"],
+  ["claude-with-google-vertex","Claude on Google Cloud","https://academy.claude.com/courses/claude-with-google-cloud-s-vertex-ai","8.5 hr","Intermediate","API course on GCP. Only if a target employer runs on GCP"]]},
+ {key:"docs",name:"Anthropic docs and guides",src:"Docs",hue:290,items:[
+  ["cc-best-practices","Claude Code: best practices","https://code.claude.com/docs/en/best-practices","30 min","","Best ROI for daily Claude Code use"],
+  ["cc-memory","Claude Code: memory and CLAUDE.md","https://code.claude.com/docs/en/memory","20 min","",""],
+  ["cc-context-window","Claude Code: context window","https://code.claude.com/docs/en/context-window","15 min","",""],
+  ["cc-subagents","Claude Code: subagents","https://code.claude.com/docs/en/sub-agents","20 min","",""],
+  ["cc-workflows","Claude Code: common workflows","https://code.claude.com/docs/en/common-workflows","30 min","",""],
+  ["cc-mcp","Claude Code: MCP","https://code.claude.com/docs/en/mcp","20 min","",""],
+  ["prompt-eng-docs","Prompt engineering docs","https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview","1 hr","",""],
+  ["building-effective-agents","Building effective agents","https://www.anthropic.com/research/building-effective-agents","30 min","","Framework-neutral agent design"],
+  ["context-engineering","Effective context engineering for AI agents","https://www.anthropic.com/research/effective-context-engineering-for-ai-agents","30 min","",""],
+  ["contextual-retrieval","Contextual retrieval","https://www.anthropic.com/research/contextual-retrieval","20 min","","RAG technique"],
+  ["evals-docs","Evals: define success and build tests","https://platform.claude.com/docs/en/test-and-evaluate/develop-tests","30 min","",""],
+  ["prompt-caching","Prompt caching","https://platform.claude.com/docs/en/build-with-claude/prompt-caching","20 min","","Cost and latency"],
+  ["cookbook","Claude Cookbooks","https://github.com/anthropics/claude-cookbooks","Browse","","Code examples"]]},
+ {key:"nb",name:"Anthropic notebooks (GitHub)",src:"GitHub",hue:150,items:[
+  ["anthropic_api_fundamentals","API fundamentals","https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals","2 hr","Beginner","Needs API key"],
+  ["prompt_engineering_interactive_tutorial","Prompt engineering interactive tutorial","https://github.com/anthropics/courses/tree/master/prompt_engineering_interactive_tutorial","3 hr","Beginner","Needs API key"],
+  ["real_world_prompting","Real world prompting","https://github.com/anthropics/courses/tree/master/real_world_prompting","2 hr","Intermediate","Needs API key"],
+  ["prompt_evaluations","Prompt evaluations","https://github.com/anthropics/courses/tree/master/prompt_evaluations","2 hr","Intermediate","Needs API key"],
+  ["tool_use","Tool use","https://github.com/anthropics/courses/tree/master/tool_use","2 hr","Intermediate","Needs API key"]]},
+ {key:"dlai",name:"DeepLearning.AI",src:"DLAI",hue:0,items:[
+  ["dlai-eval-agents","Evaluating AI Agents (Arize)","https://www.deeplearning.ai/courses/evaluating-ai-agents","2.6 hr","Beginner","Tracing, code vs LLM-as-judge evals, experiments. Free"],
+  ["dlai-agentic-ai","Agentic AI (Andrew Ng)","https://www.deeplearning.ai/courses/agentic-ai","10 hr","Intermediate","Reflection, tools, planning, multi-agent, error analysis, latency and cost. Audit free"],
+  ["dlai-langgraph","AI Agents in LangGraph","https://www.deeplearning.ai/courses/ai-agents-in-langgraph","1.7 hr","Intermediate","Free"],
+  ["dlai-claude-code","Claude Code: A Highly Agentic Coding Assistant","https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant","2 hr","Intermediate","Overlaps the Academy courses"],
+  ["dlai-agent-skills","Agent Skills with Anthropic","https://www.deeplearning.ai/courses/agent-skills-with-anthropic","1 to 2.4 hr","Intermediate","Skills, MCP, subagents, Agent SDK. Free"],
+  ["dlai-mcp","MCP: Build Rich-Context AI Apps with Anthropic","https://www.deeplearning.ai/courses/mcp-build-rich-context-ai-apps-with-anthropic","2 hr","Intermediate","MCP hands-on"],
+  ["dlai-code-review","AI Code Review (Qodo)","https://www.deeplearning.ai/courses/ai-code-review","1 to 1.5 hr","Intermediate","Reviewing AI-written code"],
+  ["dlai-coding-workflows","AI Coding Workflows: Cloud to Local (JetBrains)","https://www.deeplearning.ai/courses/ai-coding-workflows-from-cloud-to-local","1 to 1.5 hr","Intermediate",""],
+  ["dlai-semantic-caching","Semantic Caching for AI Agents (Redis)","https://www.deeplearning.ai/courses/semantic-caching-for-ai-agents","1.4 hr","Intermediate","Cost and latency"],
+  ["dlai-governing-agents","Governing AI Agents (Databricks)","https://www.deeplearning.ai/courses/governing-ai-agents","1.5 hr","Intermediate","Governance and guardrails"],
+  ["dlai-rag","Retrieval Augmented Generation (RAG)","https://www.deeplearning.ai/courses/retrieval-augmented-generation","26 hr","Intermediate","Deep RAG, optional. Certificate needs Pro"]]},
+ {key:"hf",name:"Hugging Face",src:"HF",hue:45,items:[
+  ["hf-agents","Agents Course","https://huggingface.co/learn/agents-course/unit0/introduction","4 units","Intermediate","smolagents, LlamaIndex, LangGraph, agentic RAG. Free certificates"],
+  ["hf-mcp","MCP Course","https://huggingface.co/learn/mcp-course/unit0/introduction","Self-paced","Beginner","Built with Anthropic. Free certificates"],
+  ["hf-llm","LLM Course","https://huggingface.co/learn/llm-course/chapter1/1","12 chapters","Intermediate","Transformers, fine-tuning (ch 3, 11), reasoning models"],
+  ["hf-smol","a smol course","https://huggingface.co/learn/smol-course/unit0/1","Self-paced","Intermediate","Hands-on SFT, preference alignment, evaluation"]]},
+ {key:"other",name:"Google, Microsoft, LangChain",src:"",hue:210,items:[
+  ["kaggle-5day","Kaggle 5-Day AI Agents Intensive","https://www.kaggle.com/learn-guide/5-day-agents","5 days","Intermediate","Tools, MCP, memory, agent evals, prototype to production"],
+  ["ms-agents","Microsoft AI Agents for Beginners","https://github.com/microsoft/ai-agents-for-beginners","18 lessons","Beginner","Agentic RAG, MCP, A2A, production, securing agents. Lessons 10, 16, 18 for step 9"],
+  ["lc-langgraph-essentials","LangGraph Essentials (LangChain Academy)","https://academy.langchain.com/courses/langgraph-essentials-python","1 hr","Intermediate","Most-named agent framework in postings"],
+  ["lc-intro-langgraph","Intro to LangGraph (LangChain Academy)","https://academy.langchain.com/courses/intro-to-langgraph","Longer","Intermediate",""]]},
+ {key:"read",name:"Evals reading",src:"Read",hue:340,items:[
+  ["hamel-evals-faq","Hamel Husain: AI Evals FAQ","https://hamel.dev/blog/posts/evals-faq/","1 to 2 hr","","Error analysis, binary judges, validate against human labels"],
+  ["evidently-evals","Evidently AI: LLM evaluations course","https://www.evidentlyai.com/llm-evaluations-course","7 emails","","Evals, observability, guardrails"]]}
+];
+/* Steps. k is the permanent key for build/notes. hrs = course + build estimate. Each spec is an id, "a|b" (either one), or "id?" (optional). A step is done when every required spec is completed. */
+const AI_PATH=[
+ {k:"cc",hrs:4,t:"Claude Code, properly",time:"4 hr",core:1,why:"Plan mode, lean CLAUDE.md, hooks, verification skills, headless and CI runs",items:["cc-best-practices","cc-memory","cc-context-window","cc-subagents","claude-code-in-action","claude-code-101?"]},
+ {k:"sdlc",hrs:5,t:"Subagents, skills, AI-native SDLC",time:"3 hr + build",core:1,why:"Context engineering and agents that verify themselves",build:"One verification skill and one hook in a real repo",items:["introduction-to-subagents","introduction-to-agent-skills","ai-native-sdlc-playbook"]},
+ {k:"fluency",hrs:4,t:"AI fluency",time:"3.5 to 4 hr",why:"When to delegate and how to judge output. Either course is enough",items:["ai-fluency-framework-foundations|ai-capabilities-and-limitations"]},
+ {k:"api",hrs:14,t:"Building with the Claude API",time:"9 hr + 5 hr build",core:1,why:"The core AI engineer stack in one place: tool use, RAG, agents, caching, evals",build:"A small app with tool use and RAG, plus a prompt eval",items:["claude-with-the-anthropic-api","prompt_evaluations","tool_use","contextual-retrieval?"]},
+ {k:"mcp",hrs:6.5,t:"MCP",time:"2.5 hr + 4 hr build",core:1,why:"Fastest-rising named skill in postings",build:"Publish an MCP server for an API you know",items:["introduction-to-model-context-protocol","model-context-protocol-advanced-topics"]},
+ {k:"agents",hrs:11,t:"Agent design",time:"10 to 12 hr",why:"Framework-neutral agent design plus error analysis",items:["building-effective-agents","context-engineering","dlai-agentic-ai|kaggle-5day"]},
+ {k:"evals",hrs:9,t:"Evals",time:"5 hr + 4 hr build",core:1,why:"Most underrated skill and an explicit hiring screen",build:"Add an eval suite to your project",items:["dlai-eval-agents","hamel-evals-faq","evals-docs"]},
+ {k:"langgraph",hrs:6,t:"LangGraph",time:"3 to 10 hr",why:"The framework most named in postings. HF Agents Course if you want a free certificate",items:["lc-langgraph-essentials","dlai-langgraph|hf-agents"]},
+ {k:"prod",hrs:5,t:"Production",time:"5 hr",why:"Partly closes the cost, latency and safety gaps",items:["dlai-semantic-caching","dlai-governing-agents","ms-agents","prompt-caching"]},
+ {k:"ft",hrs:12,t:"Fine-tuning",time:"10 to 15 hr",why:"Pay premium for ML engineer roles. Lower priority for pure AI engineer roles",items:["hf-smol|hf-llm"]},
+ {k:"capstone",hrs:30,t:"Capstone",time:"25 to 35 hr",core:1,why:"This is what gets interviews: evidence like recall@k, eval pass rate, $/request",cap:1,items:[]}
+];
+const AI_CAP=[["deployed","Deployed agent"],["rag","RAG with retrieval metrics (recall@k)"],["mcp","At least one MCP tool"],["evals","Eval suite running in CI"],["trace","Tracing and observability"],["cost","Cost and latency numbers ($/request)"],["guard","Guardrails and prompt-injection tests"],["readme","Built with Claude Code, results in the README"]];
+/* skills: tier 1 most demanded, 2 rising fastest, 3 premium. cov = how well free resources cover it */
+const AI_SKILLS=[
+ ["Python and SWE fundamentals",1,"","Baseline in nearly every posting",[]],
+ ["LLM app development",1,"Strong","Core of the AI Engineer title",["claude-with-the-anthropic-api","claude-platform-101","cookbook"]],
+ ["RAG",1,"Strong","Still the most-deployed production pattern",["claude-with-the-anthropic-api","contextual-retrieval","hf-agents","dlai-rag"]],
+ ["Agents and orchestration",1,"Strong","About 21% of engineering postings",["building-effective-agents","dlai-agentic-ai","kaggle-5day","lc-langgraph-essentials","dlai-langgraph","hf-agents"]],
+ ["Evals",2,"Good","Called the bottleneck. +9% pay",["dlai-eval-agents","hamel-evals-faq","evals-docs","prompt_evaluations","ai-native-sdlc-playbook"]],
+ ["MCP and tool use",2,"Excellent","Postings went 1.2% to 4% in 2026",["introduction-to-model-context-protocol","model-context-protocol-advanced-topics","hf-mcp","dlai-mcp","tool_use"]],
+ ["Context engineering",2,"Strong","Replacing prompt engineering",["context-engineering","prompt-eng-docs","prompt_engineering_interactive_tutorial","ai-capabilities-and-limitations","kaggle-5day"]],
+ ["AI coding agents",2,"Excellent","Screened for in 2026 hiring rubrics",["claude-code-in-action","introduction-to-subagents","introduction-to-agent-skills","ai-native-sdlc-playbook","cc-best-practices","dlai-claude-code"]],
+ ["Inference, serving, cost and latency",3,"Thin","+15% pay",["prompt-caching","dlai-semantic-caching","kaggle-5day","ms-agents"]],
+ ["Fine-tuning",3,"Good","+13% pay, less common",["hf-smol","hf-llm"]],
+ ["Observability",3,"Thin","In most production job descriptions",["dlai-eval-agents","hf-agents","evidently-evals"]],
+ ["Safety, guardrails, security",3,"Thin","In most production job descriptions",["ms-agents","dlai-governing-agents","ai-fluency-framework-foundations"]]
+];
+const AI_GAPS=[
+ ["Production LLMOps","Instrument the capstone with a free-tier tracing tool and write up what you found"],
+ ["Inference and serving","Prompt caching and batch API docs, then self-host a small model and benchmark latency and cost"],
+ ["AI security","Build and test guardrails and hooks against prompt injection in your own agent"],
+ ["AI system design interviews","Write design docs for a RAG system and for an agent with evals"]
+];
+const AI_LOW=new Set(["claude-101","claude-with-amazon-bedrock","claude-with-google-vertex","building-effective-human-agent-teams","dlai-claude-code"]);
+const AI_TIER=["","Most demanded","Rising fastest","Premium"];
+const AI_STAGES=["Not started","In progress","Completed"];
+const AIKEY="ai-tracker-v1";
+let AI={status:{},cap:{},build:{},notes:{}};
+function aiLoad(){try{const r=localStorage.getItem(AIKEY);if(r)AI=Object.assign(AI,JSON.parse(r));}catch(e){storeOK=false;}for(const f of ["cap","build","notes"])if(!AI[f])AI[f]={};}
+function aiSave(){try{localStorage.setItem(AIKEY,JSON.stringify(AI));}catch(e){storeOK=false;}}
+const AI_BY={};AI_LIB.forEach(g=>g.items.forEach(it=>AI_BY[it[0]]={id:it[0],t:it[1],u:it[2],time:it[3],lvl:it[4],note:it[5],g}));
+const aiSt=id=>AI.status[id]||0;
+const aiSel=id=>{const st=aiSt(id);return `<select class="aisel s${st}" data-ai="${id}" aria-label="Status of ${esc(AI_BY[id].t)}">${AI_STAGES.map((x,k)=>`<option value="${k}" ${st===k?"selected":""}>${x}</option>`).join("")}</select>`;};
+/* one resource row. o.src shows the provider tag (only where providers are mixed), o.opt marks optional */
+function aiRow(id,o){o=o||{};const c=AI_BY[id],st=aiSt(id),low=AI_LOW.has(id);
+  const badge=/Badge\.?$/.test(c.note||""),note=(c.note||"").replace(/\.?\s*Badge\.?$/,"");
+  const meta=[o.src&&c.g.src,c.time,c.lvl,badge&&"Badge",note].filter(Boolean).join(" · ");
+  return `<div class="airow st${st} ${low&&st<2?"low":""}"><span class="t"><a href="${c.u}" target="_blank" rel="noopener">${esc(c.t)}<span class="ext" aria-label="opens in a new tab">↗</span></a>${o.opt?'<span class="tag">optional</span>':""}${low?'<span class="tag low">low priority</span>':""}${meta?`<small>${esc(meta)}</small>`:""}</span>${aiSel(id)}</div>`;}
+const specIds=sp=>sp.replace("?","").split("|");
+const specDone=sp=>specIds(sp).some(id=>aiSt(id)===2);
+function stepDone(s){if(s.cap)return AI_CAP.every(c=>AI.cap[c[0]]);return s.items.filter(sp=>!sp.endsWith("?")).every(specDone)&&(!s.build||!!AI.build[s.k]);}
+function stepCount(s){if(s.cap)return [AI_CAP.filter(c=>AI.cap[c[0]]).length,AI_CAP.length];const r=s.items.filter(sp=>!sp.endsWith("?"));
+  return [r.filter(specDone).length+(s.build&&AI.build[s.k]?1:0),r.length+(s.build?1:0)];}
+function stepBody(s,ctx){let h=`<p class="why">${esc(s.why)}</p>`;
+  if(s.build)h+=`<label class="buildchk"><input type="checkbox" data-build="${s.k}" ${AI.build[s.k]?"checked":""}><span><b>Build</b> ${esc(s.build)}</span></label>`;
+  if(s.cap)h+=`<div class="caplist">${AI_CAP.map(c=>`<label><input type="checkbox" data-cap="${c[0]}" ${AI.cap[c[0]]?"checked":""}><span>${esc(c[1])}</span></label>`).join("")}</div>`;
+  if(s.items.length)h+=`<div class="ailist">${s.items.map(sp=>{const ids=specIds(sp),opt=sp.endsWith("?");
+    return ids.map((id,j)=>(j>0?'<div class="ordiv"><span>or</span></div>':"")+aiRow(id,{src:1,opt})).join("");}).join("")}</div>`;
+  const nid=`n-${ctx}-${s.k}`,nk="note-"+s.k,has=!!(AI.notes[s.k]||"").trim();
+  h+=`<details class="nwrap" data-k="${nk}" ${has||openAI.has(nk)?"open":""}><summary><span class="chev" aria-hidden="true"></span>Notes${has?' <span class="has">· saved</span>':""}</summary><textarea id="${nid}" rows="2" class="notes ainote" data-ainote="${s.k}" aria-label="Notes for ${esc(s.t)}" placeholder="What you learned, links to what you built">${esc(AI.notes[s.k]||"")}</textarea></details>`;
+  return h;}
+/* first unfinished required resource of a step, for the Continue button */
+function stepNext(s){for(const sp of s.items){if(sp.endsWith("?"))continue;if(!specDone(sp))return AI_BY[specIds(sp)[0]];}return null;}
+const openAI=new Set(["lib-academy"]);let aiCur=-1;
+function renderAI(){
+  const ni=AI_PATH.findIndex(s=>!stepDone(s));
+  const done=AI_PATH.filter(stepDone).length;
+  /* next up */
+  if(ni<0)$("#aiNext").innerHTML='<div class="empty">Every step is done. Ship it.</div>';
+  else{const s=AI_PATH[ni],[a,b]=stepCount(s);
+    const nx=stepNext(s);
+    if(aiCur!==ni){aiCur=ni;openAI.add("step-"+ni);}
+    $("#aiNext").innerHTML=`<div class="resume"><div class="nt"><span class="lbl">Up next · Step ${ni+1} of ${AI_PATH.length}${s.core?" · core":""}</span><b>${esc(s.t)}</b><div class="nmeta"><div class="bar"><i class="bs" style="width:${b?a/b*100:0}%"></i></div><span>${a} of ${b} done · ${s.time}</span></div></div>${nx?`<a class="btn cta" href="${nx.u}" target="_blank" rel="noopener">Continue<small>${esc(nx.t)} ↗</small></a>`:`<a class="btn cta" href="#step-${ni}">Open step<small>Finish the build to complete it</small></a>`}</div>`;}
+  /* path */
+  const left=AI_PATH.filter(x=>!stepDone(x)),coreLeft=Math.round(left.filter(x=>x.core).reduce((a,x)=>a+x.hrs,0)),allLeft=Math.round(left.reduce((a,x)=>a+x.hrs,0));
+  const w1=Math.ceil(coreLeft/12),w2=Math.ceil(coreLeft/10),wk=w1===w2?`${w1} week${w1===1?"":"s"}`:`${w1} to ${w2} weeks`;
+  $("#aiPathMeta").textContent=`${done} of ${AI_PATH.length} steps done`+(allLeft?` · ${allLeft} hr left for everything`:"");
+  const cs=AI_PATH.filter(x=>x.core),csd=cs.filter(stepDone).length,libDone=Object.keys(AI_BY).filter(id=>aiSt(id)===2).length;
+  $("#aiStats").innerHTML=`<div class="aistat ring" style="--p:${csd/cs.length*100}"><b>${csd}/${cs.length}</b><span>core steps done</span></div><div class="aistat"><b>${coreLeft?coreLeft+" hr":"Done"}</b><span title="At 10 to 12 hr a week">${coreLeft?`core left · ${wk.replace(" to ","–")}`:"core path complete"}</span></div><div class="aistat"><b>${libDone}/${Object.keys(AI_BY).length}</b><span>resources done</span></div>`;
+  $("#aiPath").innerHTML=AI_PATH.map((s,i)=>{const [a,b]=stepCount(s),k="step-"+i,dn=stepDone(s);
+    return `<details class="pat step ${dn?"sdone":""} ${i===ni?"cur":""}" id="step-${i}" data-k="${k}" ${openAI.has(k)?"open":""}><summary><span class="snum">${dn?"✓":i+1}</span><span class="name">${esc(s.t)}${s.core?'<span class="core">core</span>':""}${i===ni?'<span class="nowtag">Up next</span>':""}<small>${s.time}</small></span><div class="bar"><i class="bs" style="width:${b?a/b*100:0}%"></i></div><span class="count">${a}/${b}</span></summary><div class="sbody">${stepBody(s,"path")}</div></details>`;}).join("");
+  /* skills */
+  $("#aiSkills").innerHTML='<div class="skrow skhead"><span class="name">Skill</span><span class="tier">Demand</span><span class="cov">Free coverage</span><span class="prog">Your progress</span></div>'+AI_SKILLS.map(([n,tier,cov,sig,ids])=>{const d=ids.filter(id=>aiSt(id)===2).length;
+    return `<div class="skrow"><span class="name">${esc(n)}<small>${esc(sig)}</small></span><span class="tier t${tier}">${AI_TIER[tier]}</span>${cov?`<span class="cov ${cov.toLowerCase()}">${cov}</span>`:'<span class="cov">Baseline</span>'}<span class="prog">${ids.length?`<div class="bar"><i class="bs" style="width:${d/ids.length*100}%"></i></div><span class="count">${d}/${ids.length}</span>`:'<span class="count na">n/a</span>'}</span></div>`;}).join("")
+    +`<h3 class="gaph">Gaps no free course covers well</h3>`+AI_GAPS.map(([g,f])=>`<div class="upc gaprow"><b>${esc(g)}</b><span class="hint" style="margin:0">${esc(f)}</span></div>`).join("");
+  /* library */
+  let tot=0,cd=0;
+  $("#aiLib").innerHTML=AI_LIB.map(g=>{const k="lib-"+g.key;const d=g.items.filter(it=>aiSt(it[0])===2).length;tot+=g.items.length;cd+=d;
+    return `<details class="pat" style="--h:${g.hue}" data-k="${k}" ${openAI.has(k)?"open":""}><summary><span class="dot" style="background:hsl(${g.hue},70%,45%)"></span><span class="name">${esc(g.name)}</span><div class="bar"><i class="bs" style="width:${d/g.items.length*100}%"></i></div><span class="count">${d}/${g.items.length}</span></summary>${g.items.map(it=>aiRow(it[0])).join("")}</details>`;}).join("");
+  $("#aiLibMeta").textContent=`${cd} of ${tot} completed`;
+}
+
+/* ---------------- EVENTS ---------------- */
+document.addEventListener("click",e=>{
+  const so=e.target.closest('a[data-sdopen]');if(so){e.preventDefault();const d=document.querySelector(`#sdTracks details[data-k="${so.dataset.sdopen}"]`);if(d){d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"});}return;}
+  const sl=e.target.closest('#aiNext a[href^="#step-"]');if(sl){const d=document.querySelector(sl.getAttribute("href"));if(d){e.preventDefault();d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"});}return;}
+  const b=e.target.closest("button,label");if(!b)return;
+  if(b.dataset.sec){sec=b.dataset.sec;showTab();return;}
+  if(b.dataset.tab){lcTab=b.dataset.tab;showTab();return;}
+  if(b.dataset.l){const id=b.dataset.id;setStatus(Number(id),b.dataset.l);
+    document.querySelectorAll(`.chip.sv.on[data-id="${id}"]`).forEach(x=>{x.classList.add("pop");const t=x.closest(".tile");if(t)t.classList.add("glow");});return;}
+  if(b.dataset.inc){const id=b.dataset.inc;revUp(Number(id));document.querySelectorAll(`[data-inc="${id}"]`).forEach(x=>{const c=x.closest(".ctr");if(c)c.classList.add("pop");});return;}
+  if(b.dataset.ret){retire(Number(b.dataset.ret));return;}
+  if(b.dataset.unret){unretire(Number(b.dataset.unret));return;}
+  if(b.dataset.dec){revDown(Number(b.dataset.dec));return;}
+  if(b.dataset.note){const id=Number(b.dataset.note);openNotes.has(id)?openNotes.delete(id):openNotes.add(id);render();return;}
+  if(b.dataset.logall){logAll=!logAll;renderActivity();return;}
+  if(b.dataset.reveal){revealed.add(Number(b.dataset.reveal));render();return;}
+  if(b.dataset.sdeditbtn){sdEditing=b.dataset.sdeditbtn;renderSD();return;}
+  if(b.dataset.sdcancel){sdEditing=null;renderSD();return;}
+  if(b.dataset.sdsave){const e=SD.log.find(x=>x.id===b.dataset.sdsave);const ta=document.querySelector(`[data-sdedit="${b.dataset.sdsave}"]`);if(e&&ta&&ta.value.trim()){e.text=ta.value.trim();sdSave();}sdEditing=null;renderSD();return;}
+  if(b.dataset.sddel){if(confirm("Delete this log entry?")){SD.log=SD.log.filter(x=>x.id!==b.dataset.sddel);sdSave();renderSD();renderActivity();}return;}
+  if(b.dataset.f){filter=b.dataset.f;document.querySelectorAll("#filters .chip").forEach(x=>x.classList.toggle("on",x===b));renderAll();return;}
+});
+/* remember which pattern blocks the user opened, so a re-render keeps them open */
+document.addEventListener("toggle",e=>{const d=e.target;if(d.dataset&&d.dataset.k&&d.dataset.k.startsWith("sd-")&&d.closest("#sdTracks")){d.open?openSD.add(d.dataset.k):openSD.delete(d.dataset.k);return;}
+  if(d.dataset&&d.dataset.k){d.open?openAI.add(d.dataset.k):openAI.delete(d.dataset.k);return;}
+  if(!d.matches||!d.matches("details.pat")||query||filter!=="all")return;
+  const pi=Number(d.dataset.pi);d.open?openPats.add(pi):openPats.delete(pi);},true);
+document.addEventListener("change",e=>{
+  if(e.target.dataset.sd){SD.status[e.target.dataset.sd]=Number(e.target.value);sdSave();renderSD();}
+  if(e.target.dataset.ai){AI.status[e.target.dataset.ai]=Number(e.target.value);aiSave();renderAI();}
+  if(e.target.dataset.cap){AI.cap[e.target.dataset.cap]=e.target.checked;aiSave();renderAI();}
+  if(e.target.dataset.build){AI.build[e.target.dataset.build]=e.target.checked;aiSave();renderAI();}});
+document.addEventListener("input",e=>{
+  if(e.target.dataset.nid){S.notes[Number(e.target.dataset.nid)]=e.target.value;save();document.querySelectorAll(`[data-note="${e.target.dataset.nid}"]`).forEach(x=>x.classList.toggle("has",!!e.target.value));}
+  if(e.target.dataset.ainote){const k=e.target.dataset.ainote;AI.notes[k]=e.target.value;aiSave();document.querySelectorAll(`[data-ainote="${k}"]`).forEach(x=>{if(x!==e.target)x.value=e.target.value;});}
+  if(e.target.dataset.guess){S.guess[Number(e.target.dataset.guess)]=e.target.value;save();}
+  if(e.target.id==="search"){query=e.target.value.trim().toLowerCase();renderAll();}
+});
+$("#sdLogBtn").onclick=sdAdd;
+$("#sdText").addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter")sdAdd();});
+$("#exportBtn").onclick=()=>{const a=document.createElement("a");a.href="data:application/json,"+encodeURIComponent(JSON.stringify({lc:S,sd:SD,ai:AI}));a.download="leetcode-tracker-"+today()+".json";a.click();toast("Backup downloaded");};
+$("#importFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(o.lc){S=Object.assign(BLANK(),o.lc);if(o.sd)SD=Object.assign({status:{},log:[]},o.sd);if(o.ai)AI=Object.assign({status:{},cap:{},build:{},notes:{}},o.ai);}else if(o.labels){S=Object.assign(BLANK(),o);}else throw 0;migrate();save();sdSave();aiSave();render();renderSD();renderAI();toast("Backup imported");}catch{toast("That file is not a tracker backup");}};r.readAsText(f);e.target.value="";};
+$("#resetBtn").onclick=()=>{if(confirm("Delete all progress, LeetCode, System Design and AI Fluency? Export a backup first if you want to keep it."))
+{S=BLANK();SD={status:{},log:[]};AI={status:{},cap:{},build:{},notes:{}};migrate();save();sdSave();aiSave();render();renderSD();renderAI();toast("Reset done");}};
+
+/* top level: LeetCode (with Today / All questions / Progress), System Design, AI Fluency, About */
+let sec="lc",lcTab="today";
+function showTab(){const id=sec==="lc"?lcTab:sec;document.body.dataset.sec=sec;
+  document.querySelectorAll("#mainNav button").forEach(x=>x.classList.toggle("on",x.dataset.sec===sec));
+  document.querySelectorAll("#subNav button").forEach(x=>x.classList.toggle("on",x.dataset.tab===lcTab));
+  $("#subNav").style.display=sec==="lc"?"":"none";
+  document.querySelectorAll("section.tab").forEach(s=>s.classList.toggle("on",s.id==="tab-"+id));
+  if(id==="progress"){const h=$("#heatwrap");h.scrollLeft=h.scrollWidth;}}
+let tt;function toast(m){const e=$("#toast");e.textContent=m;e.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>e.classList.remove("on"),1800);}
+
+
+/* ---------------- GITHUB SYNC ----------------
+   Optional. When connected, every save also writes {lc,sd,ai} to data.json on a branch of a GitHub repo,
+   2 s after the last change. localStorage stays the working copy, so the page also works offline. */
+const SYNCKEY="gh-sync-v1";
+const SYNC_DEF={repo:"hrishi-verma/prep-tracker",branch:"data",path:"data.json"};
+let SY=Object.assign({},SYNC_DEF,{token:"",sha:null,dirty:false,at:null});
+try{const r=localStorage.getItem(SYNCKEY);if(r)SY=Object.assign(SY,JSON.parse(r));}catch(e){}
+const sySave=()=>{try{localStorage.setItem(SYNCKEY,JSON.stringify(SY));}catch(e){}};
+let syBoot=true,syQuiet=false,syTimer=null,syBusy=false,syAgain=false,syState="off",syRemote=null;
+const syOn=()=>!!(SY.token&&SY.repo);
+const b64e=str=>btoa(unescape(encodeURIComponent(str)));
+const b64d=b=>decodeURIComponent(escape(atob(b.replace(/\s/g,""))));
+const syHeaders=()=>({Authorization:"Bearer "+SY.token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"});
+const syUrl=()=>`https://api.github.com/repos/${SY.repo}/contents/${SY.path}`;
+function syPayload(){return JSON.stringify({v:1,savedAt:new Date().toISOString(),lc:S,sd:SD,ai:AI});}
+function hasProgress(){return Object.keys(S.st||{}).length+Object.keys(S.labels||{}).length+Object.keys(SD.status||{}).length+(SD.log||[]).length+Object.keys(AI.status||{}).length>0;}
+function syAgo(){if(!SY.at)return "";const m=Math.round((Date.now()-SY.at)/60000);return m<1?"just now":m<60?m+" min ago":Math.round(m/60)+" hr ago";}
+function syShow(state,msg){syState=state;const p=$("#syncPill");if(!p)return;p.className="syncpill "+({ok:"ok",busy:"busy",err:"err"}[state]||"");
+  p.querySelector("span").textContent=state==="off"?"Sync off":state==="busy"?"Saving…":state==="ok"?"Saved "+syAgo():state==="offline"?"Offline, will sync":msg||"Sync problem";
+  p.title=state==="ok"?"Saved to GitHub "+syAgo():msg||"";
+  if(msg!==undefined)$("#syncMsg").textContent=msg;}
+/* any save after start-up marks the data as changed and schedules a push */
+const _save=save,_sdSave=sdSave,_aiSave=aiSave;
+save=function(){_save();syTouch();};sdSave=function(){_sdSave();syTouch();};aiSave=function(){_aiSave();syTouch();};
+function syTouch(){if(syBoot||syQuiet)return;if(!SY.dirty){SY.dirty=true;sySave();}if(!syOn())return;clearTimeout(syTimer);syTimer=setTimeout(syPush,2000);if(syState!=="err")syShow("busy");}
+async function syGet(){const r=await fetch(syUrl()+"?ref="+encodeURIComponent(SY.branch)+"&t="+Date.now(),{headers:syHeaders(),cache:"no-store"});
+  if(r.status===404)return null;if(!r.ok)throw {status:r.status};const j=await r.json();return {sha:j.sha,data:JSON.parse(b64d(j.content))};}
+async function syPush(){if(!syOn())return;if(syBusy){syAgain=true;return;}syBusy=true;syShow("busy");
+  try{const body={message:"Progress "+new Date().toISOString().slice(0,16).replace("T"," "),content:b64e(syPayload()),branch:SY.branch};if(SY.sha)body.sha=SY.sha;
+    const bs=JSON.stringify(body);const r=await fetch(syUrl(),{method:"PUT",headers:syHeaders(),body:bs,keepalive:bs.length<60000});
+    if(r.status===409||r.status===422){syBusy=false;const rem=await syGet();if(rem&&rem.sha!==SY.sha){syRemote=rem;$("#syncConflict").hidden=false;syShow("err","Two versions, choose one above");return;}SY.sha=rem?rem.sha:null;sySave();syAgain=true;}
+    else if(!r.ok)throw {status:r.status};
+    else{const j=await r.json();SY.sha=j.content.sha;SY.dirty=false;SY.at=Date.now();sySave();syShow("ok","");}}
+  catch(e){syErr(e);}
+  syBusy=false;if(syAgain){syAgain=false;syPush();}}
+function syErr(e){if(e&&e.status===401)syShow("err","Token rejected. Paste a new one.");else if(e&&e.status===403)syShow("err","Token cannot write to this repo.");else if(e&&e.status===404)syShow("err","Repo or branch not found.");else if(e&&e.status)syShow("err","GitHub error "+e.status);else syShow("offline","Offline. Changes are kept here and sync when you are back online.");}
+function syApply(o){syQuiet=true;
+  S=Object.assign(BLANK(),o.lc||{});SD=Object.assign({status:{},log:[]},o.sd||{});AI=Object.assign({status:{},cap:{},build:{},notes:{}},o.ai||{});for(const f of ["cap","build","notes"])if(!AI[f])AI[f]={};
+  migrate();_save();_sdSave();_aiSave();render();renderSD();renderAI();syQuiet=false;}
+/* on open, focus and connect: pick the newest version, or ask when both sides changed */
+async function syPull(first){if(!syOn()){syShow("off");return;}syStartTick();if(syBusy)return;
+  try{syShow("busy");const rem=await syGet();
+    if(!rem){if(hasProgress()){SY.sha=null;await syPush();}else{syShow("ok","Connected. Nothing saved on GitHub yet.");}return;}
+    if(rem.sha===SY.sha){if(SY.dirty)await syPush();else syShow("ok","");return;}
+    const same=JSON.stringify({lc:rem.data.lc,sd:rem.data.sd,ai:rem.data.ai})===JSON.stringify({lc:S,sd:SD,ai:AI});
+    if(same){SY.sha=rem.sha;SY.dirty=false;SY.at=Date.now();sySave();syShow("ok","");return;}
+    if((SY.dirty||!SY.sha)&&hasProgress()){syRemote=rem;$("#syncConflict").hidden=false;syShow("err","Two versions, choose one above");return;}
+    syApply(rem.data);SY.sha=rem.sha;SY.dirty=false;SY.at=Date.now();sySave();syShow("ok","Loaded the latest from GitHub.");}
+  catch(e){syErr(e);}}
+document.addEventListener("click",async e=>{
+  const pill=e.target.closest("#syncPill");if(pill){const pn=$("#syncPanel");pn.hidden=!pn.hidden;pill.setAttribute("aria-expanded",String(!pn.hidden));
+    if(!pn.hidden){$("#syncRepo").value=SY.repo;$("#syncBranch").value=SY.branch;$("#syncToken").value=SY.token?"••••••••":"";}return;}
+  const b=e.target.closest("[data-sync]");if(!b)return;const a=b.dataset.sync;
+  if(a==="connect"){const t=$("#syncToken").value.trim();if(t&&!/^•+$/.test(t))SY.token=t;SY.repo=$("#syncRepo").value.trim()||SYNC_DEF.repo;SY.branch=$("#syncBranch").value.trim()||SYNC_DEF.branch;
+    if(!SY.token){syShow("err","Paste your access token first.");return;}SY.sha=null;sySave();await syPull(true);if(syState==="ok")$("#syncPanel").hidden=true;}
+  if(a==="now")await syPull(false);
+  if(a==="off"){SY.token="";SY.sha=null;sySave();syShow("off","Disconnected. Progress still saves in this browser.");}
+  if(a==="pull"&&syRemote){syApply(syRemote.data);SY.sha=syRemote.sha;SY.dirty=false;SY.at=Date.now();sySave();$("#syncConflict").hidden=true;syRemote=null;syShow("ok","");}
+  if(a==="push"&&syRemote){SY.sha=syRemote.sha;sySave();$("#syncConflict").hidden=true;syRemote=null;await syPush();}
+});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&syOn()&&!SY.dirty)syPull(false);});
+window.addEventListener("pagehide",()=>{if(syTimer&&SY.dirty&&syOn()){clearTimeout(syTimer);syPush();}});
+window.addEventListener("online",()=>{if(syOn())syPull(false);});
+let syTick=null;function syStartTick(){if(syTick)return;syTick=setInterval(()=>{if(!syOn())return;if(SY.dirty&&!syBusy)syPush();else if(syState==="ok")syShow("ok");},30000);}
+load();sdLoad();aiLoad();render();renderSD();renderAI();showTab();
+syBoot=false;syPull(false);
+</script>
+</body>
+</html>
