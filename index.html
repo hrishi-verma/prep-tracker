@@ -16,7 +16,7 @@
 <meta name="theme-color" content="#FF6A50">
 <meta name="apple-mobile-web-app-title" content="Prep Tracker">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F6F7FB; --ink:#1C2140; --muted:#6B7191; --line:#E3E6F0; --card:#FFFFFF;
@@ -363,32 +363,59 @@ details.sec[open] .chev::before{transform:rotate(90deg)}
  .gaprow{flex-direction:column;gap:2px}.gaprow b{width:auto}
  details.step summary .bar{width:50px}details.step summary{gap:8px}
 }
-/* goldman */
+/* goldman: question text in a reading face, examples and code in a mono face, generous spacing */
+#tab-gs{--read:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;--ex-bg:#F2F8F7;--ex-line:#D5E9E6;--wrong:#B4442C;--wrong-bg:#FCEAE5}
 body[data-sec="gs"] .aistat:nth-child(1){--ic:"🎯";--icbg:#E2F6F4}
 body[data-sec="gs"] .aistat:nth-child(2){--ic:"⭐";--icbg:#FFF4CC}
 body[data-sec="gs"] .aistat:nth-child(3){--ic:"🏦";--icbg:#E8F0FF}
-.gsrow{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-top:1px solid var(--line)}
-.gsrow:first-of-type{border-top:none}
-.gsrow.done{background:#F6FCF9}
-.gsrow>input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--solved);flex:none;cursor:pointer}
-.gsrow .rk{width:30px;font-size:12px;color:var(--muted);font-weight:800;flex:none;padding-top:2px}
-.gsrow details{flex:1;min-width:0}
-.gsrow summary{list-style:none;cursor:pointer;font-weight:700}
+#tab-gs .intro{font-size:14px;line-height:1.6;max-width:72ch}
+.gstier>summary{padding:16px 18px}
+.gstier>summary .name{font-size:16px}
+.gstier>summary .name small{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-top:2px}
+.gsrow{display:grid;grid-template-columns:auto 2.2em minmax(0,1fr);align-items:start;column-gap:14px;padding:16px 18px;border-top:1px solid var(--line)}
+.gsrow.done{background:#F7FCFA}
+.gsrow:has(details[open]){background:#FCFEFE}
+.gsrow>input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--solved);cursor:pointer}
+.gsrow .rk{font-size:13px;color:var(--muted);font-weight:800;padding-top:3px;font-variant-numeric:tabular-nums;text-align:right}
+.gsrow details{min-width:0}
+.gsrow summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:5px;border-radius:6px}
 .gsrow summary::-webkit-details-marker{display:none}
-.gsrow summary small{display:block;font-size:12px;color:var(--muted);font-weight:700}
-.gsrow.done summary>span{color:var(--muted);text-decoration:line-through}
-.gsrow .d-E{color:var(--easy)}.gsrow .d-M{color:#B07A00}.gsrow .d-H{color:var(--hard)}
-.gstag{font-size:11px;font-weight:900;color:var(--th-ink);background:var(--th-bg);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:1px}
-.gsbody{padding:8px 0 4px}
-.gsq{white-space:pre-wrap;margin:0 0 10px}
-.gsbody .row-actions{margin-top:0}
-.gsbody .btn{font-size:12px;padding:6px 12px}
-.gsways{margin:10px 0 0 18px;padding:0}
-.gsways li{margin-bottom:4px}
-.gscode{position:relative;margin-top:10px}
-.gscode pre{background:#13203A;color:#E6EDF7;border-radius:10px;padding:12px 14px;margin:0;overflow:auto;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;tab-size:4}
-.gscode .btn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.14)}
-.gstier>summary .name small{display:block;font-size:12px;color:var(--muted);font-weight:700}
+.gsrow summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:3px}
+.gsrow summary .tt{font-size:16.5px;font-weight:800;line-height:1.35;letter-spacing:.1px}
+.gsrow summary .tt:hover{color:var(--th-ink)}
+.gsrow.done summary .tt{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.gsmeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.gsmeta .dp{font-size:12px;font-weight:800;padding:1px 9px;border-radius:999px}
+.dp.d-E{color:#137A4E;background:#DDF5EA}.dp.d-M{color:#8A5A00;background:#FDF0CC}.dp.d-H{color:#B4442C;background:#FDE3DC}
+.gstag{font-size:12px;font-weight:800;color:var(--th-ink);background:var(--th-bg);border-radius:999px;padding:1px 9px}
+.gsbody{display:grid;gap:18px;padding:18px 0 6px;max-width:76ch}
+.gsbody:empty{display:none}
+.gslbl{font-size:11.5px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.gsq{font-family:var(--read);font-size:17px;line-height:1.75;font-weight:400;margin:0;color:var(--ink)}
+.gsex{background:var(--ex-bg);border:1px solid var(--ex-line);border-radius:12px;padding:14px 16px;margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;align-items:baseline}
+.gsex .gslbl{grid-column:1 / -1;margin:0 0 2px;color:var(--th-ink)}
+.gsex dt{font-size:13px;font-weight:800;color:var(--muted)}
+.gsex dd{margin:0;font-family:var(--mono);font-size:14.5px;line-height:1.6;overflow-wrap:anywhere;color:var(--ink)}
+.gsex dd.out{font-weight:500;color:#0A5A61}
+.gsex dd.all{grid-column:1 / -1}
+.gsbody .row-actions{margin:0;gap:10px}
+.gsbody .btn{font-size:13px;padding:8px 14px}
+.gsways{list-style:none;margin:0;padding:0;counter-reset:w;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.gsways li{counter-increment:w;display:grid;grid-template-columns:1.6em minmax(0,1fr);gap:4px 10px;padding:14px 16px;border-top:1px solid var(--line);font-family:var(--read);font-size:16px;line-height:1.65}
+.gsways li:first-child{border-top:none}
+.gsways li::before{content:counter(w);font-family:'Nunito',sans-serif;font-weight:900;color:var(--muted);font-size:14px;padding-top:2px}
+.gsways li.best{background:var(--ex-bg)}
+.gsways li>div{min-width:0}
+.gsways b{font-weight:700}
+.gsways .cx{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.gsways .cx span{font-family:var(--mono);font-size:12.5px;padding:2px 8px;border-radius:6px;background:#EEF1F7;color:var(--ink)}
+.gsways .cx .bad{font-family:'Nunito',sans-serif;font-weight:800;background:var(--wrong-bg);color:var(--wrong)}
+.gsways .cx .top{font-family:'Nunito',sans-serif;font-weight:800;background:var(--th-bg);color:var(--th-ink)}
+.gscode{position:relative;min-width:0}
+.gscode pre{background:#13203A;color:#E6EDF7;border-radius:12px;padding:18px 20px;margin:0;overflow:auto;font:14px/1.7 var(--mono);tab-size:4}
+.gscode .btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.14)}
+.gscode .k{color:#C3A6FF}.gscode .s{color:#A5E3A0}.gscode .c{color:#8391AD;font-style:italic}.gscode .n{color:#FFC27A}.gscode .f{color:#7CC8FF}
+@media (max-width:600px){.gsrow{column-gap:10px;padding:14px 12px;grid-template-columns:auto 1.8em minmax(0,1fr)}.gsq{font-size:16px}.gsex{grid-template-columns:minmax(0,1fr);gap:2px}.gsex dd{margin-bottom:6px}.gscode pre{font-size:13px;padding:14px}}
 /* about */
 .about{max-width:720px}
 .about h3{font-size:16px;font-weight:900;margin:22px 0 6px}
@@ -1292,12 +1319,24 @@ const gsKey=q=>q[2]?String(q[2]):"gs-"+slug(q[1]);
 const gsDone=q=>!!S.gs[gsKey(q)];
 const openGS=new Set(["tier-0"]),gsWays=new Set(),gsSol=new Set();
 let gsQuery="",gsFilter="all";
-function gsBody(q){const k=gsKey(q);
-  return `<p class="gsq">${esc(q[5])}</p><div class="row-actions">${q[2]?`<a class="btn ghost" href="https://leetcode.com/problems/${slug(q[1])}/" target="_blank" rel="noopener">LeetCode ↗</a>`:""}<button class="btn ghost" data-gsw="${k}">${gsWays.has(k)?"Hide ways":"Ways to solve"}</button><button class="btn" data-gss="${k}">${gsSol.has(k)?"Hide solution":"Solution"}</button></div>`
-   +(gsWays.has(k)?`<ol class="gsways">${q[6].map(w=>`<li>${esc(w)}</li>`).join("")}</ol>`:"")
-   +(gsSol.has(k)?`<div class="gscode"><pre><code>${esc(q[7])}</code></pre><button class="btn" data-gscopy="${k}">Copy</button></div>`:"");}
+/* question text is "statement\nExample: input -> output"; ways are "Name: idea. O(..) time, O(..) space." */
+function gsParts(q){const lines=q[5].split("\n").filter(l=>l.trim());const isEx=l=>/^example/i.test(l);
+  return {text:lines.filter(l=>!isEx(l)).join(" "),ex:lines.filter(isEx).map(l=>{const e=l.replace(/^example\s*\d*\s*:\s*/i,""),i=e.lastIndexOf("->");return i<0?{all:e}:{inp:e.slice(0,i).trim(),out:e.slice(i+2).trim()};})};}
+function gsWay(w,i,n){const c=w.indexOf(": "),named=c>0&&c<48,name=named?w.slice(0,c):"",rest=named?w.slice(c+2):w;
+  const o=rest.search(/\bO\(/),idea=o>0?rest.slice(0,o).trim():rest,cx=o>0?rest.slice(o).replace(/\.\s*$/,"").split(/,\s*(?=O\()/):[];
+  const bad=/\b(wrong|not valid)\b/i.test(w),best=i===n-1;
+  return `<li class="${best?"best":""}"><div>${name?`<b>${esc(name)}.</b> `:""}${esc(name?idea.charAt(0).toUpperCase()+idea.slice(1):idea)}${cx.length||bad||best?`<div class="cx">${bad?'<span class="bad">Does not work</span>':""}${cx.map(x=>`<span>${esc(x)}</span>`).join("")}${best?'<span class="top">Used in the solution</span>':""}</div>`:""}</div></li>`;}
+/* tiny Python highlighter: comments, strings, keywords, numbers, calls */
+const PYK=/(#.*$)|("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|\b(def|class|return|if|elif|else|for|while|in|not|and|or|is|None|True|False|import|from|as|with|lambda|yield|break|continue|pass|try|except|finally|raise|global|nonlocal|del)\b|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_]\w*)(?=\()/gm;
+function pyHi(code){let out="",last=0;code.replace(PYK,(m,c,st,k,n,f,i)=>{out+=esc(code.slice(last,i))+`<span class="${c?"c":st?"s":k?"k":n?"n":"f"}">${esc(m)}</span>`;last=i+m.length;return m;});return out+esc(code.slice(last));}
+function gsBody(q){const k=gsKey(q),p=gsParts(q);
+  return `<div><p class="gslbl">Problem</p><p class="gsq">${esc(p.text)}</p></div>`
+   +p.ex.map((e,i)=>`<dl class="gsex"><p class="gslbl">Example${p.ex.length>1?" "+(i+1):""}</p>${e.all?`<dd class="all">${esc(e.all)}</dd>`:`<dt>Input</dt><dd>${esc(e.inp)}</dd><dt>Output</dt><dd class="out">${esc(e.out)}</dd>`}</dl>`).join("")
+   +`<div class="row-actions">${q[2]?`<a class="btn ghost" href="https://leetcode.com/problems/${slug(q[1])}/" target="_blank" rel="noopener">LeetCode ↗</a>`:""}<button class="btn ghost" data-gsw="${k}">${gsWays.has(k)?"Hide ways":"Ways to solve"}</button><button class="btn" data-gss="${k}">${gsSol.has(k)?"Hide solution":"Solution"}</button></div>`
+   +(gsWays.has(k)?`<div><p class="gslbl">Ways to solve, slowest to best</p><ol class="gsways">${q[6].map((w,i)=>gsWay(w,i,q[6].length)).join("")}</ol></div>`:"")
+   +(gsSol.has(k)?`<div><p class="gslbl">Solution · Python</p><div class="gscode"><pre><code>${pyHi(q[7])}</code></pre><button class="btn" data-gscopy="${k}">Copy</button></div></div>`:"");}
 function gsRow(q){const k=gsKey(q),dn=gsDone(q),o=openGS.has("q-"+k);
-  return `<div class="gsrow ${dn?"done":""}" id="gs-${k}"><input type="checkbox" data-gs="${k}" ${dn?"checked":""} aria-label="Done: ${esc(q[1])}"><span class="rk">${q[0]}</span><details data-g="q-${k}" ${o?"open":""}><summary><span>${esc(q[1])}</span>${q[2]?"":'<span class="gstag">Goldman classic</span>'}<small><b class="d-${q[3]}">${GS_DIFF[q[3]]}</b> · ${esc(q[4])}${q[2]?" · LC "+q[2]:""}</small></summary><div class="gsbody">${o?gsBody(q):""}</div></details></div>`;}
+  return `<div class="gsrow ${dn?"done":""}" id="gs-${k}"><input type="checkbox" data-gs="${k}" ${dn?"checked":""} aria-label="Done: ${esc(q[1])}"><span class="rk">${q[0]}</span><details data-g="q-${k}" ${o?"open":""}><summary><span class="tt">${esc(q[1])}</span><span class="gsmeta"><span class="dp d-${q[3]}">${GS_DIFF[q[3]]}</span><span>${esc(q[4])}</span>${q[2]?`<span>LeetCode ${q[2]}</span>`:'<span class="gstag">Goldman classic</span>'}</span></summary><div class="gsbody">${o?gsBody(q):""}</div></details></div>`;}
 function renderGS(){
   const done=GS.filter(gsDone).length,top=GS.filter(q=>q[0]<=40),cls=GS.filter(q=>!q[2]),t=today();
   const todayN=Object.values(S.gs).filter(d=>d===t).length;
