@@ -369,27 +369,6 @@ body[data-sec="gs"] .aistat:nth-child(1){--ic:"🎯";--icbg:#E2F6F4}
 body[data-sec="gs"] .aistat:nth-child(2){--ic:"⭐";--icbg:#FFF4CC}
 body[data-sec="gs"] .aistat:nth-child(3){--ic:"🏦";--icbg:#E8F0FF}
 #tab-gs .intro{font-size:14px;line-height:1.6;max-width:72ch}
-.gstier>summary{padding:16px 18px}
-.gstier>summary .name{font-size:16px}
-.gstier>summary .name small{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-top:2px}
-.gsrow{display:grid;grid-template-columns:auto 2.2em minmax(0,1fr);align-items:start;column-gap:14px;padding:16px 18px;border-top:1px solid var(--line)}
-.gsrow.done{background:#F7FCFA}
-.gsrow:has(details[open]){background:#FCFEFE}
-.gsrow>input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--solved);cursor:pointer}
-.gsrow .rk{font-size:13px;color:var(--muted);font-weight:800;padding-top:3px;font-variant-numeric:tabular-nums;text-align:right}
-.gsrow details{min-width:0}
-.gsrow summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:5px;border-radius:6px}
-.gsrow summary::-webkit-details-marker{display:none}
-.gsrow summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:3px}
-.gsrow summary .tt{font-size:16.5px;font-weight:800;line-height:1.35;letter-spacing:.1px}
-.gsrow summary .tt:hover{color:var(--th-ink)}
-.gsrow.done summary .tt{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
-.gsmeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:13px;font-weight:600;color:var(--muted)}
-.gsmeta .dp{font-size:12px;font-weight:800;padding:1px 9px;border-radius:999px}
-.dp.d-E{color:#137A4E;background:#DDF5EA}.dp.d-M{color:#8A5A00;background:#FDF0CC}.dp.d-H{color:#B4442C;background:#FDE3DC}
-.gstag{font-size:12px;font-weight:800;color:var(--th-ink);background:var(--th-bg);border-radius:999px;padding:1px 9px}
-.gsbody{display:grid;gap:18px;padding:18px 0 6px;max-width:76ch}
-.gsbody:empty{display:none}
 .gslbl{font-size:11.5px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
 .gsq{font-family:var(--read);font-size:17px;line-height:1.75;font-weight:400;margin:0;color:var(--ink)}
 .gsex{background:var(--ex-bg);border:1px solid var(--ex-line);border-radius:12px;padding:14px 16px;margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;align-items:baseline}
@@ -415,7 +394,53 @@ body[data-sec="gs"] .aistat:nth-child(3){--ic:"🏦";--icbg:#E8F0FF}
 .gscode pre{background:#13203A;color:#E6EDF7;border-radius:12px;padding:18px 20px;margin:0;overflow:auto;font:14px/1.7 var(--mono);tab-size:4}
 .gscode .btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.14)}
 .gscode .k{color:#C3A6FF}.gscode .s{color:#A5E3A0}.gscode .c{color:#8391AD;font-style:italic}.gscode .n{color:#FFC27A}.gscode .f{color:#7CC8FF}
-@media (max-width:600px){.gsrow{column-gap:10px;padding:14px 12px;grid-template-columns:auto 1.8em minmax(0,1fr)}.gsq{font-size:16px}.gsex{grid-template-columns:minmax(0,1fr);gap:2px}.gsex dd{margin-bottom:6px}.gscode pre{font-size:13px;padding:14px}}
+@media (max-width:600px){.gsq{font-size:16px}.gsex{grid-template-columns:minmax(0,1fr);gap:2px}.gsex dd{margin-bottom:6px}.gscode pre{font-size:13px;padding:14px}}
+/* goldman split view: question list on the left, the open question on the right (left aligned, full width) */
+body[data-sec="gs"] .wrap{max-width:1640px}
+.gstop{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 32px;margin:2px 0 16px}
+.gsintro{margin:0;color:var(--muted);font-size:14px;line-height:1.6;max-width:62ch}
+.gsstats{display:flex;flex-wrap:wrap;gap:12px 32px}
+.gsstats div{display:flex;flex-direction:column;font-size:13px;font-weight:700;color:var(--muted)}
+.gsstats b{font-size:22px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.gssplit{display:flex;flex-wrap:wrap;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.gsside{flex:0 1 380px;max-width:420px;min-width:0;align-self:stretch;border-right:1px solid var(--line)}
+.gsside-in{position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column}
+.gsfind{padding:16px;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.gsfind input{font:inherit;font-size:14px;padding:9px 12px;border:1px solid #D5DCE3;border-radius:8px;background:#fff;min-width:0}
+.gsfind input:focus-visible{outline:3px solid #9DB8FF;outline-offset:1px}
+.gslist{position:relative;overflow:auto;flex:1;overscroll-behavior:contain;padding-bottom:10px}
+details.gsgrp>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:10px;padding:14px 16px 8px;font-size:12px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--th-ink);background:#fff;position:sticky;top:0;z-index:1}
+details.gsgrp>summary::-webkit-details-marker{display:none}
+details.gsgrp>summary::before{content:"▸";margin-right:6px;transition:transform .15s;display:inline-block}
+details.gsgrp[open]>summary::before{transform:rotate(90deg)}
+details.gsgrp>summary span:first-child{flex:1}
+details.gsgrp>summary .ct{color:var(--muted);letter-spacing:0;font-variant-numeric:tabular-nums}
+details.gsgrp>summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:-3px}
+.gsitem{display:grid;grid-template-columns:18px minmax(0,1fr);align-items:center;gap:10px;padding:0 12px 0 16px;border-left:3px solid transparent}
+.gsitem:hover{background:#F6FAFA}
+.gsitem.sel{background:var(--th-bg);border-left-color:var(--th)}
+.gsitem>input{width:18px;height:18px;margin:0;accent-color:var(--solved);cursor:pointer}
+.gspick{display:grid;grid-template-columns:2em minmax(0,1fr) auto;align-items:center;gap:10px;text-align:left;width:100%;padding:9px 0;border-radius:6px}
+.gspick:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px}
+.gspick .rk{font-size:12px;font-weight:800;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.gspick .t{font-size:14.5px;font-weight:800;line-height:1.35}
+.gsitem.done .t{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.gsmain{flex:999 1 560px;min-width:0;padding:30px 44px 40px;display:grid;gap:24px;align-content:start}
+.gsh{display:grid;gap:8px;max-width:780px}
+.gseb{font-size:13px;font-weight:800;color:var(--muted)}
+.gsht{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.gsht h2{margin:0;font-size:30px;font-weight:900;letter-spacing:-.3px;line-height:1.2;text-wrap:balance;flex:1 1 320px}
+.gsht h2::before{display:none}
+.gsdone{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#137A4E;padding:8px 12px;border:1px solid #BFE6D2;border-radius:10px;cursor:pointer;background:#fff}
+.gsdone input{width:18px;height:18px;margin:0;accent-color:var(--solved)}
+.gsmeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.dp{font-size:11.5px;font-weight:800;padding:1px 9px;border-radius:999px;white-space:nowrap}
+.dp.d-E{color:#137A4E;background:#DDF5EA}.dp.d-M{color:#8A5A00;background:#FDF0CC}.dp.d-H{color:#B4442C;background:#FDE3DC}
+.gstag{font-size:12px;font-weight:800;color:var(--th-ink);background:var(--th-bg);border-radius:999px;padding:1px 9px}
+.gsbody{display:grid;gap:20px;max-width:780px}
+.gsnav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;max-width:780px;padding-top:18px;border-top:1px solid var(--line)}
+.gsnav .btn{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:760px){.gsside{max-width:none;flex-basis:100%;border-right:none;border-bottom:1px solid var(--line)}.gsside-in{position:static;max-height:46vh}.gsmain{padding:22px 16px 28px}.gsht h2{font-size:24px}}
 /* about */
 .about{max-width:720px}
 .about h3{font-size:16px;font-weight:900;margin:22px 0 6px}
@@ -675,14 +700,20 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 
 <!-- GOLDMAN -->
 <section class="tab" id="tab-gs">
-  <p class="hint intro">First coding round, live on CoderPad. Ranked by how often each question shows up in public Goldman reports. Try it first, then open the ways, then the solution.</p>
-  <div class="aistats" id="gsStats"></div>
-  <div id="gsNext"></div>
-  <div class="toolbar">
-    <input type="search" id="gsSearch" placeholder="Search title or pattern" aria-label="Search Goldman questions">
-    <div class="filters" id="gsFilters"><button class="chip on" data-gf="all">All</button><button class="chip" data-gf="todo">To do</button><button class="chip" data-gf="done">Done</button><button class="chip" data-gf="gs">Goldman classics</button></div>
+  <div class="gstop">
+    <p class="gsintro">First coding round, live on CoderPad. Ranked by how often each question shows up in reports. Read the problem, try it, then open the ways and the solution.</p>
+    <div class="gsstats" id="gsStats"></div>
   </div>
-  <div id="gsList"></div>
+  <div class="gssplit">
+    <aside class="gsside" aria-label="Goldman questions"><div class="gsside-in">
+      <div class="gsfind">
+        <input type="search" id="gsSearch" placeholder="Search title or pattern" aria-label="Search Goldman questions">
+        <div class="filters" id="gsFilters"><button class="chip on" data-gf="all">All</button><button class="chip" data-gf="todo">To do</button><button class="chip" data-gf="done">Done</button><button class="chip" data-gf="gs">Goldman classics</button></div>
+      </div>
+      <div class="gslist" id="gsList"></div>
+    </div></aside>
+    <article class="gsmain" id="gsMain"></article>
+  </div>
 </section>
 
 <!-- SYSTEM DESIGN -->
@@ -761,7 +792,7 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 <li><b>Progress</b>: overall percentage, revision totals, streak, activity heatmap (new plus revised), daily log, per-pattern bars.</li>
 <li><b>System Design</b>: a separate tracker with its own storage key <code>sd-tracker-v1</code>. Three tracks (collapsible, with a progress bar each) with a status dropdown per item, summary tiles and an Up next bar on top (the Telusko one-shot video in 10 units, Alex Xu Vol 1 in 16 chapters, Alex Xu Vol 2 in 13 chapters), and a free-text log: Rishi writes what he did, presses Log, and the entry becomes a dated card on a timeline. Nothing in the log is pre-written; gaps between days are shown as gaps. The log is deliberately free text with no tagging.</li>
 <li><b>AI Fluency</b>: built from Rishi's research doc on a free learning path to SWE, ML and AI engineer roles (October 2026). Own storage key <code>ai-tracker-v1</code>: <code>status</code> (resource id to 0 not started, 1 in progress, 2 completed) and <code>cap</code> (capstone checklist item to true), <code>build</code> (step key to true when its build is done; steps with a build only count as done once it is ticked) and <code>notes</code> (step key to free text). Step keys (<code>k</code> in <code>AI_PATH</code>) are permanent. Hours left come from each step's <code>hrs</code>. Skills, All resources and Good to know start collapsed to keep the page calm; <code>AI_LOW</code> marks low-priority resources. Rishi gave Claude a free hand on this tab's design (October 2026). Sections: Next up (first unfinished step), Learning path (11 steps in <code>AI_PATH</code>, core steps 1, 2, 4, 5, 7, 11; a step is done when its required resources are completed, "a|b" means either, "id?" is optional), Skills employers want (<code>AI_SKILLS</code>: demand tier, free coverage, progress from mapped resources) plus gaps (<code>AI_GAPS</code>), All resources (<code>AI_LIB</code>, grouped by provider), and Good to know. Resource ids are permanent keys; some are old Skilljar slugs whose url now points at academy.claude.com. To add courses later (RAG, other providers), add items to <code>AI_LIB</code> and reference them from steps or skills. Audience-specific Academy courses (educators, students, nonprofits, small business, creative work, Cowork, enterprise rollout) are left out on purpose.</li>
-<li><b>Goldman</b>: added October 2026 for Rishi's Goldman Sachs first coding round (live CoderPad). 202 questions in <code>GS</code>, ranked by how often they show up in public reports, in three tiers (1 to 40 must do, 41 to 100, 101 to 202). A second pass the same month moved questions named in Salt Lake City reports up (Circular Game winner and Lowest Price per Interval were added). Mix of LeetCode problems and Goldman classics that are not on LeetCode. Each has the question, ways to solve (naive to best, with complexity) and a Python solution; ways and solution stay hidden until clicked. A simple done tick per question, saved in <code>S.gs</code> (key to date) inside <code>lc-tracker-v1</code>. Keys are the LeetCode number or "gs-" plus the title slug, so never change those. Rishi chose Python only and a plain checkbox, not the revision system.</li>
+<li><b>Goldman</b>: added October 2026 for Rishi's Goldman Sachs first coding round (live CoderPad). 202 questions in <code>GS</code>, ranked by how often they show up in public reports, in three tiers (1 to 40 must do, 41 to 100, 101 to 202). A second pass the same month moved questions named in Salt Lake City reports up (Circular Game winner and Lowest Price per Interval were added). Mix of LeetCode problems and Goldman classics that are not on LeetCode. Each has the question, ways to solve (naive to best, with complexity) and a Python solution; ways and solution stay hidden until clicked. Layout is a split view (Rishi picked it from two mockups): the question list on the left, the picked question on the right, left aligned and wider than the other sections. A simple done tick per question, saved in <code>S.gs</code> (key to date) inside <code>lc-tracker-v1</code>. Keys are the LeetCode number or "gs-" plus the title slug, so never change those. Rishi chose Python only and a plain checkbox, not the revision system.</li>
 <li><b>About</b>: this page.</li>
 </ul>
 
@@ -1335,21 +1366,33 @@ function gsBody(q){const k=gsKey(q),p=gsParts(q);
    +`<div class="row-actions">${q[2]?`<a class="btn ghost" href="https://leetcode.com/problems/${slug(q[1])}/" target="_blank" rel="noopener">LeetCode ↗</a>`:""}<button class="btn ghost" data-gsw="${k}">${gsWays.has(k)?"Hide ways":"Ways to solve"}</button><button class="btn" data-gss="${k}">${gsSol.has(k)?"Hide solution":"Solution"}</button></div>`
    +(gsWays.has(k)?`<div><p class="gslbl">Ways to solve, slowest to best</p><ol class="gsways">${q[6].map((w,i)=>gsWay(w,i,q[6].length)).join("")}</ol></div>`:"")
    +(gsSol.has(k)?`<div><p class="gslbl">Solution · Python</p><div class="gscode"><pre><code>${pyHi(q[7])}</code></pre><button class="btn" data-gscopy="${k}">Copy</button></div></div>`:"");}
-function gsRow(q){const k=gsKey(q),dn=gsDone(q),o=openGS.has("q-"+k);
-  return `<div class="gsrow ${dn?"done":""}" id="gs-${k}"><input type="checkbox" data-gs="${k}" ${dn?"checked":""} aria-label="Done: ${esc(q[1])}"><span class="rk">${q[0]}</span><details data-g="q-${k}" ${o?"open":""}><summary><span class="tt">${esc(q[1])}</span><span class="gsmeta"><span class="dp d-${q[3]}">${GS_DIFF[q[3]]}</span><span>${esc(q[4])}</span>${q[2]?`<span>LeetCode ${q[2]}</span>`:'<span class="gstag">Goldman classic</span>'}</span></summary><div class="gsbody">${o?gsBody(q):""}</div></details></div>`;}
+let gsSel=null;
+function gsFind(k){return GS.find(q=>gsKey(q)===k);}
+function gsTier(q){return GS_TIERS.findIndex(t=>q[0]>=t[1]&&q[0]<=t[2]);}
+/* the open question: the one picked, else the first not done */
+function gsCur(){let q=gsSel&&gsFind(gsSel);if(!q){q=GS.find(x=>!gsDone(x))||GS[0];gsSel=gsKey(q);openGS.add("tier-"+gsTier(q));}return q;}
+function gsItem(q){const k=gsKey(q),dn=gsDone(q),sel=k===gsSel;
+  return `<div class="gsitem ${dn?"done":""} ${sel?"sel":""}"><input type="checkbox" data-gs="${k}" ${dn?"checked":""} aria-label="Done: ${esc(q[1])}"><button class="gspick" data-gssel="${k}" ${sel?'aria-current="true"':""}><span class="rk">${q[0]}</span><span class="t">${esc(q[1])}</span><span class="dp d-${q[3]}">${GS_DIFF[q[3]]}</span></button></div>`;}
+function renderGSMain(){const q=gsCur(),k=gsKey(q),i=GS.indexOf(q),dn=gsDone(q),pv=GS[i-1],nx=GS[i+1];
+  $("#gsMain").innerHTML=`<header class="gsh"><span class="gseb">#${q[0]} of ${GS.length} · ${GS_TIERS[gsTier(q)][0]}</span><div class="gsht"><h2>${esc(q[1])}</h2><label class="gsdone"><input type="checkbox" data-gs="${k}" ${dn?"checked":""}>${dn?"Done":"Mark done"}</label></div><div class="gsmeta"><span class="dp d-${q[3]}">${GS_DIFF[q[3]]}</span><span>${esc(q[4])}</span>${q[2]?`<span>LeetCode ${q[2]}</span>`:'<span class="gstag">Goldman classic</span>'}</div></header>`
+   +`<div class="gsbody">${gsBody(q)}</div>`
+   +`<nav class="gsnav" aria-label="Previous and next question">${pv?`<button class="btn ghost" data-gssel="${gsKey(pv)}">← ${esc(pv[1])}</button>`:"<span></span>"}${nx?`<button class="btn ghost" data-gssel="${gsKey(nx)}">${esc(nx[1])} →</button>`:""}</nav>`;}
 function renderGS(){
   const done=GS.filter(gsDone).length,top=GS.filter(q=>q[0]<=40),cls=GS.filter(q=>!q[2]),t=today();
   const todayN=Object.values(S.gs).filter(d=>d===t).length;
-  $("#gsStats").innerHTML=`<div class="aistat ring" style="--p:${GS.length?done/GS.length*100:0}"><b>${done}/${GS.length}</b><span>questions done</span></div><div class="aistat"><b>${top.filter(gsDone).length}/${top.length}</b><span>must do done</span></div><div class="aistat"><b>${cls.filter(gsDone).length}/${cls.length}</b><span>Goldman classics · ${todayN} today</span></div>`;
-  const nx=GS.find(q=>!gsDone(q));
-  $("#gsNext").innerHTML=nx?`<div class="resume"><div class="nt"><span class="lbl">Up next · #${nx[0]} of ${GS.length}</span><b>${esc(nx[1])}</b><div class="nmeta"><span>${GS_DIFF[nx[3]]} · ${esc(nx[4])}</span></div></div><button class="btn cta" data-gsopen="${gsKey(nx)}">Open<small>Read it, then try it</small></button></div>`:`<div class="empty">All ${GS.length} done. You are ready.</div>`;
+  $("#gsStats").innerHTML=`<div><b>${done}/${GS.length}</b>done</div><div><b>${top.filter(gsDone).length}/${top.length}</b>must do</div><div><b>${cls.filter(gsDone).length}/${cls.length}</b>Goldman classics</div><div><b>${todayN}</b>today</div>`;
+  gsCur();
   const m=q=>(gsFilter==="all"||(gsFilter==="todo"&&!gsDone(q))||(gsFilter==="done"&&gsDone(q))||(gsFilter==="gs"&&!q[2]))&&(!gsQuery||(q[1]+" "+q[4]).toLowerCase().includes(gsQuery));
-  const live=gsQuery||gsFilter!=="all";
-  $("#gsList").innerHTML=GS_TIERS.map(([n,a,b,sub],i)=>{const all=GS.filter(q=>q[0]>=a&&q[0]<=b),qs=all.filter(m),d=all.filter(gsDone).length;if(!qs.length)return "";
-    return `<details class="pat gstier" data-g="tier-${i}" ${openGS.has("tier-"+i)||live?"open":""}><summary><span class="dot" style="background:var(--th)"></span><span class="name">${n} · ${a} to ${b}<small>${sub}</small></span><div class="bar"><i class="bs" style="width:${d/all.length*100}%"></i></div><span class="count">${d}/${all.length}</span></summary>${qs.map(gsRow).join("")}</details>`;}).join("")||'<div class="empty">Nothing matches.</div>';
-}
-function gsFind(k){return GS.find(q=>gsKey(q)===k);}
-function gsRefresh(k){const q=gsFind(k),r=document.getElementById("gs-"+k);if(q&&r)r.querySelector(".gsbody").innerHTML=gsBody(q);}
+  const live=gsQuery||gsFilter!=="all",L=$("#gsList"),top0=L.scrollTop;
+  L.innerHTML=GS_TIERS.map(([n,a,b],i)=>{const all=GS.filter(q=>q[0]>=a&&q[0]<=b),qs=all.filter(m),d=all.filter(gsDone).length;if(!qs.length)return "";
+    return `<details class="gsgrp" data-g="tier-${i}" ${openGS.has("tier-"+i)||live?"open":""}><summary><span>${n} · ${a} to ${b}</span><span class="ct">${d}/${all.length}</span></summary>${qs.map(gsItem).join("")}</details>`;}).join("")||'<div class="empty" style="margin:16px">Nothing matches.</div>';
+  L.scrollTop=top0;
+  renderGSMain();}
+/* keep the picked question visible in the list after moving with previous / next */
+function gsReveal(){const L=$("#gsList"),it=L.querySelector(".gsitem.sel");if(!it)return;const y=it.offsetTop,h=it.offsetHeight;
+  if(y-40<L.scrollTop||y+h>L.scrollTop+L.clientHeight)L.scrollTop=y-L.clientHeight/3;}
+function gsPick(k){const q=gsFind(k);if(!q)return;gsSel=k;openGS.add("tier-"+gsTier(q));renderGS();gsReveal();
+  const mn=$("#gsMain");if(mn.getBoundingClientRect().top<0||window.innerWidth<=760)mn.scrollIntoView({behavior:"smooth",block:"start"});}
 
 /* ---------------- EVENTS ---------------- */
 document.addEventListener("click",e=>{
@@ -1357,10 +1400,10 @@ document.addEventListener("click",e=>{
   const sl=e.target.closest('#aiNext a[href^="#step-"]');if(sl){const d=document.querySelector(sl.getAttribute("href"));if(d){e.preventDefault();d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"});}return;}
   const b=e.target.closest("button,label");if(!b)return;
   if(b.dataset.sec){sec=b.dataset.sec;showTab();return;}
-  if(b.dataset.gsw){const k=b.dataset.gsw;gsWays.has(k)?gsWays.delete(k):gsWays.add(k);gsRefresh(k);return;}
-  if(b.dataset.gss){const k=b.dataset.gss;gsSol.has(k)?gsSol.delete(k):gsSol.add(k);gsRefresh(k);return;}
+  if(b.dataset.gsw){const k=b.dataset.gsw;gsWays.has(k)?gsWays.delete(k):gsWays.add(k);renderGSMain();return;}
+  if(b.dataset.gss){const k=b.dataset.gss;gsSol.has(k)?gsSol.delete(k):gsSol.add(k);renderGSMain();return;}
   if(b.dataset.gscopy){const q=gsFind(b.dataset.gscopy);if(q&&navigator.clipboard)navigator.clipboard.writeText(q[7]).then(()=>toast("Copied"),()=>toast("Copy failed"));return;}
-  if(b.dataset.gsopen){const k=b.dataset.gsopen,q=gsFind(k);const ti=GS_TIERS.findIndex(t=>q[0]>=t[1]&&q[0]<=t[2]);openGS.add("tier-"+ti);openGS.add("q-"+k);renderGS();const r=document.getElementById("gs-"+k);if(r)r.scrollIntoView({behavior:"smooth",block:"center"});return;}
+  if(b.dataset.gssel){gsPick(b.dataset.gssel);return;}
   if(b.dataset.gf){gsFilter=b.dataset.gf;document.querySelectorAll("#gsFilters .chip").forEach(x=>x.classList.toggle("on",x===b));renderGS();return;}
   if(b.dataset.tab){lcTab=b.dataset.tab;showTab();return;}
   if(b.dataset.l){const id=b.dataset.id;setStatus(Number(id),b.dataset.l);
@@ -1380,7 +1423,7 @@ document.addEventListener("click",e=>{
 });
 /* remember which pattern blocks the user opened, so a re-render keeps them open */
 document.addEventListener("toggle",e=>{const d=e.target;
-  if(d.dataset&&d.dataset.g){const g=d.dataset.g;if(d.open){openGS.add(g);if(g.startsWith("q-")){const b=d.querySelector(".gsbody");if(b&&!b.innerHTML){const q=gsFind(g.slice(2));if(q)b.innerHTML=gsBody(q);}}}else openGS.delete(g);return;}if(d.dataset&&d.dataset.k&&d.dataset.k.startsWith("sd-")&&d.closest("#sdTracks")){d.open?openSD.add(d.dataset.k):openSD.delete(d.dataset.k);return;}
+  if(d.dataset&&d.dataset.g){d.open?openGS.add(d.dataset.g):openGS.delete(d.dataset.g);return;}if(d.dataset&&d.dataset.k&&d.dataset.k.startsWith("sd-")&&d.closest("#sdTracks")){d.open?openSD.add(d.dataset.k):openSD.delete(d.dataset.k);return;}
   if(d.dataset&&d.dataset.k){d.open?openAI.add(d.dataset.k):openAI.delete(d.dataset.k);return;}
   if(!d.matches||!d.matches("details.pat")||query||filter!=="all")return;
   const pi=Number(d.dataset.pi);d.open?openPats.add(pi):openPats.delete(pi);},true);
