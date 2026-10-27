@@ -392,9 +392,9 @@ body[data-sec="gs"] .syncbar,body[data-sec="gs"] .syncpanel{margin-top:16px}
 .gsfind label{font-size:12px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--gmut)}
 .gsfind input{font:inherit;font-size:14px;padding:9px 12px;border:1px solid #D5DCE3;border-radius:8px;background:#fff;min-width:0}
 .gsfind input:focus-visible{outline:3px solid #9DB8FF;outline-offset:1px}
-#gsFilters{display:flex;flex-wrap:wrap;gap:6px}
-#gsFilters .chip{font-size:12px;font-weight:800;padding:5px 11px;border-radius:999px;border:1px solid #D5DCE3;background:#FFFFFF;color:var(--gmut)}
-#gsFilters .chip.on{border-color:var(--gteal);background:var(--gteal);color:#FFFFFF}
+#gsFilters,#gsDiff{display:flex;flex-wrap:wrap;gap:6px}
+#gsFilters .chip,#gsDiff .chip{font-size:12px;font-weight:800;padding:5px 11px;border-radius:999px;border:1px solid #D5DCE3;background:#FFFFFF;color:var(--gmut)}
+#gsFilters .chip.on,#gsDiff .chip.on{border-color:var(--gteal);background:var(--gteal);color:#FFFFFF}
 .gslist{position:relative;overflow:auto;flex:1;overscroll-behavior:contain;padding-bottom:12px}
 details.gsgrp>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:14px 18px 6px;background:#FFFFFF;position:sticky;top:0;z-index:1}
 details.gsgrp>summary::-webkit-details-marker{display:none}
@@ -732,6 +732,7 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
         <label for="gsSearch">Search</label>
         <input type="search" id="gsSearch" placeholder="Title or pattern">
         <div class="filters" id="gsFilters"><button class="chip on" data-gf="all">All</button><button class="chip" data-gf="todo">To do</button><button class="chip" data-gf="done">Done</button><button class="chip" data-gf="gs">Goldman classics</button></div>
+        <div class="filters" id="gsDiff"><button class="chip on" data-gd="">Any</button><button class="chip" data-gd="E">Easy</button><button class="chip" data-gd="M">Medium</button><button class="chip" data-gd="H">Hard</button></div>
       </div>
       <div class="gslist" id="gsList"></div>
     </div></aside>
@@ -1372,7 +1373,7 @@ const GS_DIFF={E:"Easy",M:"Medium",H:"Hard"};
 const gsKey=q=>q[2]?String(q[2]):"gs-"+slug(q[1]);
 const gsDone=q=>!!S.gs[gsKey(q)];
 const openGS=new Set(),gsWays=new Set(),gsSol=new Set(),gsTabs={};
-let gsQuery="",gsFilter="all",gsSel=null;
+let gsQuery="",gsFilter="all",gsDiff="",gsSel=null;
 /* LeetCode problems close to each Goldman classic: [number, title, slug, premium, how it relates]. Checked against LeetCode, Oct 2026 */
 const GS_SIMILAR={
  "gs-second-smallest-element":[[414,"Third Maximum Number","third-maximum-number",0,"Same one-pass idea, tracking the top 3 distinct values."],[1796,"Second Largest Digit in a String","second-largest-digit-in-a-string",0,"Second best distinct value, mirrored to largest."]],
@@ -1436,8 +1437,8 @@ function renderGS(){
   const done=GS.filter(gsDone).length,top=GS.filter(q=>q[0]<=40),cls=GS.filter(q=>!q[2]);
   $("#gsStats").innerHTML=`<span><b>${done}/${GS.length}</b> done</span><span><b>${top.filter(gsDone).length}/${top.length}</b> must do</span><span><b>${cls.filter(gsDone).length}/${cls.length}</b> Goldman classics</span>`;
   gsCur();
-  const m=q=>(gsFilter==="all"||(gsFilter==="todo"&&!gsDone(q))||(gsFilter==="done"&&gsDone(q))||(gsFilter==="gs"&&!q[2]))&&(!gsQuery||(q[1]+" "+q[4]).toLowerCase().includes(gsQuery));
-  const live=gsQuery||gsFilter!=="all",L=$("#gsList"),top0=L.scrollTop;
+  const m=q=>(gsFilter==="all"||(gsFilter==="todo"&&!gsDone(q))||(gsFilter==="done"&&gsDone(q))||(gsFilter==="gs"&&!q[2]))&&(!gsDiff||q[3]===gsDiff)&&(!gsQuery||(q[1]+" "+q[4]).toLowerCase().includes(gsQuery));
+  const live=gsQuery||gsFilter!=="all"||gsDiff,L=$("#gsList"),top0=L.scrollTop;
   L.innerHTML=GS_TIERS.map(([n,a,b],i)=>{const all=GS.filter(q=>q[0]>=a&&q[0]<=b),qs=all.filter(m),d=all.filter(gsDone).length;if(!qs.length)return "";
     return `<details class="gsgrp" data-g="tier-${i}" ${openGS.has("tier-"+i)||live?"open":""}><summary><span class="nm">${n} · ${a} to ${b}</span><span class="ct">${d}/${all.length}</span></summary>${qs.map(gsItem).join("")}</details>`;}).join("")||'<div class="empty" style="margin:16px">Nothing matches.</div>';
   L.scrollTop=top0;
@@ -1457,6 +1458,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.gstab){const k=b.dataset.gstab;gsTabs[k]=Number(b.dataset.i);const fromWays=!gsSol.has(k);gsSol.add(k);renderGSMain();if(fromWays||b.classList.contains("seecode")){const c=document.querySelector("#gsMain .gscode");if(c)c.scrollIntoView({behavior:"smooth",block:"nearest"});}return;}
   if(b.dataset.gssel){gsPick(b.dataset.gssel);return;}
   if(b.dataset.gf){gsFilter=b.dataset.gf;document.querySelectorAll("#gsFilters .chip").forEach(x=>x.classList.toggle("on",x===b));renderGS();return;}
+  if(b.dataset.gd!==undefined){gsDiff=b.dataset.gd;document.querySelectorAll("#gsDiff .chip").forEach(x=>x.classList.toggle("on",x===b));renderGS();return;}
   if(b.dataset.tab){lcTab=b.dataset.tab;showTab();return;}
   if(b.dataset.l){const id=b.dataset.id;setStatus(Number(id),b.dataset.l);
     document.querySelectorAll(`.chip.sv.on[data-id="${id}"]`).forEach(x=>{x.classList.add("pop");const t=x.closest(".tile");if(t)t.classList.add("glow");});return;}
