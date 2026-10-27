@@ -453,6 +453,7 @@ details.gsgrp>summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:-3p
 .gssim a:hover{text-decoration:underline}
 .gssim a:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px;border-radius:4px}
 .gssim .why{flex-basis:100%;font-family:var(--read);font-size:15px;line-height:1.6;color:var(--gmut)}
+.gssame{font-size:11.5px;font-weight:800;padding:1px 8px;border-radius:999px;color:#137A4E;background:#DDF5EA}
 .gsprem{font-size:11.5px;font-weight:800;padding:1px 8px;border-radius:999px;color:#8A5A00;background:#FDF0CC}
 .gswhy{background:#FFFFFF;border:1px solid var(--gline);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px}
 .gswhy ul{margin:0;padding-left:20px;font-family:var(--read);font-size:16px;line-height:1.65;display:flex;flex-direction:column;gap:4px}
@@ -1386,6 +1387,20 @@ const GS_SIMILAR={
  "gs-train-map-shortest-route":[[1971,"Find if Path Exists in Graph","find-if-path-exists-in-graph",0,"Build the graph from edges and search it."],[127,"Word Ladder","word-ladder",0,"BFS for the shortest number of steps."]],
  "gs-lowest-price-per-interval":[[218,"The Skyline Problem","the-skyline-problem",0,"Same sweep with a heap; the tallest building instead of the cheapest deal."],[56,"Merge Intervals","merge-intervals",0,"Sort intervals and join the ones that touch."]]
 };
+/* GeeksforGeeks pages for the Goldman classics: [title, path under geeksforgeeks.org/dsa/, same problem?, how it relates]. Each page opened and checked, Oct 2026 */
+const GS_GFG={
+ "gs-second-smallest-element":[["Smallest and second smallest in an array","to-find-smallest-and-second-smallest-element-in-an-array",1,"Same one-pass idea with two variables."]],
+ "gs-best-average-grade":[["Find Maximum Average Marks in Student Pairs","find-maximum-average-marks-in-student-pairs",1,"Same input and example as the Goldman version."],["Students with maximum average score of three subjects","students-with-maximum-average-score-of-three-subjects",0,"Averages per student, from a different input."]],
+ "gs-apache-log-most-frequent-ip":[["Most frequent in an array","frequent-element-array",0,"The core step: count with a hash map, take the max."]],
+ "gs-run-length-encoding":[["Run Length Encoding and Decoding","run-length-encoding",1,"Same encoding, plus decoding."]],
+ "gs-optimal-path-max-coins-in-a-grid":[["Maximum path sum in matrix","maximum-path-sum-matrix",0,"Best path sum on a grid with DP."],["Gold Mine Problem","gold-mine-problem",0,"Collect the most gold across a grid with DP."]],
+ "gs-robot-walk-final-position":[["Check if a given sequence of moves for a robot is circular or not","check-if-a-given-sequence-of-moves-for-a-robot-is-circular-or-not",0,"Track x, y and direction while applying moves."]],
+ "gs-longest-uniform-substring":[["Maximum consecutive repeating character in string","maximum-consecutive-repeating-character-string",0,"Find the longest run of one character."]],
+ "gs-power-of-ten":[["Check if a number is a power of another","check-if-a-number-is-power-of-another-number",0,"Same check with any base; use base 10."]],
+ "gs-unique-substrings-of-length-k":[["Distinct Substring frequency counter","distinct-substring-frequency-counter",0,"All distinct length-k substrings, with counts."]],
+ "gs-train-map-shortest-route":[["Shortest path from source to all vertices in an unweighted graph","shortest-path-unweighted-graph",0,"BFS shortest path, the same core idea."]],
+ "gs-lowest-price-per-interval":[["Maximum number of overlapping Intervals","maximum-number-of-overlapping-intervals",0,"Same sweep over sorted start and end points."],["Overlapping Intervals","merging-intervals",0,"Sort intervals and merge the ones that overlap."]]
+};
 function gsFind(k){return GS.find(q=>gsKey(q)===k);}
 function gsTier(q){return GS_TIERS.findIndex(t=>q[0]>=t[1]&&q[0]<=t[2]);}
 /* code for each way, same order as the ways; null for an approach that does not work. Older rows only have the best one */
@@ -1413,6 +1428,7 @@ function renderGSMain(){const q=gsCur(),k=gsKey(q),dn=gsDone(q),p=gsParts(q);
    +`<section class="gssec"><h3 class="gslbl">Problem</h3><p class="gsq">${esc(p.text)}</p></section>`
    +p.ex.map((e,i)=>`<dl class="gsex"><h3 class="gslbl">Example${p.ex.length>1?" "+(i+1):""}</h3>${e.all?`<dd class="all">${esc(e.all)}</dd>`:`<dt>Input</dt><dd>${esc(e.inp)}</dd><dt>Output</dt><dd class="out">${esc(e.out)}</dd>`}</dl>`).join("")
    +(GS_SIMILAR[k]?`<section class="gssec"><h3 class="gslbl">Similar on LeetCode</h3><ul class="gssim">${GS_SIMILAR[k].map(([n,t,sl,pr,why])=>`<li><a href="https://leetcode.com/problems/${sl}/" target="_blank" rel="noopener">${n}. ${esc(t)} ↗</a>${pr?'<span class="gsprem">Premium</span>':""}<span class="why">${esc(why)}</span></li>`).join("")}</ul></section>`:"")
+   +(GS_GFG[k]?`<section class="gssec"><h3 class="gslbl">On GeeksforGeeks</h3><ul class="gssim">${GS_GFG[k].map(([t,pth,same,why])=>`<li><a href="https://www.geeksforgeeks.org/dsa/${pth}/" target="_blank" rel="noopener">${esc(t)} ↗</a>${same?'<span class="gssame">Same problem</span>':""}<span class="why">${esc(why)}</span></li>`).join("")}</ul></section>`:"")
    +`<div class="gsbtns"><button class="gsbtn" data-gsw="${k}">${gsWays.has(k)?"Hide ways":"Ways to solve"}</button><button class="gsbtn dark" data-gss="${k}">${gsSol.has(k)?"Hide solution":"Solution"}</button>${q[2]?`<a class="gsbtn" href="https://leetcode.com/problems/${slug(q[1])}/" target="_blank" rel="noopener">Open on LeetCode ↗</a>`:""}</div>`
    +(gsWays.has(k)?`<section class="gssec"><h3 class="gslbl">Ways to solve, slowest to best</h3><ol class="gsways">${q[6].map((w,i)=>gsWay(q,w,i)).join("")}</ol></section>`:"")
    +(gsSol.has(k)?gsSolution(q):"");}
