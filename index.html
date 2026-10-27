@@ -446,6 +446,14 @@ details.gsgrp>summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:-3p
 .gsways .tagb.bad{color:#B4442C;background:#FCEAE5}
 .gsways .seecode{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--gteal-ink);margin-left:6px;text-decoration:underline;text-underline-offset:2px}
 .gstabs{display:flex;flex-wrap:wrap;gap:6px}
+.gssim{list-style:none;margin:0;padding:0;border:1px solid var(--gline);border-radius:12px;overflow:hidden;background:#FFFFFF}
+.gssim li{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:12px 18px;border-top:1px solid var(--gline)}
+.gssim li:first-child{border-top:none}
+.gssim a{font-size:15px;font-weight:800;color:var(--gteal-ink);text-decoration:none}
+.gssim a:hover{text-decoration:underline}
+.gssim a:focus-visible{outline:3px solid #9DB8FF;outline-offset:2px;border-radius:4px}
+.gssim .why{flex-basis:100%;font-family:var(--read);font-size:15px;line-height:1.6;color:var(--gmut)}
+.gsprem{font-size:11.5px;font-weight:800;padding:1px 8px;border-radius:999px;color:#8A5A00;background:#FDF0CC}
 .gswhy{background:#FFFFFF;border:1px solid var(--gline);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px}
 .gswhy ul{margin:0;padding-left:20px;font-family:var(--read);font-size:16px;line-height:1.65;display:flex;flex-direction:column;gap:4px}
 .gswhy li::marker{color:var(--gteal)}
@@ -1364,6 +1372,20 @@ const gsKey=q=>q[2]?String(q[2]):"gs-"+slug(q[1]);
 const gsDone=q=>!!S.gs[gsKey(q)];
 const openGS=new Set(),gsWays=new Set(),gsSol=new Set(),gsTabs={};
 let gsQuery="",gsFilter="all",gsSel=null;
+/* LeetCode problems close to each Goldman classic: [number, title, slug, premium, how it relates]. Checked against LeetCode, Oct 2026 */
+const GS_SIMILAR={
+ "gs-second-smallest-element":[[414,"Third Maximum Number","third-maximum-number",0,"Same one-pass idea, tracking the top 3 distinct values."],[1796,"Second Largest Digit in a String","second-largest-digit-in-a-string",0,"Second best distinct value, mirrored to largest."]],
+ "gs-best-average-grade":[[1086,"High Five","high-five",1,"Group scores by student, then average them."],[2512,"Reward Top K Students","reward-top-k-students",0,"Add up a score per student with a hash map, then rank."]],
+ "gs-apache-log-most-frequent-ip":[[819,"Most Common Word","most-common-word",0,"Count tokens in text and return the most frequent."],[692,"Top K Frequent Words","top-k-frequent-words",0,"Counting plus tie handling, for the top k."]],
+ "gs-run-length-encoding":[[443,"String Compression","string-compression",0,"Same runs and counts, but count 1 is left out and it is done in place."],[38,"Count and Say","count-and-say",0,"Run-length encoding applied over and over."]],
+ "gs-optimal-path-max-coins-in-a-grid":[[64,"Minimum Path Sum","minimum-path-sum",0,"Same grid DP with min instead of max, from the top-left."],[62,"Unique Paths","unique-paths",0,"Same moves on a grid, counting paths instead."]],
+ "gs-robot-walk-final-position":[[657,"Robot Return to Origin","robot-return-to-origin",0,"Same U, D, L, R moves; check if it ends at the start."],[874,"Walking Robot Simulation","walking-robot-simulation",0,"Harder version with turns and obstacles."]],
+ "gs-longest-uniform-substring":[[1446,"Consecutive Characters","consecutive-characters",0,"Length of the longest run of one character."],[830,"Positions of Large Groups","positions-of-large-groups",0,"Start and end of every long run."]],
+ "gs-power-of-ten":[[326,"Power of Three","power-of-three",0,"Same check with base 3 instead of 10."],[231,"Power of Two","power-of-two",0,"Same check with base 2, plus a bit trick."]],
+ "gs-unique-substrings-of-length-k":[[1461,"Check If a String Contains All Binary Codes of Size K","check-if-a-string-contains-all-binary-codes-of-size-k",0,"Put every length-k substring in a set."],[187,"Repeated DNA Sequences","repeated-dna-sequences",0,"Slide a length-10 window and track seen substrings."]],
+ "gs-train-map-shortest-route":[[1971,"Find if Path Exists in Graph","find-if-path-exists-in-graph",0,"Build the graph from edges and search it."],[127,"Word Ladder","word-ladder",0,"BFS for the shortest number of steps."]],
+ "gs-lowest-price-per-interval":[[218,"The Skyline Problem","the-skyline-problem",0,"Same sweep with a heap; the tallest building instead of the cheapest deal."],[56,"Merge Intervals","merge-intervals",0,"Sort intervals and join the ones that touch."]]
+};
 function gsFind(k){return GS.find(q=>gsKey(q)===k);}
 function gsTier(q){return GS_TIERS.findIndex(t=>q[0]>=t[1]&&q[0]<=t[2]);}
 /* code for each way, same order as the ways; null for an approach that does not work. Older rows only have the best one */
@@ -1390,6 +1412,7 @@ function renderGSMain(){const q=gsCur(),k=gsKey(q),dn=gsDone(q),p=gsParts(q);
   $("#gsMain").innerHTML=`<header class="gsh"><span class="gseb">#${q[0]} of ${GS.length} · ${GS_TIERS[gsTier(q)][0]}</span><div class="gsht"><h2>${esc(q[1])}</h2><label class="gsdone"><input type="checkbox" data-gs="${k}" ${dn?"checked":""}>${dn?"Done":"Mark done"}</label></div><div class="gsmeta"><span class="dp d-${q[3]}">${GS_DIFF[q[3]]}</span><span>${esc(q[4])}</span>${q[2]?`<span>LeetCode ${q[2]}</span>`:'<span class="gstag">Goldman classic</span>'}</div></header>`
    +`<section class="gssec"><h3 class="gslbl">Problem</h3><p class="gsq">${esc(p.text)}</p></section>`
    +p.ex.map((e,i)=>`<dl class="gsex"><h3 class="gslbl">Example${p.ex.length>1?" "+(i+1):""}</h3>${e.all?`<dd class="all">${esc(e.all)}</dd>`:`<dt>Input</dt><dd>${esc(e.inp)}</dd><dt>Output</dt><dd class="out">${esc(e.out)}</dd>`}</dl>`).join("")
+   +(GS_SIMILAR[k]?`<section class="gssec"><h3 class="gslbl">Similar on LeetCode</h3><ul class="gssim">${GS_SIMILAR[k].map(([n,t,sl,pr,why])=>`<li><a href="https://leetcode.com/problems/${sl}/" target="_blank" rel="noopener">${n}. ${esc(t)} ↗</a>${pr?'<span class="gsprem">Premium</span>':""}<span class="why">${esc(why)}</span></li>`).join("")}</ul></section>`:"")
    +`<div class="gsbtns"><button class="gsbtn" data-gsw="${k}">${gsWays.has(k)?"Hide ways":"Ways to solve"}</button><button class="gsbtn dark" data-gss="${k}">${gsSol.has(k)?"Hide solution":"Solution"}</button>${q[2]?`<a class="gsbtn" href="https://leetcode.com/problems/${slug(q[1])}/" target="_blank" rel="noopener">Open on LeetCode ↗</a>`:""}</div>`
    +(gsWays.has(k)?`<section class="gssec"><h3 class="gslbl">Ways to solve, slowest to best</h3><ol class="gsways">${q[6].map((w,i)=>gsWay(q,w,i)).join("")}</ol></section>`:"")
    +(gsSol.has(k)?gsSolution(q):"");}
