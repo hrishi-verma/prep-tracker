@@ -365,26 +365,26 @@ details.sec[open] .chev::before{transform:rotate(90deg)}
 }
 /* goldman: layout A from the design canvas. White top bar, full-height list on the left, the open question on the page ground */
 .gshstats{display:none}
-body[data-sec="gs"]{--page:#F3F7F7;--blob:#F3F7F7;background:#F3F7F7}
-body[data-sec="gs"] .wrap{max-width:none;padding:0 0 40px}
-body[data-sec="gs"] .hero{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;background:#FFFFFF;color:#1C2140;border-radius:0;box-shadow:none;border-bottom:1px solid #E1E7EA;padding:14px max(32px,env(safe-area-inset-right,0px)) 14px max(32px,env(safe-area-inset-left,0px));margin:0}
-body[data-sec="gs"] .hero::before,body[data-sec="gs"] .hero::after{display:none}
-body[data-sec="gs"] .hero header{display:contents}
-body[data-sec="gs"] .hero header h1{order:0;font-size:18px;font-weight:900;text-shadow:none;margin:0;letter-spacing:0}
-body[data-sec="gs"] .hero header h1 span{display:none}
-body[data-sec="gs"] .hero nav{order:1;background:none;border:none;backdrop-filter:none;padding:0;gap:4px;margin:0}
-body[data-sec="gs"] .hero nav button{color:#5E6684;padding:7px 14px;border-radius:8px;font-size:14px;font-weight:800}
-body[data-sec="gs"] .hero nav button:hover{background:#F3F7F7}
-body[data-sec="gs"] .hero nav button.on{background:#E2F4F2;color:#0A5A61;box-shadow:none}
-body[data-sec="gs"] .hero nav button:focus-visible{outline-color:#9DB8FF}
-body[data-sec="gs"] .gshstats{order:2;display:flex;flex-wrap:wrap;gap:6px 22px;margin-left:auto;font-size:13px;color:#5E6684;font-weight:700}
+body:is([data-sec="gs"],[data-sec="r2"]){--page:#F3F7F7;--blob:#F3F7F7;background:#F3F7F7}
+body:is([data-sec="gs"],[data-sec="r2"]) .wrap{max-width:none;padding:0 0 40px}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;background:#FFFFFF;color:#1C2140;border-radius:0;box-shadow:none;border-bottom:1px solid #E1E7EA;padding:14px max(32px,env(safe-area-inset-right,0px)) 14px max(32px,env(safe-area-inset-left,0px));margin:0}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero::before,body:is([data-sec="gs"],[data-sec="r2"]) .hero::after{display:none}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero header{display:contents}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero header h1{order:0;font-size:18px;font-weight:900;text-shadow:none;margin:0;letter-spacing:0}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero header h1 span{display:none}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero nav{order:1;background:none;border:none;backdrop-filter:none;padding:0;gap:4px;margin:0}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero nav button{color:#5E6684;padding:7px 14px;border-radius:8px;font-size:14px;font-weight:800}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero nav button:hover{background:#F3F7F7}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero nav button.on{background:#E2F4F2;color:#0A5A61;box-shadow:none}
+body:is([data-sec="gs"],[data-sec="r2"]) .hero nav button:focus-visible{outline-color:#9DB8FF}
+body:is([data-sec="gs"],[data-sec="r2"]) .gshstats{order:2;display:flex;flex-wrap:wrap;gap:6px 22px;margin-left:auto;font-size:13px;color:#5E6684;font-weight:700}
 .gshstats b{color:#1C2140;font-size:15px;font-variant-numeric:tabular-nums}
-body[data-sec="gs"] .syncpill{order:3;background:#FFFFFF;border-color:#D5DCE3;color:#5E6684}
-body[data-sec="gs"] .syncpill i{background:#9AA3B8}
-body[data-sec="gs"] .syncpill.ok i{background:#1FA971}
-body[data-sec="gs"] .syncbar,body[data-sec="gs"] .syncpanel,body[data-sec="gs"] footer{margin-left:32px;margin-right:32px}
-body[data-sec="gs"] .syncbar,body[data-sec="gs"] .syncpanel{margin-top:16px}
-#tab-gs{--read:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;--gink:#1C2140;--gmut:#5E6684;--gline:#E1E7EA;--gteal:#0E7C86;--gteal-ink:#0A5A61;--gteal-bg:#E2F4F2;--gex-line:#D5E9E6;--gtint:#F2F8F7;--ggreen:#1A7F55;color:var(--gink)}
+body:is([data-sec="gs"],[data-sec="r2"]) .syncpill{order:3;background:#FFFFFF;border-color:#D5DCE3;color:#5E6684}
+body:is([data-sec="gs"],[data-sec="r2"]) .syncpill i{background:#9AA3B8}
+body:is([data-sec="gs"],[data-sec="r2"]) .syncpill.ok i{background:#1FA971}
+body:is([data-sec="gs"],[data-sec="r2"]) .syncbar,body:is([data-sec="gs"],[data-sec="r2"]) .syncpanel,body:is([data-sec="gs"],[data-sec="r2"]) footer{margin-left:32px;margin-right:32px}
+body:is([data-sec="gs"],[data-sec="r2"]) .syncbar,body:is([data-sec="gs"],[data-sec="r2"]) .syncpanel{margin-top:16px}
+#tab-gs,#tab-r2{--read:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;--gink:#1C2140;--gmut:#5E6684;--gline:#E1E7EA;--gteal:#0E7C86;--gteal-ink:#0A5A61;--gteal-bg:#E2F4F2;--gex-line:#D5E9E6;--gtint:#F2F8F7;--ggreen:#1A7F55;color:var(--gink)}
 .gssplit{display:flex;flex-wrap:wrap;align-items:stretch;min-height:calc(100vh - 66px)}
 .gsside{flex:0 1 380px;max-width:400px;min-width:0;background:#FFFFFF;border-right:1px solid var(--gline)}
 .gsside-in{position:sticky;top:0;max-height:100vh;display:flex;flex-direction:column}
@@ -465,7 +465,62 @@ details.gsgrp>summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:-3p
 .gscode pre{background:#13203A;color:#E6EDF7;border-radius:12px;padding:18px 20px;margin:0;overflow:auto;font:14px/1.7 var(--mono);tab-size:4}
 .gscode .gscopy{position:absolute;top:10px;right:10px;font-size:12px;font-weight:800;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.14);color:#FFFFFF}
 .gscode .k{color:#C3A6FF}.gscode .s{color:#A5E3A0}.gscode .c{color:#8391AD;font-style:italic}.gscode .n{color:#FFC27A}.gscode .f{color:#7CC8FF}
-@media (max-width:760px){body[data-sec="gs"] .hero{padding:12px 16px}body[data-sec="gs"] .gshstats{margin-left:0;flex-basis:100%}.gsside{max-width:none;flex-basis:100%;border-right:none;border-bottom:1px solid var(--gline)}.gsside-in{position:static;max-height:46vh}.gssplit{min-height:0}.gsmain{padding:22px 16px 28px}.gsht h2{font-size:24px}.gsq{font-size:16.5px}.gsex{grid-template-columns:minmax(0,1fr);gap:2px}.gsex dd{margin-bottom:8px}.gscode pre{font-size:13px;padding:14px}body[data-sec="gs"] .syncbar,body[data-sec="gs"] .syncpanel,body[data-sec="gs"] footer{margin-left:16px;margin-right:16px}}
+@media (max-width:760px){body:is([data-sec="gs"],[data-sec="r2"]) .hero{padding:12px 16px}body:is([data-sec="gs"],[data-sec="r2"]) .gshstats{margin-left:0;flex-basis:100%}.gsside{max-width:none;flex-basis:100%;border-right:none;border-bottom:1px solid var(--gline)}.gsside-in{position:static;max-height:46vh}.gssplit{min-height:0}.gsmain{padding:22px 16px 28px}.gsht h2{font-size:24px}.gsq{font-size:16.5px}.gsex{grid-template-columns:minmax(0,1fr);gap:2px}.gsex dd{margin-bottom:8px}.gscode pre{font-size:13px;padding:14px}body:is([data-sec="gs"],[data-sec="r2"]) .syncbar,body:is([data-sec="gs"],[data-sec="r2"]) .syncpanel,body:is([data-sec="gs"],[data-sec="r2"]) footer{margin-left:16px;margin-right:16px}}
+/* GS Round 2: same look as the Goldman tab, reuses its tokens and .gs* classes */
+body[data-sec="gs"] #r2Stats,body[data-sec="r2"] #gsStats{display:none}
+.r2prog{padding:14px 18px;border-bottom:1px solid var(--gline);display:flex;flex-direction:column;gap:10px}
+.r2prog .lbl{font-size:12px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--gmut)}
+.r2bar{height:8px;border-radius:999px;background:#E9EEF0;overflow:hidden}
+.r2bar i{display:block;height:100%;background:var(--ggreen);border-radius:999px;transition:width .3s}
+.r2pct{font-size:13px;font-weight:800;color:var(--gmut)}
+.r2pct b{color:var(--gink);font-variant-numeric:tabular-nums}
+.r2acts{display:flex;flex-wrap:wrap;gap:6px}
+.r2acts .gsbtn{font-size:12.5px;padding:7px 11px;border-radius:8px}
+.r2acts .gsbtn.warn{border-color:#E8553A;color:#B4442C}
+.r2list{overflow:auto;padding:6px 0 12px}
+.r2list .gspick .t{font-size:14.5px;font-weight:800;line-height:1.35}
+.r2list .hits{font-size:11.5px;font-weight:800;padding:1px 8px;border-radius:999px;color:var(--gteal-ink);background:var(--gteal-bg);flex:none}
+.gsitem.dim{opacity:.45}
+.r2sum{margin:0;font-family:var(--read);font-size:17px;line-height:1.6;color:var(--gmut)}
+.r2p{margin:0;font-family:var(--read);font-size:17px;line-height:1.75;max-width:760px}
+.r2main code{font-family:var(--mono);font-size:.88em;background:#EEF1F7;padding:1px 6px;border-radius:5px}
+.r2main pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:inherit}
+.r2card{max-width:760px;background:#FFFFFF;border:1px solid var(--gline);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:8px}
+.r2card.tint{background:var(--gtint);border-color:var(--gex-line)}
+.r2card h3{margin:0;font-size:12px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--gteal-ink)}
+.r2card ul,.r2card ol,.r2acc .bd ul,.r2acc .bd ol{margin:0;padding-left:22px;font-family:var(--read);font-size:16px;line-height:1.65;display:flex;flex-direction:column;gap:4px}
+.r2grp{max-width:760px;display:flex;flex-direction:column;gap:8px}
+.r2accs{border:1px solid var(--gline);border-radius:12px;overflow:hidden;background:#FFFFFF}
+details.r2acc{border-top:1px solid var(--gline)}
+details.r2acc:first-child{border-top:none}
+details.r2acc>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:10px;padding:13px 18px;font-size:15.5px;font-weight:800;line-height:1.4}
+details.r2acc>summary::-webkit-details-marker{display:none}
+details.r2acc>summary::before{content:"+";flex:none;width:14px;font-family:var(--mono);font-weight:500;color:var(--gteal)}
+details.r2acc[open]>summary::before{content:"\2212"}
+details.r2acc>summary:hover{background:#F7FAFA}
+details.r2acc>summary:focus-visible{outline:3px solid #9DB8FF;outline-offset:-3px}
+details.r2acc[open]>summary{background:var(--gtint)}
+.r2acc .bd{padding:6px 18px 16px 42px;display:flex;flex-direction:column;gap:10px;font-family:var(--read);font-size:16px;line-height:1.7}
+.r2acc .bd p{margin:0}
+.r2acc .bd .gscode pre{font-size:13.5px}
+.r2dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;align-items:baseline}
+.r2dl dt{font-family:'Nunito',system-ui,sans-serif;font-size:12px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;color:var(--gmut)}
+.r2dl dd{margin:0}
+.r2dl dd.ans{color:var(--gteal-ink)}
+.r2dl dd.bad{color:#B4442C}
+.r2res{font-size:13px;font-weight:800;color:var(--gmut)}
+@media (max-width:760px){.r2dl{grid-template-columns:minmax(0,1fr);gap:2px}.r2dl dd{margin-bottom:8px}.r2acc .bd{padding-left:18px}.r2p,.r2sum{font-size:16px}}
+@media print{
+  body[data-sec="r2"]{background:#FFFFFF}
+  body[data-sec="r2"] .hero,body[data-sec="r2"] .syncbar,body[data-sec="r2"] .syncpanel,body[data-sec="r2"] footer,body[data-sec="r2"] #toast,body[data-sec="r2"] .gsside,body[data-sec="r2"] .gsdone{display:none!important}
+  body[data-sec="r2"] .gssplit{display:block;min-height:0}
+  body[data-sec="r2"] .gsmain{padding:0;gap:14px}
+  body[data-sec="r2"] .r2s{break-before:page}
+  body[data-sec="r2"] .r2s:first-child{break-before:auto}
+  body[data-sec="r2"] details.r2acc,body[data-sec="r2"] .r2card,body[data-sec="r2"] .gscode{break-inside:avoid}
+  body[data-sec="r2"] .gscode pre{white-space:pre-wrap;background:#F4F6FA;color:#13203A;border:1px solid #D5DCE3}
+  body[data-sec="r2"] details.r2acc>summary::before{display:none}
+}
 /* about */
 .about{max-width:720px}
 .about h3{font-size:16px;font-weight:900;margin:22px 0 6px}
@@ -495,7 +550,7 @@ footer .btn{font-size:12px;padding:6px 10px}
 body[data-sec="sd"]{--g:linear-gradient(120deg,#2F6BFF 0%,#12B5D6 100%);--th:#2F6BFF;--th-ink:#1F4FD1;--th-bg:#E8F0FF}
 body[data-sec="ai"]{--g:linear-gradient(120deg,#7C4DFF 0%,#D946EF 100%);--th:#7C4DFF;--th-ink:#5A2FD3;--th-bg:#F1EAFF}
 body[data-sec="about"]{--g:linear-gradient(120deg,#1C2140 0%,#4C5689 100%);--th:#4C5689;--th-ink:#1C2140;--th-bg:#ECEEF7}
-body[data-sec="gs"]{--g:linear-gradient(120deg,#0E7C86 0%,#34C3A0 100%);--th:#0E7C86;--th-ink:#0A5A61;--th-bg:#E2F6F4}
+body:is([data-sec="gs"],[data-sec="r2"]){--g:linear-gradient(120deg,#0E7C86 0%,#34C3A0 100%);--th:#0E7C86;--th-ink:#0A5A61;--th-bg:#E2F6F4}
 body{background:radial-gradient(1100px 420px at 50% -140px,var(--th-bg),transparent 72%) no-repeat,var(--bg);min-height:100vh}
 .hero{position:relative;overflow:hidden;background:var(--g);color:#fff;border-radius:24px;padding:24px 24px 18px;margin-bottom:16px;box-shadow:0 18px 36px -18px var(--th)}
 .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
@@ -573,7 +628,7 @@ body{--page:#FFF8F3;--blob:#FFE9DC}
 body[data-sec="sd"]{--page:#F4F8FF;--blob:#E0ECFF}
 body[data-sec="ai"]{--page:#F9F5FF;--blob:#EEE3FF}
 body[data-sec="about"]{--page:#F6F7FB;--blob:#E8EAF4}
-body[data-sec="gs"]{--page:#F3FBFA;--blob:#DCF3EF}
+body:is([data-sec="gs"],[data-sec="r2"]){--page:#F3FBFA;--blob:#DCF3EF}
 html{background:var(--page,#FCFCFE)}
 body{background:radial-gradient(800px 520px at 0% 0%,var(--blob),transparent 65%),radial-gradient(700px 520px at 100% 100%,var(--blob),transparent 65%),var(--page);background-attachment:fixed;transition:background-color .3s}
 /* accordions take their own hue */
@@ -646,11 +701,13 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 <nav id="mainNav">
   <button class="on" data-sec="lc">LeetCode</button>
   <button data-sec="gs">Goldman</button>
+  <button data-sec="r2">GS Round 2</button>
   <button data-sec="sd">System Design</button>
   <button data-sec="ai">AI Fluency</button>
   <button data-sec="about">About</button>
 </nav>
 <div class="gshstats" id="gsStats" aria-label="Goldman progress"></div>
+<div class="gshstats" id="r2Stats" aria-label="Round 2 progress"></div>
 </div>
 <div class="syncbar" id="syncConflict" hidden>
   <span><b>Two versions found.</b> GitHub has progress from another device, and this device has changes that are not on GitHub yet.</span>
@@ -740,6 +797,21 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
   </div>
 </section>
 
+<!-- GS ROUND 2 -->
+<section class="tab" id="tab-r2">
+  <div class="gssplit">
+    <aside class="gsside" aria-label="Round 2 sections"><div class="gsside-in">
+      <div class="gsfind">
+        <label for="r2Search">Search</label>
+        <input type="search" id="r2Search" placeholder="Topic or question">
+      </div>
+      <div class="r2prog" id="r2Prog"></div>
+      <div class="r2list" id="r2List"></div>
+    </div></aside>
+    <article class="gsmain r2main" id="r2Main" aria-live="polite"></article>
+  </div>
+</section>
+
 <!-- SYSTEM DESIGN -->
 <section class="tab" id="tab-sd">
   <div class="aistats" id="sdStats"></div>
@@ -809,7 +881,7 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 
 <h3>How the page is organised</h3>
 <ul>
-<li>The top bar has four sections, LeetCode, Goldman, System Design and AI Fluency, plus About. LeetCode has its own sub-tabs below it.</li>
+<li>The top bar has five sections, LeetCode, Goldman, GS Round 2, System Design and AI Fluency, plus About. GS Round 2 is a study guide for the Goldman second round: 13 sections with search, a complete tick per section, and print. LeetCode has its own sub-tabs below it.</li>
 <li><b>Today</b>: today's pattern with required and optional tiles, then the revision list.</li>
 <li><b>All questions</b>: every pattern as a collapsible block with a progress bar, search, filters (including Never revised), and per question a status dropdown, revision counter and note.</li>
 <li><b>Header</b>: the app is titled Prep Tracker; LeetCode, System Design and AI Fluency each open with three summary tiles in the same style.</li>
@@ -829,7 +901,7 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 <li>Keep Export and Import working. They are the user's safety net.</li>
 <li>Question ids are the keys for all saved data. Adding questions is safe; changing an existing id is not.</li>
 </ul>
-<p>Saved fields. Current: <code>st</code> (question id to status, first attempt date <code>f</code> and last change date), <code>rc</code> (question id to revision count <code>n</code>, dates <code>h</code>, <code>last</code>, climb <code>k</code>, next <code>due</code>, undo stack <code>u</code>, last lapse <code>lap</code>, retired date <code>ret</code>), <code>lapsedOn</code> (date the daily lapse check last ran), <code>rlog</code> (date to revisions that day), <code>log</code> (date to questions first attempted that day), <code>day</code> (today's pattern and question ids), <code>v2</code> (switch date and legacy ids), <code>notes</code>, <code>guess</code>, <code>gs</code> (Goldman question key to date ticked). Old and kept untouched: <code>labels</code> (read as Solved when no <code>st</code> entry), <code>sched</code>, <code>rv</code>.</p>
+<p>Saved fields. Current: <code>st</code> (question id to status, first attempt date <code>f</code> and last change date), <code>rc</code> (question id to revision count <code>n</code>, dates <code>h</code>, <code>last</code>, climb <code>k</code>, next <code>due</code>, undo stack <code>u</code>, last lapse <code>lap</code>, retired date <code>ret</code>), <code>lapsedOn</code> (date the daily lapse check last ran), <code>rlog</code> (date to revisions that day), <code>log</code> (date to questions first attempted that day), <code>day</code> (today's pattern and question ids), <code>v2</code> (switch date and legacy ids), <code>notes</code>, <code>guess</code>, <code>gs</code> (Goldman question key to date ticked), <code>r2</code> (GS Round 2 section id to date ticked). Old and kept untouched: <code>labels</code> (read as Solved when no <code>st</code> entry), <code>sched</code>, <code>rv</code>.</p>
 
 <h3>How the code is laid out</h3>
 <p>Everything is in one script block at the bottom of the file. <code>PATTERNS</code> holds the question list as pattern name plus an array of [id, title, difficulty, optional hidden pattern hint]; in each normal pattern the first 5 are required and the next 5 optional. <code>st()</code> reads status, <code>setStatus()</code> writes it. <code>ensureToday()</code> picks the day's pattern. <code>revUp()</code>, <code>revDown()</code>, <code>lapse()</code>, <code>retire()</code>, <code>inPool()</code> and <code>revDue()</code> run revision. <code>render()</code> redraws everything from state after each change. LeetCode links are generated from the title by slugifying it.</p>
@@ -912,12 +984,12 @@ const LCLS={solved:"s"};
 /* Saved shape is additive only. Old fields (labels, sched, rv, log) are never rewritten here.
    New fields: st (status), rc (revision counter), rlog (revisions per date), day (today's pattern), v2 (switch date + legacy ids). */
 const KEY="lc-tracker-v1";
-const BLANK=()=>({labels:{},notes:{},guess:{},sched:{},rv:{},log:{},st:{},rc:{},rlog:{},day:null,v2:null,gs:{}});
+const BLANK=()=>({labels:{},notes:{},guess:{},sched:{},rv:{},log:{},st:{},rc:{},rlog:{},day:null,v2:null,gs:{},r2:{}});
 let S=BLANK();
 let storeOK=true;
 function load(){try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){storeOK=false;}migrate();}
 function migrate(){let n=0;for(const id in S.labels){if(S.labels[id].s==="learned"){S.labels[id].s="revisit";if(!S.rv[id])S.rv[id]={stage:0,due:addDays(S.labels[id].d||today(),2),hist:[]};n++;}}
-  for(const k of ["st","rc","rlog","gs"])if(!S[k]){S[k]={};n++;}
+  for(const k of ["st","rc","rlog","gs","r2"])if(!S[k]){S[k]={};n++;}
   /* v2: everything attempted before the switch counts as Solved and joins revision only after its first +1 */
   if(!S.v2){S.v2={at:today(),legacy:Object.keys(S.labels).map(Number)};n++;}
   if(n)save();}
@@ -1448,6 +1520,558 @@ function renderGS(){
 function gsPick(k){const q=gsFind(k);if(!q)return;gsSel=k;openGS.add("tier-"+gsTier(q));renderGS();
   const mn=$("#gsMain");if(mn.getBoundingClientRect().top<0||window.innerWidth<=760)mn.scrollIntoView({behavior:"smooth",block:"start"});}
 
+/* ---------------- GS ROUND 2 ----------------
+   Study guide for the Goldman second round. Content is R2 (sections of blocks, below).
+   Section ticks are saved as S.r2 (section id to date ticked) inside lc-tracker-v1, so they sync and export.
+   Block shapes: ["p",text] ["ul"|"ol"|"card",title,[items]] ["acc",label,[[question,answer]]] ["code",title,text]
+   ["topic",title,idea,why,question,answer,mistakes]. An answer is a string or a list of blocks. Text takes `code` and **bold**. */
+const R2=[];
+R2.push(
+{id:"expect",t:"What to Expect in Round 2",s:"A talk with two managers. Mostly discussion, maybe a little code.",b:[
+["p","Round 1 checked that you can code. Round 2 checks whether the two managers want you on their team. Expect a **technical discussion**, a **deep dive into your resume and projects**, some **design talk**, and **team fit**."],
+["p","It is probably **not a live coding round**. Still, be ready to write short code or pseudocode, sketch a design, or reason through a small problem out loud. You will share your screen the whole time, so keep a blank editor and a notes file ready (but do not read from notes)."],
+["ol","Most likely topics, in priority order",[
+"**Your projects at Accenture:** what you built, why, how it worked, what went wrong, what you would change.",
+"**React:** hooks, state, re-renders, API calls, forms, performance. The role is React-heavy.",
+"**SQL:** joins, GROUP BY, indexes, transactions. The job post calls out strong SQL.",
+"**AWS and cloud migration:** S3, EC2, SQS, DynamoDB, how you would move an app to AWS.",
+"**Java and Spring Boot:** REST APIs, DI, JPA, exceptions, collections, threads.",
+"**Design:** a small system tied to their world (onboarding, account creation, risk dashboard).",
+"**SDLC:** Agile, Git, code review, CI/CD, production incidents.",
+"**Team fit:** why Goldman, why contract, working onsite 5 days, handling pressure."]],
+["ul","What the role is about (from the job post)",[
+"Global Banking and Markets Engineering, front office and capital markets.",
+"Apps for **risk**, **client onboarding** and **account creation**.",
+"Integrations with firm-wide systems like **CRM** and internal analytics.",
+"Strong React, strong SQL, strong AWS, lighter Java. Onsite in Salt Lake City, 5 days a week."]],
+["ul","Rules for this call (from the recruiter)",[
+"Camera on, quiet room, no headphones.",
+"Share your screen for the whole interview.",
+"No AI or outside help. If you forget syntax, say so and they will help.",
+"Join a few minutes early. Have 3 to 5 questions ready for them."]]
+]},
+
+{id:"strategy",t:"Interview Strategy",s:"How to answer, think aloud, and handle two interviewers.",b:[
+["ol","Answering a technical question: 4 steps",[
+"**Define it simply.** One sentence a non-expert could follow.",
+"**Explain how it works.** Two or three sentences on the mechanism.",
+"**Give a real example.** 'At Accenture we used this for...'",
+"**Mention a trade-off.** When you would not use it, or what it costs."]],
+["acc","Worked examples",[
+["Example: What is dependency injection?",[["p","**Define:** Spring creates objects for me and passes them into the classes that need them, instead of each class creating its own."],["p","**How:** I declare a dependency in the constructor, Spring finds a matching bean in its container and injects it at startup."],["p","**Example:** In our onboarding service the controller got a `VerificationService` through the constructor. In tests I passed a mock instead."],["p","**Trade-off:** Easier testing and loose coupling, but more 'magic'. Startup errors can be confusing when two beans match."]]],
+["Example: Why use useMemo?",[["p","**Define:** It caches a computed value between renders."],["p","**How:** React re-runs the function only when a value in the dependency array changes."],["p","**Example:** We filtered and sorted a few thousand rows in a table; useMemo stopped that from rerunning on every keystroke in an unrelated input."],["p","**Trade-off:** It has its own cost. I only use it after I see a slow render, not everywhere."]]]
+]],
+["ul","Thinking aloud",[
+"Say what you are about to do before you do it: 'First I will check the input, then...'",
+"Say the simple approach first, then improve it.",
+"When you pause, say why: 'Let me think about the edge case where the list is empty.'",
+"Check in every minute or two: 'Does this direction make sense?'"]],
+["ul","When you do not know",[
+"Be honest fast: 'I have not used that directly.'",
+"Connect to what you know: 'But I have used X, which solves a similar problem by...'",
+"Reason out loud: 'I would guess it works like... and I would confirm in the docs.'",
+"Never bluff. Managers at a bank value 'I would check' over a confident wrong answer."]],
+["ul","Clarifying questions",[
+"Ask about scale: how many users, requests, rows?",
+"Ask about the most important thing: speed, correctness, cost, or time to ship?",
+"Ask about constraints: existing stack, on-prem vs AWS, compliance rules?",
+"Repeat the problem back in one sentence before you start."]],
+["ul","Two interviewers",[
+"Look at the camera, not just one face. Address both by name when you answer.",
+"When one asks, answer them, then glance to the other: 'Does that cover what you wanted?'",
+"They may play roles: one technical, one people and delivery. Adjust depth to the asker.",
+"If they interrupt, stop and follow them. It usually means they want a different angle.",
+"Take quick notes of their names and interests to use in your closing questions."]]
+]},
+
+{id:"resume",t:"Resume and Project Deep Dive",s:"Your stories, built from your resume. Say only what you really did.",b:[
+["p","These samples come from your resume. **Only say what you can defend.** If a number feels shaky, round it or describe it in words. Expect follow-ups like 'how did you measure that?'"],
+["acc","Common questions",[
+["Tell me about yourself.",[["p","**Framework:** present (who you are) → past (proof) → future (why this role). 60 to 90 seconds."],["p","**Sample:** I'm a full-stack engineer with about four years of experience, mostly Java and Spring Boot back ends with React front ends. At Accenture I grew from associate to senior engineer, building REST APIs for fintech and government clients, including a SingPass-based onboarding flow for over a million users and a role-based access control system that I took from design to production. Later I led a React and Redux performance overhaul and worked on our AWS setup, SQS, DynamoDB, S3 and EC2 on Kubernetes. I then finished my Master's in CS at the University of Utah this May. This role fits well because it's React, SQL and AWS on onboarding and account creation apps, which is close to what I've built, and I'm local to Salt Lake City."]]],
+["Walk me through your current or most recent project.",[["p","**Framework:** problem → users → architecture → your part → result → what you learned."],["p","**Sample:** The most relevant one is the onboarding platform for a government fintech client. Users had to register and verify identity, and it was slow and manual. We built Spring Boot REST services behind an API gateway, used SingPass for authentication, and stored profiles in a relational database. I owned the registration and verification APIs: request validation, calling SingPass, mapping the response, and error handling. We cut onboarding latency by about 35% and automated most of the verification. The lesson for me was how much time goes into failure cases, like timeouts from the identity provider."]]],
+["What exactly did you build?",[["p","**Framework:** use 'I', name concrete pieces (endpoints, tables, components), separate your work from the team's."],["p","**Sample:** On the RBAC system I designed the data model (users, roles, permissions, and join tables), wrote the Spring Boot endpoints to assign roles, and added a check that runs on every request. I also wrote the Jenkins pipeline step that validated permission configs before deploy. The UI screens were built by a teammate; I defined the API contract with them."]]],
+["What was the hardest bug or incident?",[["p","**Framework:** STAR. Symptom → how you found it → root cause → fix → how you prevented it coming back."],["p","**Sample (fill in your real details):** We saw p99 latency spikes on a core user flow. In Grafana the spikes lined up with a specific API. I traced it to [the real root cause, for example an N+1 query or a slow loop over a large list]. I fixed it by [the fix], added a test for the case, and an alert on p99. Overall that work removed about 40% of p99 latency on those flows."]]],
+["Why did you choose Java, Spring Boot, React, SQL or NoSQL, Kafka?",[["p","**Framework:** the choice was usually the team's. Say what it was good for, and what you would weigh today."],["ul","",["**Java / Spring Boot:** mature, typed, huge ecosystem for security, data and testing; the client already ran it.","**React:** component model, large hiring pool, easy to share a design system across squads.","**SQL (PostgreSQL/MySQL):** relational data with strong consistency, like users, roles and accounts.","**DynamoDB:** simple key lookups at high volume where we did not need joins.","**SQS or Kafka:** decouple slow work (emails, verifications) from the request; Kafka when you need replay and ordered streams."]]]],
+["How did you test, deploy, monitor, secure and scale it?",[["ul","",["**Test:** JUnit and Mockito for services, integration tests against a test DB, Jest for React.","**Deploy:** Jenkins or GitHub Actions pipeline: build, test, Docker image, deploy to Kubernetes. I helped cut deploy time from about 40 to 12 minutes.","**Monitor:** Grafana dashboards on latency, errors and throughput, alerts tied to SLOs.","**Secure:** token-based auth, role checks on every endpoint, input validation, secrets out of code.","**Scale:** stateless services behind a load balancer, more pods under load, caching, async queues for slow work."]]]],
+["How would you migrate an app to AWS?",[["p","**Framework:** assess → pick strategy → move data → cut over → watch."],["p","**Sample:** First list what the app depends on: database, files, jobs, other services. Most teams start with lift and shift to EC2 or containers, then improve later. Move files to S3, the database to RDS with a replication period so we can switch with little downtime. Put config and secrets in a manager, not in code. Run both side by side, shift traffic gradually, and keep the old system ready for rollback. At Accenture I worked on our services running on AWS with SQS, DynamoDB, S3 and EC2; [add any real migration step you did]."]]],
+["What would you improve?",[["p","**Framework:** one technical improvement, one process improvement, both concrete."],["p","**Sample:** I'd add contract tests between the front end and the APIs, because most of our late bugs were mismatched fields. And I'd add tracing across services earlier; we relied on logs, and tracing would have cut debug time."]]],
+["Tell me about InsightHub.",[["p","**Sample:** It's a personal project: a log aggregation platform where services send logs to an ingestion layer, and an anomaly detector flags unusual patterns. The React and Node dashboard shows live SLO tracking and alerts. I built it to understand observability end to end, the same tools I used at work from the other side."]]]
+]],
+["card","STAR template for behavioral answers",[
+"**Situation:** one or two sentences of context. Who, where, what was at stake.",
+"**Task:** what you were responsible for.",
+"**Action:** what **you** did, step by step. This is the longest part.",
+"**Result:** the outcome, with a number if you have one, plus what you learned.",
+"Aim for 1.5 to 2 minutes. Stop and let them ask follow-ups."]]
+]},
+
+{id:"java",t:"Java Core Concepts",s:"Each topic: simple idea, why they ask, a question, a strong answer, mistakes.",b:[
+["topic","OOP principles","Encapsulation hides data behind methods. Inheritance lets a class reuse another's code. Polymorphism lets one call behave differently per type. Abstraction exposes what something does, not how.","Checks you can design clean classes, not just write code.","Give an example of polymorphism you used.","A `PaymentProcessor` interface with `CardProcessor` and `BankProcessor`. The checkout code calls `process()` and does not care which one it got. Adding a new method of payment means a new class, not editing checkout.","Listing the four words without an example. Saying inheritance is the main way to reuse code (composition is often better)."],
+["topic","Interface vs abstract class","An interface is a contract of methods. An abstract class is a partial class that can hold state and shared code.","Shows design judgment.","When would you use an abstract class instead of an interface?","Interface by default, since a class can implement many. Abstract class when related classes share real state or code, like a `BaseRepository` with common fields. Since Java 8 interfaces can have default methods, but still no instance fields.","Saying interfaces cannot have any method bodies (they can: default and static). Forgetting single inheritance for classes."],
+["topic","Overloading vs overriding","Overloading: same name, different parameters, chosen at compile time. Overriding: subclass replaces a parent method with the same signature, chosen at runtime.","Basic but common.","Is overloading runtime polymorphism?","No. The compiler picks the overload from the declared types. Overriding is runtime: the JVM calls the method of the actual object. Use `@Override` so the compiler catches typos.","Mixing them up. Thinking return type alone can overload a method."],
+["topic","== vs .equals()","`==` compares references (same object). `.equals()` compares content if the class overrides it.","Classic bug source.","Why can `new String(\"a\") == \"a\"` be false?","They are two different objects, so `==` is false even though the text matches. Use `.equals()`. If you override `equals`, also override `hashCode`, or HashMap and HashSet break.","Using == for strings or Integer above 127. Overriding equals without hashCode."],
+["topic","String immutability and StringBuilder","A String never changes after creation. Every 'change' makes a new object. StringBuilder is a mutable buffer.","Performance and safety.","Why are Strings immutable?","Safe to share across threads, safe as HashMap keys (hash never changes), and allows the string pool. In a loop, `s += x` creates many objects, so use `StringBuilder` and call `toString()` at the end.","Using StringBuffer by default (it is synchronized, slower). Concatenating in big loops."],
+["topic","Collections: List, Set, Map, Queue","List: ordered, allows duplicates. Set: no duplicates. Map: key to value. Queue: process in order (FIFO, or by priority).","You will pick collections every day.","Which collection for unique user IDs in insert order?","`LinkedHashSet`: no duplicates, keeps insertion order, O(1) add and contains. For a plain lookup, `HashSet`. For sorted, `TreeSet`.","Using List.contains in a loop (O(n) each time). Forgetting Deque is preferred over Stack."],
+["topic","ArrayList vs LinkedList","ArrayList is a resizable array. LinkedList is a chain of nodes.","Tests real performance thinking.","Which is faster for inserting in the middle?","On paper LinkedList, but you must first walk to that position, which is O(n). In practice ArrayList wins almost always: fast index access and cache-friendly memory. I use LinkedList only as a queue, and even then ArrayDeque is better.","Saying LinkedList is always better for inserts."],
+["topic","HashMap internals","An array of buckets. The key's hashCode picks a bucket. Collisions go into a list in that bucket, which becomes a balanced tree when it grows past 8 entries. When size passes 75% of capacity, the array doubles and entries are rehashed.","Very common at banks.","What is the time complexity of get and put?","Average O(1): hash, go to bucket, compare a few keys with equals. Worst case O(log n) per bucket since Java 8 thanks to treeification, O(n) before. Good hashCode spreads keys; a bad one puts everything in one bucket.","Forgetting equals is used after the hash. Saying HashMap is thread-safe (use ConcurrentHashMap). Mutating a key after inserting it."],
+["topic","HashSet vs TreeSet","HashSet uses a HashMap underneath: O(1), no order. TreeSet uses a red-black tree: O(log n), sorted.","Choosing data structures.","When would you choose TreeSet?","When I need sorted order or range queries, like 'next trade time after 10:00' with `ceiling()`. Otherwise HashSet is faster.","Forgetting TreeSet needs Comparable elements or a Comparator."],
+["topic","Comparable vs Comparator","Comparable is the class's natural order (`compareTo` inside the class). Comparator is an outside rule you pass in.","Sorting comes up a lot.","Sort trades by price, then by time.","`trades.sort(Comparator.comparing(Trade::getPrice).thenComparing(Trade::getTime));` Comparator keeps the sort rule outside the class, so you can have many.","Subtracting ints in compare (overflow). Use Integer.compare."],
+["topic","Exceptions","Checked exceptions must be caught or declared (IOException). Unchecked are RuntimeExceptions (NullPointerException). `finally` always runs; try-with-resources closes things for you.","Error handling in services.","How do you design exceptions in a Spring service?","Throw specific unchecked exceptions like `AccountNotFoundException` from the service. A global `@ControllerAdvice` maps them to HTTP codes, like 404. Use try-with-resources for streams and connections. Never swallow an exception silently; log it with context.","Catching Exception and ignoring it. Using exceptions for normal flow control."],
+["topic","Streams, lambdas, Optional","Lambdas are short functions. Streams chain operations like filter, map, collect. Optional is a box that may be empty, to avoid null.","Modern Java fluency.","Get names of active users, sorted.","`users.stream().filter(User::isActive).map(User::getName).sorted().toList();` For Optional: `repo.findById(id).orElseThrow(() -> new NotFound(id));`","Calling Optional.get() without checking. Long, unreadable stream chains. Side effects inside map."],
+["topic","JVM, heap, stack, garbage collection","The JVM runs bytecode. The stack holds method calls and local variables, one per thread. The heap holds objects, shared. The garbage collector frees objects nothing points to.","Debugging memory issues.","What causes a memory leak in Java?","Objects that are still referenced but no longer needed: a static map that only grows, listeners never removed, caches without eviction. GC cannot free them. I would take a heap dump and look at what is holding the most memory.","Saying Java cannot leak memory. Mixing up StackOverflowError (deep recursion) and OutOfMemoryError (heap full)."],
+["topic","Multithreading","Threads run work in parallel. `synchronized` lets one thread at a time into a block. `volatile` makes a variable's latest value visible to all threads. Locks like ReentrantLock give more control. ExecutorService manages a thread pool.","Banks run a lot of concurrent work.","How would you run 10 API calls in parallel?","Use an `ExecutorService` or `CompletableFuture.supplyAsync` for each call, then `allOf(...).join()`. Set timeouts. Do not create raw threads per task; a pool reuses them and caps how many run.","Thinking volatile makes count++ safe (it does not; use AtomicInteger). Creating unbounded threads."],
+["topic","Race condition, deadlock, immutability","A race condition is when the result depends on timing between threads. Deadlock is two threads each waiting for a lock the other holds. Immutable objects cannot change, so they are always safe to share.","Correctness under load.","How do you prevent deadlock?","Always take locks in the same order, keep locked sections small, use tryLock with a timeout. Prefer immutable objects and thread-safe classes like ConcurrentHashMap so you need fewer locks.","Only saying 'use synchronized everywhere', which hurts throughput."],
+["topic","REST API basics in Java","REST uses HTTP methods on resources: GET reads, POST creates, PUT replaces, PATCH updates part, DELETE removes. Data is usually JSON.","Your daily work.","Design an endpoint to fetch a client's accounts.","`GET /clients/{clientId}/accounts?status=active&page=0&size=20`. Returns 200 with a list, 404 if the client does not exist, 403 if the caller cannot see this client. Use DTOs, not entities, in the response.","Verbs in URLs like /getAccounts. Returning 200 with an error message in the body."],
+["code","Thread-safe counter example",`import java.util.concurrent.atomic.AtomicInteger;
+
+class RequestCounter {
+    private final AtomicInteger count = new AtomicInteger();
+
+    int increment() {
+        return count.incrementAndGet(); // safe across threads, no lock
+    }
+}`]
+]}
+);
+R2.push(
+{id:"spring",t:"Spring Boot and Backend",s:"DI, REST, JPA, transactions, security, Kafka, testing.",b:[
+["topic","Why Spring Boot","Spring Boot is Spring with sensible defaults: an embedded server, auto-configuration and starter packages, so a service runs with little setup.","Most Java shops use it.","Why Spring Boot over plain Spring?","Less boilerplate. Add `spring-boot-starter-web` and you get Tomcat, JSON and MVC configured. Actuator gives health checks and metrics. You can still override anything.","Saying it is a different framework from Spring."],
+["topic","Dependency injection and IoC","IoC means the framework controls object creation. DI is how: Spring builds beans and passes them into constructors.","Core of Spring.","Constructor vs field injection?","Constructor injection. Dependencies are final, required, obvious, and easy to pass mocks in tests. Field injection with @Autowired hides dependencies and needs reflection to test.","Not knowing what a bean is. Circular dependencies from bad design."],
+["topic","@Component, @Service, @Repository, @Controller, @RestController","All mark classes as beans. @Service for business logic, @Repository for data access (also translates DB exceptions), @Controller returns views, @RestController returns data (JSON) directly.","Basic vocabulary.","Difference between @Controller and @RestController?","@RestController is @Controller plus @ResponseBody on every method, so return values become JSON instead of view names.","Putting business logic in controllers."],
+["topic","Request lifecycle","Request → embedded Tomcat → filters (security, logging) → DispatcherServlet → interceptors → controller → service → repository → response goes back as JSON through message converters.","Shows you understand what runs where.","Where would you add a request ID to every log line?","In a servlet filter or interceptor: read or create an ID, put it in MDC so every log line includes it, and clear it after the request.","Not knowing filters run before the controller."],
+["topic","HTTP methods and status codes","GET, POST, PUT, PATCH, DELETE. 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 not logged in, 403 not allowed, 404 Not Found, 409 Conflict, 422 validation, 429 too many requests, 500 server error, 503 unavailable.","Clean APIs.","Which code for a duplicate account?","409 Conflict, with a clear message. 400 is for malformed input, 409 for a conflict with current state.","Mixing 401 and 403. Returning 200 for errors."],
+["topic","Validation and global exception handling","Use `@Valid` with annotations like `@NotBlank`, `@Email` on request DTOs. A `@RestControllerAdvice` class catches exceptions and returns one consistent error format.","Robust services.","How do you return consistent errors?","`@RestControllerAdvice` with `@ExceptionHandler` methods: validation errors become 400 with field messages, NotFound becomes 404, anything else 500 with a generic message and the details only in logs.","Leaking stack traces to clients."],
+["topic","JPA and Hibernate basics","JPA is the standard for mapping Java objects to tables. Hibernate implements it. Spring Data gives repositories like `findByEmail` for free.","Most data access goes through it.","What is the N+1 problem?","Loading 100 orders, then one extra query per order to load its customer: 101 queries. Fix with a fetch join (`JOIN FETCH`), an entity graph, or a DTO query.","Not checking the SQL Hibernate actually runs."],
+["topic","Lazy vs eager loading","Lazy loads related data only when you touch it. Eager loads it right away.","Performance and errors.","What is LazyInitializationException?","You touched a lazy field after the session closed, often in the controller. Fix by fetching what you need in the query inside the transaction, or mapping to a DTO in the service. Default to lazy.","Making everything eager to 'fix' the error."],
+["topic","Transactions and @Transactional","A transaction makes several DB changes all succeed or all fail. `@Transactional` on a service method starts one and commits or rolls back.","Money and accounts need this.","When does @Transactional not work?","When called from the same class (self-invocation skips the proxy), on private methods, or when a checked exception is thrown (by default only unchecked ones roll back). Keep it on service methods.","Putting it on controllers. Long transactions that call slow external APIs."],
+["topic","Authentication and authorization","Authentication: who are you. Authorization: what may you do. Sessions keep state on the server; JWTs carry signed claims in the token. Roles map users to permissions.","Security matters a lot at a bank.","How does JWT auth work?","User logs in, server signs a token with user ID, roles and expiry. Client sends it as `Authorization: Bearer`. Each service checks the signature and expiry, no DB lookup. Keep tokens short-lived with refresh tokens. I built an RBAC system: roles, permissions, and a check on every request.","Putting secrets in a JWT (it is only encoded, not encrypted). Never expiring tokens."],
+["topic","Logging, monitoring and error handling","Logs record events. Metrics count things like latency and errors. Traces follow one request across services. Alerts fire when metrics break a limit.","Production ownership.","What do you log?","Request ID, user or client ID (not personal data), action, outcome, duration. ERROR only for things someone must act on. Metrics for p50, p99, error rate. I used Grafana dashboards and alerts tied to SLOs.","Logging passwords, tokens or full account numbers."],
+["topic","Microservices basics","Split a system into small services, each owning its data and deployable alone.","Their platform integrates many systems.","When would you not use microservices?","For a small team or early product. They add network failures, data consistency issues and operations work. Start with a well-structured monolith and split where scaling or team boundaries demand it.","Sharing one database across services."],
+["topic","Sync REST vs async messaging","REST: caller waits for an answer. Messaging: caller drops a message on a queue and moves on.","Design trade-off.","Account creation calls KYC, CRM and email. Sync or async?","Validate and save the account synchronously, return 201. Publish an 'AccountCreated' event; CRM sync and email consume it asynchronously with retries. One slow system does not block the user.","Making everything async when the user needs an immediate answer."],
+["topic","Kafka and message queues","A producer writes to a topic. A topic splits into partitions, ordered within each. Consumers in a group share partitions. Failed messages retry, then go to a dead letter topic. Consumers must be idempotent because a message can arrive twice.","Very common in finance.","How do you avoid processing a message twice?","Kafka gives at-least-once delivery, so design for duplicates: each event has a unique ID, the consumer stores processed IDs or uses an upsert, and skips repeats. Use the account ID as the key so its events stay in order.","Assuming exactly-once comes for free. Global ordering across partitions."],
+["topic","API versioning, rate limiting, caching","Versioning (`/v1/`) lets you change APIs without breaking clients. Rate limiting caps requests per client. Caching keeps hot data in memory or Redis.","Public and internal APIs.","How would you cache client profile data?","Cache-aside with Redis: read cache, on a miss read DB and store with a TTL. On update, write the DB then delete the cache key. Do not cache data that must always be exact, like balances, without care.","Caching without a TTL or invalidation plan."],
+["topic","Unit vs integration tests","Unit tests check one class with mocks, fast. Integration tests run real pieces together: Spring context, DB, HTTP.","Quality habits.","How do you test a controller?","`@WebMvcTest` with MockMvc and a mocked service for the web layer. `@SpringBootTest` with Testcontainers for a real DB flow. Most tests should be unit tests; a few integration tests cover critical paths.","Only testing happy paths. Mocking everything in an integration test."],
+["code","Small REST controller with validation",`@RestController
+@RequestMapping("/api/v1/accounts")
+public class AccountController {
+    private final AccountService service;
+
+    public AccountController(AccountService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public ResponseEntity<AccountDto> create(@Valid @RequestBody CreateAccountRequest req) {
+        AccountDto created = service.create(req);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping("/{id}")
+    public AccountDto get(@PathVariable long id) {
+        return service.get(id); // throws AccountNotFoundException, mapped to 404
+    }
+}`]
+]},
+
+{id:"react",t:"React and Frontend",s:"Hooks, rendering, data fetching, forms, performance, security.",b:[
+["topic","Components, props, state","A component is a function that returns UI. Props are inputs from the parent, read-only. State is data the component owns and changes over time.","Foundation.","Props vs state?","Props come from outside and the child must not change them. State lives inside and changing it with the setter re-renders the component. If two components need the same data, lift state to their parent.","Mutating props or state directly."],
+["topic","Functional components","Plain functions plus hooks. They replaced class components in modern React.","Modern style.","Why functional over class components?","Less code, no `this`, and hooks let you reuse logic through custom hooks instead of higher-order components.","Saying classes no longer work (they still work)."],
+["topic","Hooks: useState, useEffect, useMemo, useCallback, useRef","useState: local state. useEffect: side effects after render. useMemo: cache a value. useCallback: cache a function. useRef: a box that survives renders without causing them, also used for DOM nodes.","Asked in every React interview.","When do you use useRef?","To hold a DOM element (focus an input), or a value that must persist without re-rendering, like a timer ID or the previous value.","Using useRef for data that should show in the UI."],
+["topic","useEffect dependency array","Empty array: run once after mount. With values: run when they change. None: run after every render. Return a cleanup function to undo the effect.","Most common React bug area.","What are common useEffect mistakes?","Missing a dependency, so the effect uses stale values. Objects or functions recreated every render in the array, causing loops. Setting state that is in the array, causing infinite loops. Forgetting cleanup for timers and subscriptions. Using an effect for values you could compute during render.","Disabling the lint rule instead of fixing the cause."],
+["topic","Controlled vs uncontrolled inputs","Controlled: React state holds the value, `value` plus `onChange`. Uncontrolled: the DOM holds it, read with a ref.","Forms.","Which do you prefer?","Controlled for most forms: easy validation and conditional UI. Uncontrolled or a library like React Hook Form for big forms where typing performance matters.","Switching an input from uncontrolled to controlled (value starting as undefined)."],
+["topic","Lifting state up","Move shared state to the nearest common parent and pass it down with callbacks.","Data flow.","Two sibling filters affect one table. Where does state live?","In the parent of the filters and the table. The parent passes values and setters down.","Duplicating the same state in siblings and syncing with effects."],
+["topic","Context API","Context passes data deep without props at every level.","State design.","When not to use Context?","For fast-changing data used by many components: every consumer re-renders on each change. Good for theme, current user, locale. For complex shared state, use Redux Toolkit, Zustand, or a server cache like React Query.","Putting the whole app state in one context."],
+["topic","State management choices","Local state → lifted state → context → a store (Redux Toolkit) → server cache (React Query) for API data.","Judgment.","How do you decide?","Keep state as close to where it is used as possible. Server data goes in a fetching cache. Global client state, like a multi-step onboarding wizard, can go in Redux. I used Redux and MobX at Accenture.","Using Redux for everything, including form inputs."],
+["topic","Lifecycle in functional components","Mount: the first render plus effects with []. Update: re-render plus effects with changed deps. Unmount: cleanup functions run.","Mapping old concepts.","How do you do componentWillUnmount?","Return a cleanup from useEffect: `useEffect(() => { const id = setInterval(tick, 1000); return () => clearInterval(id); }, []);`","Forgetting cleanup, causing leaks and updates on unmounted components."],
+["topic","Rendering and re-rendering","A component re-renders when its state changes, its parent re-renders, or a context it uses changes. Rendering is calling the function; React then updates only the changed DOM.","Performance.","Why did my child re-render when its props did not change?","Because the parent re-rendered. Wrap the child in `React.memo` and keep props stable (useMemo, useCallback) if it is actually slow.","Thinking re-render means the DOM was rebuilt."],
+["topic","Virtual DOM","A lightweight copy of the UI in memory. React compares the new tree to the old one (reconciliation) and applies the smallest DOM changes.","Classic question.","Is the virtual DOM always faster?","Not always faster than perfect hand-written DOM code, but it makes UI updates predictable and fast enough while you write declarative code.","Saying it is magic speed."],
+["topic","Keys in lists","Keys tell React which list item is which between renders.","Subtle bugs.","Why not use the index as key?","If items are inserted, removed or reordered, the index shifts and React reuses the wrong element, so input values and state end up on the wrong row. Use a stable ID.","Using Math.random() as a key."],
+["topic","API calls, loading, errors, cancellation","Track three states: loading, data, error. Cancel stale requests when inputs change or the component unmounts.","Every real app.","Show how you fetch data safely.","Use an effect with AbortController: start loading, fetch with the signal, set data or error, and abort in cleanup. Or use React Query, which handles caching, retries and cancellation.","Ignoring errors. Race conditions where an old response overwrites a newer one."],
+["topic","Forms and validation","Track values, errors, touched fields. Validate on blur or submit. Always validate again on the server.","Onboarding is form-heavy.","How would you build a multi-step onboarding form?","One state object for all steps, each step validates its fields before Next, a schema (Zod or Yup) shared for rules, save a draft so users can return, final server validation on submit. I built a reusable form generator used by 5+ teams.","Trusting client validation alone."],
+["topic","Performance optimization","Measure first with React DevTools Profiler. Then: avoid needless re-renders, split code with lazy loading, virtualize long lists, debounce inputs, cache API results.","Your resume has a performance story.","How did you cut render time?","[Use your real story] At Accenture I profiled the React and Redux app, found [cause], then [fixes such as memoized selectors, fewer API calls by caching and batching, splitting large components]. Render time dropped about 45% and API calls about 30%.","Adding memo everywhere without measuring."],
+["topic","Memoization in React","`React.memo` skips re-rendering a component if props are equal. useMemo caches values, useCallback caches functions so memoized children see the same reference.","Performance follow-up.","When is useCallback useless?","When the function is not passed to a memoized child or used in a dependency array. Then it adds cost for no benefit.","Memoizing cheap things."],
+["topic","Event loop, promises, async/await","JavaScript runs one thing at a time. Async work finishes later and its callback joins a queue. Promises (microtasks) run before timers (macrotasks). async/await is cleaner promise syntax.","JS fundamentals.","What prints first: setTimeout(0) or a resolved promise's then?","The promise. Microtasks drain completely before the next macrotask like a timer.","Forgetting try/catch around await. Awaiting in a loop when calls could run in parallel with Promise.all."],
+["topic","Debouncing and throttling","Debounce: wait until the user stops for X ms, then run once. Throttle: run at most once every X ms.","Search boxes and scroll.","Which for a client search box?","Debounce, about 300 ms, so the API is called after typing stops. Throttle for scroll or resize handlers.","Creating a new debounced function every render (wrap in useMemo or useRef)."],
+["topic","Accessibility basics","Use semantic HTML, labels on inputs, keyboard support, visible focus, enough color contrast, alt text, ARIA only when HTML is not enough.","Enterprise apps must be accessible.","How do you make a custom dropdown accessible?","Prefer a native select. If custom: a button with aria-expanded, a list with role listbox, arrow key navigation, Escape to close, focus returns to the button.","Clickable divs with no keyboard support."],
+["topic","Frontend testing","Unit and component tests with Jest and React Testing Library, end-to-end tests with Cypress or Playwright.","Quality.","What do you test in a form component?","Render it, type into fields like a user, submit, and check the error messages or the API call. Test behavior, not implementation details.","Testing internal state instead of what the user sees."],
+["topic","Frontend security","XSS: attacker script runs in your page. React escapes text by default; avoid `dangerouslySetInnerHTML` or sanitize with DOMPurify. Store tokens carefully. Validate input on the server.","Bank apps are targets.","Where do you store auth tokens?","Best is an httpOnly, secure, SameSite cookie so JavaScript cannot read it, with CSRF protection. localStorage is readable by any script, so an XSS bug leaks the token.","Thinking client-side validation is security."],
+["code","Fetch with loading, error and cancellation",`function Accounts({ clientId }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const ctrl = new AbortController();
+    setLoading(true);
+    setError(null);
+    fetch(\`/api/v1/clients/\${clientId}/accounts\`, { signal: ctrl.signal })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(setData)
+      .catch(e => { if (e.name !== "AbortError") setError(e); })
+      .finally(() => setLoading(false));
+    return () => ctrl.abort(); // stale request cancelled
+  }, [clientId]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p role="alert">Could not load accounts.</p>;
+  return <ul>{data.map(a => <li key={a.id}>{a.name}</li>)}</ul>;
+}`]
+]},
+
+{id:"sql",t:"SQL and Databases",s:"Joins, grouping, indexes, ACID, locking, duplicates.",b:[
+["topic","SQL vs NoSQL","SQL: tables, schemas, joins, strong consistency. NoSQL: flexible shapes (documents, key-value), easy horizontal scale, fewer joins.","Database choice.","Which for client accounts?","SQL. Accounts, clients and permissions are relational and need transactions. NoSQL like DynamoDB fits high-volume key lookups such as session data or event logs.","Saying NoSQL is always faster."],
+["topic","Primary key, foreign key, index","Primary key uniquely identifies a row. Foreign key points to another table's primary key and keeps data consistent. An index is a sorted lookup structure (usually a B-tree) that speeds up searches.","Basics.","Why not index every column?","Each index slows inserts and updates and uses space. Index columns used in WHERE, JOIN and ORDER BY on large tables, and check with EXPLAIN.","Thinking an index helps `LIKE '%abc'` (leading wildcard cannot use it)."],
+["topic","JOINs, GROUP BY, HAVING","INNER JOIN: only matching rows. LEFT JOIN: all left rows, NULLs where no match. GROUP BY: one row per group. HAVING: filter groups after grouping; WHERE filters rows before.","Daily SQL.","WHERE vs HAVING?","WHERE filters rows before grouping and cannot use aggregates. HAVING filters groups after, so `HAVING COUNT(*) > 5` works there.","Putting a filter on the right table of a LEFT JOIN in WHERE, which turns it into an INNER JOIN."],
+["topic","Normalization and denormalization","Normalization splits data so each fact lives in one place (no duplicates). Denormalization copies data on purpose to make reads faster.","Schema design.","When would you denormalize?","For read-heavy reports or dashboards where joins are too slow, for example storing a client's name on a trade summary table. Accept the cost of keeping copies in sync.","Denormalizing before there is a real performance problem."],
+["topic","Transactions and ACID","Atomic: all or nothing. Consistent: rules hold. Isolated: concurrent transactions do not see each other's half-done work. Durable: committed data survives crashes.","Finance basics.","Explain ACID with a transfer.","Debit A and credit B in one transaction. If the credit fails, the debit rolls back (atomic). Balances never go negative if a constraint exists (consistent). Another reader never sees money missing in between (isolated). Once committed it survives a crash (durable).","Reciting letters without an example."],
+["topic","Isolation levels","Read uncommitted < read committed < repeatable read < serializable. Higher is safer but slower. Problems: dirty reads, non-repeatable reads, phantom rows.","Concurrency depth.","What does read committed prevent?","Dirty reads: you never see uncommitted data. But reading the same row twice can give different values. It is the default in PostgreSQL. Serializable prevents all anomalies at a throughput cost.","Not knowing your database's default."],
+["topic","Optimistic vs pessimistic locking","Pessimistic: lock the row while you work (`SELECT ... FOR UPDATE`). Optimistic: no lock; a version column detects if someone else changed it, then you retry.","Concurrent updates.","Which for editing a client profile?","Optimistic with a `@Version` column: conflicts are rare and users can retry. Pessimistic for hot rows with frequent conflicts, like decrementing limited inventory.","Long pessimistic locks that block everyone."],
+["topic","Avoiding duplicates (orders, payments, accounts)","Combine a unique constraint, an idempotency key and a transaction.","Bank-critical.","How do you stop a double-click creating two accounts?","Client sends an idempotency key with the request. The server stores the key with the result in the same transaction; a repeat key returns the saved result. A unique constraint (like client ID plus account type) is the last line of defense. Also disable the button while submitting.","Relying only on a frontend check."],
+["topic","Query optimization basics","Use EXPLAIN, add the right index, select only needed columns, avoid functions on indexed columns in WHERE, paginate, avoid N+1.","Performance.","A query got slow. What do you do?","Run EXPLAIN ANALYZE and look for full table scans and big row estimates. Check indexes on filter and join columns, rewrite to avoid `SELECT *` and functions on columns, and check if data volume grew. Test the fix on realistic data.","Adding indexes blindly."],
+["acc","SQL practice (try first, then open)",[
+["1. Second highest salary.",[["code","",`SELECT MAX(salary) AS second_highest
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);`]]],
+["2. Clients with more than 3 accounts.",[["code","",`SELECT c.id, c.name, COUNT(a.id) AS accounts
+FROM clients c
+JOIN accounts a ON a.client_id = c.id
+GROUP BY c.id, c.name
+HAVING COUNT(a.id) > 3;`]]],
+["3. Clients who have no accounts.",[["code","",`SELECT c.id, c.name
+FROM clients c
+LEFT JOIN accounts a ON a.client_id = c.id
+WHERE a.id IS NULL;`]]],
+["4. Total trade amount per client per day.",[["code","",`SELECT client_id, CAST(traded_at AS DATE) AS day, SUM(amount) AS total
+FROM trades
+GROUP BY client_id, CAST(traded_at AS DATE)
+ORDER BY day, client_id;`]]],
+["5. Find duplicate emails.",[["code","",`SELECT email, COUNT(*) AS n
+FROM users
+GROUP BY email
+HAVING COUNT(*) > 1;`]]],
+["6. Latest trade for each client (window function).",[["code","",`SELECT *
+FROM (
+  SELECT t.*, ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY traded_at DESC) AS rn
+  FROM trades t
+) x
+WHERE rn = 1;`]]],
+["7. Running balance per account.",[["code","",`SELECT account_id, posted_at, amount,
+       SUM(amount) OVER (PARTITION BY account_id ORDER BY posted_at) AS running_balance
+FROM transactions;`]]]
+]]
+]},
+
+{id:"design",t:"System Design and Low-Level Design",s:"A simple framework, six walkthroughs, and LLD basics.",b:[
+["ol","Framework (say these steps out loud)",[
+"**Clarify requirements:** what must it do, who uses it, what matters most.",
+"**Estimate scale only if it changes the design:** users, requests per second, data size.",
+"**Define APIs:** a few endpoints with inputs and outputs.",
+"**Choose the database:** SQL for relational and transactional, NoSQL for simple high-volume lookups.",
+"**Draw the flow:** client → load balancer → services → DB, cache, queue.",
+"**Caching:** what is read often, how long it can be stale.",
+"**Security:** auth, roles, encryption, audit logs (very important at a bank).",
+"**Failures and trade-offs:** retries, timeouts, idempotency, monitoring, what you would do next."]],
+["acc","Walkthroughs",[
+["Design a URL shortener",[["ul","",["**Needs:** create short link, redirect fast, maybe expiry and click counts. Reads far exceed writes.","**API:** `POST /links {url}` → `{code}`; `GET /{code}` → 301 or 302 redirect.","**Code:** base62 of a unique ID from a sequence (short, no collisions), or a random 7-char string with a uniqueness check.","**DB:** table `links(code PK, url, created_at, expires_at)`. Key-value works too.","**Cache:** Redis for hot codes; most traffic is reads.","**Scale:** stateless services behind a load balancer, read replicas.","**Analytics:** send click events to a queue, count asynchronously so redirects stay fast.","**Trade-off:** 301 is cached by browsers (less load, lost click data); 302 always hits you."]]]],
+["Design a real-time financial dashboard",[["ul","",["**Needs:** show live positions, prices and risk numbers to traders; updates within a second; users see only their desks.","**Flow:** market and trade events → Kafka → aggregation service computes totals per desk → pushes to clients via WebSocket or Server-Sent Events.","**Initial load:** REST call for the current snapshot, then live updates.","**Storage:** latest values in Redis, history in a SQL or time-series DB.","**Frontend:** React, update only changed rows, throttle UI updates (for example every 250 ms), virtualize big tables.","**Security:** entitlements check on subscribe, not only on page load.","**Failures:** reconnect with backoff, show 'stale' if no update for N seconds, replay from Kafka offset after restarts.","**Your link:** InsightHub had a live React dashboard with SLO tracking."]]]],
+["Design a notification service",[["ul","",["**Needs:** send email, SMS, in-app messages from many services; user preferences; no duplicates.","**API:** `POST /notifications {userId, template, data, channel, idempotencyKey}` → 202 Accepted.","**Flow:** API saves the request, puts it on a queue (SQS or Kafka), channel workers send through providers.","**Preferences:** a table of user channel settings, checked before sending.","**Retries:** exponential backoff, then a dead letter queue for manual review.","**Duplicates:** idempotency key stored with a unique constraint.","**Monitoring:** sent, failed and delayed counts per channel and provider."]]]],
+["Design a booking system (parking, meeting rooms)",[["ul","",["**Needs:** search free slots, book, cancel. No double booking.","**DB:** `spots`, `bookings(spot_id, start, end, user_id, status)`.","**No double booking:** in a transaction check overlapping bookings with `SELECT ... FOR UPDATE` on the spot, or an exclusion constraint on time ranges (PostgreSQL). Or hold a slot for 5 minutes with an expiry while the user pays.","**API:** `GET /spots?from&to`, `POST /bookings` with an idempotency key, `DELETE /bookings/{id}`.","**Scale:** cache availability per location with a short TTL; the DB is the source of truth.","**Trade-off:** strict locking is simple and correct but limits throughput on hot slots."]]]],
+["Design a simple transaction or payment API",[["ul","",["**API:** `POST /transfers {from, to, amount, currency, idempotencyKey}` → 201 with status.","**Money:** store as integer minor units or BigDecimal, never double.","**Ledger:** double-entry: each transfer writes a debit row and a credit row in one transaction; balances come from the ledger.","**Checks:** account exists, active, enough balance, limits, permissions.","**Concurrency:** lock both accounts in a fixed order (lower ID first) to avoid deadlock, or use optimistic versions.","**External rails:** status starts PENDING, an async worker calls the payment network, updates to COMPLETED or FAILED, with retries and reconciliation.","**Audit:** every change recorded with who, when, and why."]]]],
+["Concurrency and preventing duplicate requests",[["ul","",["**Why duplicates happen:** double clicks, client retries after timeouts, message redelivery.","**Idempotency key:** client sends a unique key; server stores key → result; a repeat returns the stored result.","**Unique constraints:** the DB rejects a second row with the same natural key.","**Locks:** `SELECT FOR UPDATE` for hot rows; optimistic version checks for rare conflicts.","**Idempotent consumers:** track processed event IDs.","**Distributed lock (Redis):** only if needed, with a TTL; the DB constraint is still the real guarantee."]]]]
+]],
+["ul","Low-level design basics",[
+"**Classes and interfaces:** interfaces define what, classes define how. Code against interfaces.",
+"**SOLID:** Single responsibility (one reason to change), Open/closed (extend without editing), Liskov (subclasses work wherever the parent works), Interface segregation (small interfaces), Dependency inversion (depend on abstractions).",
+"**Composition over inheritance:** build behavior from parts ('has a') rather than deep class trees ('is a'). Easier to change and test.",
+"**Singleton:** one shared instance; in Spring, beans are singletons by default.",
+"**Factory:** one place decides which class to create, like a `NotificationSenderFactory` returning Email or SMS senders.",
+"**Strategy:** swap algorithms behind one interface, like different fee calculators per account type.",
+"**Observer:** subscribers react to events; Kafka consumers and React state updates follow this idea."]],
+["code","LLD example: account fees with Strategy",`interface FeePolicy {
+    BigDecimal feeFor(BigDecimal amount);
+}
+
+class StandardFee implements FeePolicy {
+    public BigDecimal feeFor(BigDecimal amount) {
+        return amount.multiply(new BigDecimal("0.01"));
+    }
+}
+
+class PremiumFee implements FeePolicy {
+    public BigDecimal feeFor(BigDecimal amount) {
+        return BigDecimal.ZERO;
+    }
+}
+
+class Account {
+    private final String id;
+    private BigDecimal balance;
+    private final FeePolicy feePolicy; // composition: behavior is plugged in
+
+    Account(String id, BigDecimal balance, FeePolicy feePolicy) {
+        this.id = id;
+        this.balance = balance;
+        this.feePolicy = feePolicy;
+    }
+
+    synchronized void withdraw(BigDecimal amount) {
+        BigDecimal total = amount.add(feePolicy.feeFor(amount));
+        if (balance.compareTo(total) < 0) throw new IllegalStateException("Insufficient funds");
+        balance = balance.subtract(total);
+    }
+}`]
+]}
+);
+R2.push(
+{id:"sdlc",t:"SDLC, Git, CI/CD, and Production",s:"How work gets planned, shipped, watched and fixed.",b:[
+["acc","Topics",[
+["Agile and Scrum",[["ul","",["Work in short sprints, usually 2 weeks.","Ceremonies: sprint planning, daily standup, review or demo, retrospective.","Roles: product owner (what and why), scrum master (process), dev team (how).","**Sample:** At Accenture we ran 2-week sprints across several squads. I joined planning, gave estimates, and raised blockers in standup early."]]]],
+["User stories, estimation, sprint planning",[["ul","",["Story: 'As a client, I want to upload my ID so that my account can be verified.'","Acceptance criteria make 'done' testable.","Estimate in story points by comparing to past work; split anything too big for one sprint.","Plan to what the team actually finished in recent sprints, not to hope."]]]],
+["Git workflow, pull requests, code review",[["ul","",["Short-lived feature branches off main, small PRs, rebase or merge often.","PR has a clear description, linked ticket, tests, screenshots for UI.","Review for correctness, readability, tests, security; be kind and specific.","Protect main: required review and green CI before merge."]]]],
+["CI/CD pipeline",[["ul","",["CI: on every push, build, run unit tests, lint, static and security scans.","CD: build a Docker image, deploy to dev, run integration tests, promote to staging, then production with approval.","**Your story:** helped cut pipeline time from about 40 to 12 minutes [say how: caching, parallel tests, smaller images]."]]]],
+["Environments: dev, test, staging, production",[["ul","",["Dev: fast, unstable. Test or QA: testers verify stories. Staging: copy of production setup for final checks. Production: real users.","Same artifact promoted through every stage; only config changes.","No real client data in lower environments; use masked or fake data."]]]],
+["Deployment and rollback",[["ul","",["Rolling: replace instances a few at a time. Blue-green: switch traffic to a new copy. Canary: send a small % of traffic first.","Rollback = redeploy the last good version; keep DB migrations backward-compatible so this is safe.","Watch error rate and latency right after every release."]]]],
+["Feature flags",[["ul","",["Ship code turned off, turn on per user group or percent.","Separates deploy from release; instant off switch for problems.","Clean up old flags so code does not rot."]]]],
+["Logging, metrics, alerts, dashboards",[["ul","",["Logs: what happened (structured JSON, request ID).","Metrics: how much and how fast (rate, errors, duration).","Alerts: page a human only for user-facing problems, tied to SLOs.","Dashboards: one per service with the golden signals: latency, traffic, errors, saturation."]]]],
+["How to debug a production issue",[["ol","",["Confirm and scope: who is affected, since when, how bad.","Check what changed: recent deploys, config, traffic, dependencies.","Look at dashboards, then logs filtered by request ID or error.","Form a hypothesis, test it safely (staging or read-only checks).","Fix or mitigate, verify metrics recover, write a test so it does not return."]]]],
+["Handling an urgent incident",[["ol","",["Acknowledge, open an incident channel, name an incident lead.","**Mitigate first**: roll back, flip a flag, scale up. Root cause can wait.","Communicate status on a regular schedule to stakeholders.","After: blameless postmortem with timeline, root cause, and action items with owners."]]]]
+]]
+]},
+
+{id:"behav",t:"Behavioral and Team-Fit Questions",s:"Frameworks and honest sample answers. Adjust to your real stories.",b:[
+["p","Keep answers natural. Use these as a starting point and say them in your own words. **Never claim something you did not do.** Parts in [brackets] need your real details."],
+["acc","Questions",[
+["Why Goldman Sachs?",[["p","**Framework:** the work + the scale and standards + your fit."],["p","**Sample:** The team builds onboarding, account creation and risk apps for the front office, which is very close to what I did at Accenture with fintech onboarding and access control. I like working where correctness and security really matter, and Goldman's engineering bar and scale would push me to grow. And it's here in Salt Lake City, where I live, so onsite every day works well for me."]]],
+["Why contract work?",[["p","**Sample:** I finished my Master's in May and I want to get back to shipping production software quickly on a strong team. A contract lets me start contributing right away. If it's a good fit for both sides, I'd be very happy to keep growing with the team long term."]]],
+["Why should we hire you?",[["p","**Framework:** match three of their needs to your proof."],["p","**Sample:** You need strong React, solid SQL, AWS and Java. I have about four years doing exactly that mix: React and Redux performance work for 500K+ monthly sessions, Spring Boot APIs for onboarding a million users, an RBAC system end to end, and services on AWS with SQS and DynamoDB. I also care about production quality, monitoring and fixing things fast, which matters in a bank."]]],
+["Tell me about a conflict with a teammate.",[["p","**Framework:** STAR, show respect, focus on the problem not the person, end with a better result."],["p","**Sample shape:** [A teammate and I disagreed on X, for example API contract or state management.] I asked to talk one on one, listened to their reasons, and we wrote both options with trade-offs. We picked [option] and agreed to revisit after a sprint. It worked, and we kept that habit of writing trade-offs down."]]],
+["Tell me about a time you disagreed with a requirement.",[["p","**Sample shape:** [A requirement would hurt users or security, for example skipping validation to hit a date.] I explained the risk with data, offered an option that kept the deadline, like a smaller first version. The product owner agreed, we shipped on time, and added the rest next sprint."]]],
+["Tell me about a difficult bug or outage.",[["p","Use the hardest bug story from the Resume section: symptom → Grafana → root cause → fix → test and alert → p99 about 40% better."]]],
+["Tell me about a time you learned something quickly.",[["p","**Sample shape:** [For example SingPass integration, Kubernetes, or a new codebase.] I read the docs and existing code, built a tiny prototype first, and asked a teammate to review my understanding. Within [time] I shipped [result]."]]],
+["How do you handle deadlines?",[["p","**Sample:** I break the work down early and flag risk as soon as I see it, not on the last day. If something must give, I go to the product owner with options: cut scope, move the date, or add help. I don't quietly cut testing."]]],
+["How do you work with product managers, QA and other engineers?",[["p","**Sample:** With product I clarify the why and acceptance criteria before coding. With QA I share edge cases I know about and fix bugs fast without blame. With engineers I agree on API contracts early and keep PRs small. At Accenture I worked across 4 squads to build a shared design system."]]],
+["How do you handle feedback?",[["p","**Sample:** I ask for it, I don't argue in the moment, I ask a question to understand, then change something visible. [Example: a senior engineer told me my PRs were too big; I split work into smaller PRs and reviews became faster.]"]]],
+["What are your strengths and weaknesses?",[["p","**Strengths:** full-stack range from Spring Boot to React, performance and production debugging, mentoring (3 junior engineers, 100+ students)."],["p","**Weakness (real and improving):** [Pick a true one, for example: I used to go deep on a problem alone for too long. Now I time-box, and ask for help after an hour if I'm stuck.]"]]],
+["What questions do you have for us?",[["ul","",["What does a typical week look like for this team?","Which apps would I work on first: risk, onboarding or account creation?","How far along is the move to AWS, and what is left?","How do you deploy and how often? How is on-call handled?","What does success look like in the first 90 days?","What do you enjoy most about working on this team?"]]]]
+]]
+]},
+
+{id:"mock",t:"Mock Interview Questions",s:"90 questions. Answer out loud first, then open.",b:[
+["acc","Java and Spring (25)",[
+["What are the four pillars of OOP?","Encapsulation, inheritance, polymorphism, abstraction. Give one example each from your code."],
+["Interface vs abstract class?","Interface: contract, multiple allowed, no instance state. Abstract class: shared state and code, single inheritance."],
+["Why override hashCode with equals?","Equal objects must have equal hash codes, or HashMap and HashSet cannot find them."],
+["How does HashMap work?","Hash picks a bucket, equals finds the key in it, buckets turn into trees past 8 entries, resizes at 75% load. Average O(1)."],
+["HashMap vs ConcurrentHashMap vs Hashtable?","HashMap is not thread-safe. Hashtable locks everything (legacy). ConcurrentHashMap allows safe concurrent access with fine-grained locking."],
+["Checked vs unchecked exceptions?","Checked must be handled or declared (IOException). Unchecked extend RuntimeException and signal programming or business errors."],
+["What does final mean on a variable, method and class?","Variable: cannot be reassigned. Method: cannot be overridden. Class: cannot be extended."],
+["What is the String pool?","A JVM cache of string literals so identical literals share one object. That is why literals can be == but new String() is not."],
+["What is a functional interface?","An interface with one abstract method, like Runnable or Function, so it can be a lambda."],
+["map vs flatMap in streams?","map turns each item into one item. flatMap turns each item into a stream and flattens them into one stream."],
+["What is Optional for?","To return 'maybe a value' without null. Use orElse, orElseThrow, map; avoid get() without a check."],
+["synchronized vs volatile?","synchronized gives mutual exclusion and visibility. volatile gives only visibility; it does not make count++ atomic."],
+["What is a deadlock and how do you avoid it?","Two threads each hold a lock the other needs. Lock in a fixed order, keep critical sections small, use tryLock timeouts."],
+["Why use ExecutorService?","Reuses a fixed pool of threads, limits concurrency, and gives Futures for results instead of creating threads manually."],
+["What is garbage collection?","The JVM frees objects with no references. Leaks happen when you keep references you no longer need."],
+["What is dependency injection in Spring?","Spring creates beans and passes them into constructors, so classes do not build their own dependencies."],
+["@Component vs @Service vs @Repository?","All are beans. Service marks business logic; Repository marks data access and translates DB exceptions."],
+["How do you handle errors globally in Spring Boot?","@RestControllerAdvice with @ExceptionHandler methods that map exceptions to HTTP status and a consistent error body."],
+["What is the N+1 query problem?","One query for a list, then one per item for a relation. Fix with JOIN FETCH, entity graphs or DTO queries."],
+["Lazy vs eager fetching?","Lazy loads relations on access, eager loads immediately. Default to lazy and fetch what you need explicitly."],
+["When does @Transactional not roll back?","On checked exceptions by default, on self-invoked or private methods, or if the exception is caught inside."],
+["How do you secure a REST API?","HTTPS, authentication (JWT or OAuth2), role checks per endpoint, input validation, rate limiting, no secrets in logs."],
+["Spring profiles?","Separate config per environment (dev, test, prod) using application-{profile}.yml and @Profile."],
+["What does Spring Boot Actuator give you?","Health, metrics, info and other endpoints for monitoring and readiness checks."],
+["How do you test a Spring Boot service?","Unit tests with JUnit and Mockito; @WebMvcTest for controllers; @SpringBootTest with Testcontainers for real DB flows."]
+]],
+["acc","React and JavaScript (20)",[
+["Props vs state?","Props are read-only inputs from the parent. State is owned by the component and changing it re-renders."],
+["What triggers a re-render?","State change, parent re-render, or a used context value change."],
+["Explain the useEffect dependency array.","No array: every render. []: once after mount. [a, b]: when a or b changes. Return cleanup for subscriptions and timers."],
+["useMemo vs useCallback?","useMemo caches a value. useCallback caches a function reference. Both only matter for expensive work or memoized children."],
+["What is React.memo?","Wraps a component so it skips re-render when props are shallowly equal."],
+["Why are keys important?","They let React match list items between renders. Use stable IDs, not indexes, when lists change order."],
+["Controlled vs uncontrolled inputs?","Controlled: value in React state. Uncontrolled: value in the DOM, read via ref."],
+["When would you use Context?","For data many components need that changes rarely, like theme or current user."],
+["Redux vs Context?","Context passes values. Redux is a store with actions, reducers, devtools and middleware for complex shared state."],
+["What is the virtual DOM?","An in-memory UI tree React diffs to apply minimal real DOM updates."],
+["How do you avoid race conditions when fetching?","AbortController in effect cleanup, or ignore results from stale requests; or use React Query."],
+["How do you optimize a slow React page?","Profile first, then memoize hot components, virtualize long lists, code split, debounce inputs, reduce API calls."],
+["What is lazy loading in React?","React.lazy with Suspense loads a component's code only when it is first shown."],
+["== vs === in JavaScript?","=== compares without type coercion. Always prefer it."],
+["What is a closure?","A function that remembers variables from where it was created, even after that scope ended."],
+["Explain the event loop.","One thread runs code; async callbacks wait in queues; microtasks (promises) run before macrotasks (timers)."],
+["async/await vs promises?","async/await is syntax over promises that reads like normal code; use try/catch for errors and Promise.all for parallel calls."],
+["Debounce vs throttle?","Debounce runs after activity stops. Throttle runs at most once per interval."],
+["How do you prevent XSS in React?","React escapes text by default. Avoid dangerouslySetInnerHTML or sanitize it, set a Content Security Policy, validate on the server."],
+["How do you test React components?","React Testing Library: render, interact like a user, assert what is visible. Jest for logic. Cypress or Playwright end to end."]
+]],
+["acc","SQL and databases (15)",[
+["INNER vs LEFT JOIN?","INNER keeps only matches. LEFT keeps all left rows with NULLs for no match."],
+["WHERE vs HAVING?","WHERE filters rows before grouping. HAVING filters groups and can use aggregates."],
+["What is an index and its cost?","A sorted structure for fast lookups. Costs disk space and slower writes."],
+["Clustered vs non-clustered index?","Clustered sets the physical row order (one per table). Non-clustered is a separate structure pointing to rows."],
+["What is normalization?","Organizing tables so each fact is stored once, reducing duplicates and update errors."],
+["Explain ACID.","Atomic, consistent, isolated, durable. All or nothing, rules hold, no half-done visibility, survives crashes."],
+["What isolation levels exist?","Read uncommitted, read committed, repeatable read, serializable. Higher is safer, slower."],
+["Optimistic vs pessimistic locking?","Optimistic: version check, retry on conflict. Pessimistic: lock the row with SELECT FOR UPDATE."],
+["How do you prevent duplicate orders?","Idempotency key plus unique constraint, in one transaction."],
+["DELETE vs TRUNCATE vs DROP?","DELETE removes rows (can filter, logged). TRUNCATE empties the table fast. DROP removes the table itself."],
+["UNION vs UNION ALL?","UNION removes duplicates (slower). UNION ALL keeps all rows."],
+["What is a window function?","A calculation across related rows without collapsing them, like ROW_NUMBER() or running SUM() OVER (PARTITION BY ...)."],
+["How do you find a slow query's cause?","EXPLAIN ANALYZE, look for full scans, missing indexes, bad joins, and returned row counts."],
+["SQL vs NoSQL for a trading app?","SQL for accounts, trades and ledgers that need transactions. NoSQL or cache for high-volume, simple reads like live quotes."],
+["What is a foreign key for?","It links tables and stops rows that point to records that do not exist."]
+]],
+["acc","System design and SDLC (15)",[
+["Walk me through your design approach.","Clarify, estimate if needed, APIs, data model, high-level flow, caching, security, failures and trade-offs."],
+["How do you scale a read-heavy API?","Caching (Redis, CDN), read replicas, stateless instances behind a load balancer, pagination."],
+["When do you use a message queue?","To decouple slow or unreliable work, absorb spikes, and retry safely."],
+["How do you make an API idempotent?","Client-supplied idempotency key, stored with the result; repeats return the stored result."],
+["What is a circuit breaker?","Stops calling a failing dependency for a while and returns a fallback, so failures do not cascade."],
+["How do you design for failure?","Timeouts, retries with backoff, idempotency, circuit breakers, health checks, graceful degradation."],
+["Monolith vs microservices?","Monolith is simpler to build and run; microservices give independent scaling and deploys at the cost of complexity."],
+["How do you move an app to AWS safely?","Inventory dependencies, lift and shift first, migrate data with replication, run in parallel, shift traffic gradually, keep rollback."],
+["S3 vs EBS vs RDS vs DynamoDB?","S3: object files. EBS: disk for one EC2. RDS: managed SQL database. DynamoDB: managed key-value NoSQL."],
+["SQS vs SNS vs Kafka?","SQS: queue, one consumer per message. SNS: pub/sub fan-out. Kafka: durable ordered log with replay and consumer groups."],
+["What is a CI/CD pipeline?","Automated build, test, scan and deploy through environments on every change."],
+["Blue-green vs canary deployment?","Blue-green switches all traffic to a new copy. Canary sends a small share first and watches metrics."],
+["How do you roll back a bad release?","Redeploy the last good version or flip the feature flag; keep DB changes backward-compatible."],
+["What do you monitor in production?","Latency, traffic, errors, saturation, plus business metrics like accounts created."],
+["How do you handle a production incident?","Scope it, mitigate first, communicate, find root cause, postmortem with action items."]
+]],
+["acc","Behavioral and project (15)",[
+["Tell me about yourself.","Present, past, future in 60 to 90 seconds. See the Resume section."],
+["Walk me through your most recent project.","Problem, users, architecture, your part, result, learning."],
+["What is your biggest technical achievement?","Pick one: React performance overhaul (render time about 45% faster) or the RBAC system end to end. Explain your exact role."],
+["Tell me about a hard bug.","Symptom, investigation with Grafana and logs, root cause, fix, prevention."],
+["Tell me about a time you failed.","A real, small failure, what you learned, and what you now do differently."],
+["Tell me about mentoring someone.","You mentored 3 junior engineers on performance, and taught 100+ students DSA. Say what changed for them."],
+["Tell me about a conflict.","Talk one on one, write down trade-offs, agree, revisit. Focus on the result."],
+["How do you prioritize multiple tasks?","Impact and urgency, agree with the product owner, communicate what moves."],
+["Tell me about a time you improved a process.","CI/CD time from about 40 to 12 minutes, or the shared design system across 4 squads."],
+["Why are you leaving or what have you been doing since July 2024?","Full-time Master's in CS at the University of Utah, finished May 2026, plus projects like InsightHub."],
+["How do you keep learning?","Side projects, docs and source code, LeetCode, AI tooling like RAG and MCP."],
+["How do you handle pressure?","Break it down, communicate early, protect quality, ask for help when blocked."],
+["Describe working with a difficult stakeholder.","Understand their goal, show options with data, agree on next steps in writing."],
+["How do you ensure quality in your code?","Tests, small PRs, code review, monitoring after release."],
+["Why do you want to work onsite 5 days?","You live in Salt Lake City, value fast face-to-face collaboration, and learning a new domain is faster with the team around you."]
+]]
+]},
+
+{id:"plan",t:"One-Day Preparation Plan",s:"A realistic final day. Rest matters too.",b:[
+["ol","Morning (about 3 hours): Java and Spring",[
+"Read the Java Core topics. Say each 'strong answer' out loud.",
+"Spring: DI, annotations, request flow, JPA N+1, @Transactional pitfalls, global errors.",
+"Write the REST controller and thread-safe counter from memory in a blank editor.",
+"Do the first 25 mock questions out loud, timed."]],
+["ol","Afternoon (about 3 hours): React and SQL",[
+"React hooks, useEffect mistakes, keys, re-renders, fetching with cancellation.",
+"Write the fetch component from memory.",
+"Write the 7 SQL practice queries without looking.",
+"Isolation levels, locking, duplicate prevention. Mock React and SQL questions."]],
+["ol","Evening (about 2 hours): projects, stories, design",[
+"Say 'tell me about yourself' out loud 3 times until it is 90 seconds.",
+"Fill in the [brackets] in the hardest bug, conflict and weakness stories with real details.",
+"Talk through two design walkthroughs out loud: onboarding/account creation and the payment API.",
+"Write your 5 questions for them. Sleep early."]],
+["ol","Final 30 minutes before the call",[
+"Laptop charged, camera and mic tested, no headphones, quiet room, good light.",
+"Close every app except Zoom and a blank editor. Turn off notifications.",
+"Test screen sharing in Zoom.",
+"Water nearby. Resume open in a tab for your own reference only.",
+"Read the Quick Revision Sheet once.",
+"Join a few minutes early. Smile, slow down, ask clarifying questions."]]
+]},
+
+{id:"rev",t:"Quick Revision Sheet",s:"The 10-minute read before the call.",b:[
+["ul","Java",[
+"`==` references, `.equals()` content; override hashCode with equals.",
+"HashMap: hash → bucket → equals; tree after 8; resize at 0.75; O(1) average.",
+"ArrayList almost always beats LinkedList. ConcurrentHashMap for threads.",
+"volatile = visibility only. AtomicInteger for counters. Lock in a fixed order.",
+"Checked must be handled; unchecked = RuntimeException."]],
+["ul","Spring",[
+"Constructor injection. @RestController = @Controller + @ResponseBody.",
+"@RestControllerAdvice for errors. @Valid on DTOs.",
+"N+1 → JOIN FETCH. Lazy by default.",
+"@Transactional: not on self-calls or private; checked exceptions do not roll back.",
+"Kafka: key for order, idempotent consumers, dead letter topic."]],
+["ul","React",[
+"Re-render: state, parent, context. Measure before memoizing.",
+"useEffect: right deps, cleanup, AbortController.",
+"Stable keys, not index. Lift state to common parent.",
+"Context for rare changes; React Query for server data.",
+"httpOnly cookies for tokens; no dangerouslySetInnerHTML."]],
+["ul","SQL",[
+"LEFT JOIN + `IS NULL` finds missing. WHERE before groups, HAVING after.",
+"Index what you filter and join on; check EXPLAIN.",
+"ACID; read committed default in PostgreSQL.",
+"Duplicates: idempotency key + unique constraint + transaction."]],
+["ul","Design and delivery",[
+"Clarify → APIs → data → flow → cache → security → failures.",
+"Money in BigDecimal or minor units. Double-entry ledger. Audit everything.",
+"Mitigate first in incidents. Roll back, then find the root cause.",
+"AWS: S3 files, RDS SQL, DynamoDB key-value, SQS queue, SNS fan-out."]],
+["ul","You",[
+"4 years: Spring Boot APIs, React/Redux, AWS, RBAC, SingPass onboarding for 1M+ users.",
+"MS CS, Utah, May 2026. Local to Salt Lake City.",
+"Say 'I', give numbers you can defend, say 'I would check' when unsure."]]
+]}
+);
+
+let r2Sel=R2[0].id,r2Query="",r2Print=false,r2ResetArm=0;
+const r2Done=id=>!!S.r2[id];
+function r2fmt(s){return esc(s).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>");}
+function r2Text(b){return JSON.stringify(b).replace(/\\n/g," ").replace(/[`*]/g,"").toLowerCase();}
+function r2Code(title,text){return `<div class="gscode">${title?`<h3 class="gslbl" style="margin-bottom:8px">${esc(title)}</h3>`:""}<pre><code>${esc(text)}</code></pre></div>`;}
+function r2List(tag,items){return `<${tag}>${items.map(x=>`<li>${r2fmt(x)}</li>`).join("")}</${tag}>`;}
+function r2Body(a){return typeof a==="string"?`<p>${r2fmt(a)}</p>`:a.map(b=>b[0]==="p"?`<p>${r2fmt(b[1])}</p>`:b[0]==="code"?r2Code(b[1],b[2]):r2List(b[0]==="ol"?"ol":"ul",b[2])).join("");}
+function r2Acc(q,a,open){return `<details class="r2acc" ${open?"open":""}><summary>${r2fmt(q)}</summary><div class="bd">${r2Body(a)}</div></details>`;}
+function r2Topic(b,open){const [,t,idea,why,q,a,bad]=b;
+  return `<details class="r2acc" ${open?"open":""}><summary>${r2fmt(t)}</summary><div class="bd"><dl class="r2dl"><dt>Simple idea</dt><dd>${r2fmt(idea)}</dd><dt>Why they ask</dt><dd>${r2fmt(why)}</dd><dt>Question</dt><dd><b>${r2fmt(q)}</b></dd><dt>Strong answer</dt><dd class="ans">${r2fmt(a)}</dd><dt>Mistakes</dt><dd class="bad">${r2fmt(bad)}</dd></dl></div></details>`;}
+/* one block; for "acc" only the items in keep (indexes) are drawn, all when keep is null */
+function r2Block(b,open,keep){
+  if(b[0]==="p")return `<p class="r2p">${r2fmt(b[1])}</p>`;
+  if(b[0]==="ul"||b[0]==="ol"||b[0]==="card")return `<section class="r2card ${b[0]==="card"?"tint":""}">${b[1]?`<h3>${esc(b[1])}</h3>`:""}${r2List(b[0]==="ol"?"ol":"ul",b[2])}</section>`;
+  if(b[0]==="code")return `<section class="gssec" style="max-width:760px">${r2Code(b[1],b[2])}</section>`;
+  if(b[0]==="topic")return `<div class="r2grp"><div class="r2accs">${r2Topic(b,open)}</div></div>`;
+  if(b[0]==="acc"){const its=b[2].map((x,i)=>[x,i]).filter(([,i])=>!keep||keep.includes(i));
+    return `<section class="r2grp">${b[1]?`<h3 class="gslbl">${esc(b[1])}${keep?"":` · ${b[2].length}`}</h3>`:""}<div class="r2accs">${its.map(([[q,a]])=>r2Acc(q,a,open)).join("")}</div></section>`;}
+  return "";}
+/* topics are drawn one per block; runs of topics share one bordered list */
+function r2Blocks(bs,open){let h="",run=[];const flush=()=>{if(run.length){h+=`<div class="r2grp"><div class="r2accs">${run.join("")}</div></div>`;run=[];}};
+  for(const b of bs){if(b[0]==="topic"){run.push(r2Topic(b,open));continue;}flush();h+=r2Block(b,open);}flush();return h;}
+/* search: units are top-level blocks, topics, and single accordion items */
+function r2Hits(s,q){const out=[];s.b.forEach((b,i)=>{if(b[0]==="acc"){const keep=b[2].map((x,j)=>r2Text(x).includes(q)?j:-1).filter(j=>j>=0);if(keep.length)out.push([b,keep]);}else if(r2Text(b).includes(q))out.push([b,null]);});return out;}
+function r2Count(h){return h.reduce((n,[b,k])=>n+(k?k.length:1),0);}
+function r2Head(s,i){const dn=r2Done(s.id);return `<header class="gsh"><span class="gseb">Section ${i+1} of ${R2.length}</span><div class="gsht"><h2>${esc(s.t)}</h2><label class="gsdone"><input type="checkbox" data-r2="${s.id}" ${dn?"checked":""}>${dn?"Complete":"Mark complete"}</label></div><p class="r2sum">${esc(s.s)}</p></header>`;}
+function renderR2(){
+  const n=R2.filter(s=>r2Done(s.id)).length,pct=Math.round(100*n/R2.length);
+  $("#r2Stats").innerHTML=`<span><b>${n}/${R2.length}</b> sections</span><span><b>${pct}%</b> complete</span>`;
+  $("#r2Prog").innerHTML=`<span class="lbl" id="r2ProgLbl">Progress</span><div class="r2bar" role="progressbar" aria-labelledby="r2ProgLbl" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div><span class="r2pct"><b>${pct}%</b> · ${n} of ${R2.length} sections complete</span>`
+    +`<div class="r2acts"><button class="gsbtn" type="button" data-r2act="all">Mark all complete</button><button class="gsbtn ${r2ResetArm?"warn":""}" type="button" data-r2act="reset">${r2ResetArm?"Click again to reset":"Reset progress"}</button><button class="gsbtn" type="button" data-r2act="print">Print / Save as PDF</button></div>`;
+  $("#r2List").innerHTML=R2.map((s,i)=>{const dn=r2Done(s.id),sel=!r2Query&&s.id===r2Sel,c=r2Query?r2Count(r2Hits(s,r2Query)):0;
+    return `<div class="gsitem ${dn?"done":""} ${sel?"sel":""} ${r2Query&&!c?"dim":""}"><input type="checkbox" data-r2="${s.id}" ${dn?"checked":""} aria-label="Complete: ${esc(s.t)}"><button class="gspick" data-r2sel="${s.id}" ${sel?'aria-current="true"':""}><span class="rk">${i+1}</span><span class="t">${esc(s.t)}</span>${r2Query&&c?`<span class="hits">${c}</span>`:""}</button></div>`;}).join("");
+  renderR2Main();}
+function renderR2Main(){const M=$("#r2Main");
+  if(r2Print){M.innerHTML=`<header class="gsh"><div class="gsht"><h2>Goldman Sachs Interview Prep</h2></div><p class="r2sum">Round 2 study guide. Java, Spring Boot, React, SQL, design, SDLC and behavioral.</p></header>`
+    +R2.map((s,i)=>`<section class="r2s" style="display:flex;flex-direction:column;gap:14px">${r2Head(s,i)}${r2Blocks(s.b,true)}</section>`).join("");return;}
+  if(r2Query){const res=R2.map((s,i)=>[s,i,r2Hits(s,r2Query)]).filter(x=>x[2].length),total=res.reduce((n,x)=>n+r2Count(x[2]),0);
+    M.innerHTML=`<header class="gsh"><span class="gseb">Search</span><div class="gsht"><h2>Results for “${esc(r2Query)}”</h2></div><p class="r2res" role="status">${total?`${total} match${total>1?"es":""} in ${res.length} section${res.length>1?"s":""}`:"Nothing matches."}</p></header>`
+      +res.map(([s,i,h])=>`<section style="display:flex;flex-direction:column;gap:12px"><h3 class="gslbl" style="color:var(--gteal-ink)">${i+1}. ${esc(s.t)}</h3>${h.map(([b,k])=>r2Block(b,true,k)).join("")}</section>`).join("");return;}
+  const i=R2.findIndex(s=>s.id===r2Sel),s=R2[i];
+  M.innerHTML=r2Head(s,i)+r2Blocks(s.b,false);}
+function r2Pick(id){r2Sel=id;r2Query="";$("#r2Search").value="";renderR2();
+  const mn=$("#r2Main");if(mn.getBoundingClientRect().top<0||window.innerWidth<=760)mn.scrollIntoView({behavior:"smooth",block:"start"});}
+function r2Act(a){
+  if(a==="all"){for(const s of R2)if(!S.r2[s.id])S.r2[s.id]=today();save();r2ResetArm=0;renderR2();toast("All sections complete");return;}
+  if(a==="reset"){if(!r2ResetArm){r2ResetArm=setTimeout(()=>{r2ResetArm=0;renderR2();},4000);renderR2();return;}
+    clearTimeout(r2ResetArm);r2ResetArm=0;S.r2={};save();renderR2();toast("Progress reset");return;}
+  if(a==="print")window.print();}
+window.addEventListener("beforeprint",()=>{if(sec==="r2"){r2Print=true;renderR2Main();}});
+window.addEventListener("afterprint",()=>{if(r2Print){r2Print=false;renderR2Main();}});
+
 /* ---------------- EVENTS ---------------- */
 document.addEventListener("click",e=>{
   const so=e.target.closest('a[data-sdopen]');if(so){e.preventDefault();const d=document.querySelector(`#sdTracks details[data-k="${so.dataset.sdopen}"]`);if(d){d.open=true;d.scrollIntoView({behavior:"smooth",block:"start"});}return;}
@@ -1459,6 +2083,8 @@ document.addEventListener("click",e=>{
   if(b.dataset.gscopy){const q=gsFind(b.dataset.gscopy),c=q&&gsCodes(q)[Number(b.dataset.i)];if(c&&navigator.clipboard)navigator.clipboard.writeText(c).then(()=>toast("Copied"),()=>toast("Copy failed"));return;}
   if(b.dataset.gstab){const k=b.dataset.gstab;gsTabs[k]=Number(b.dataset.i);const fromWays=!gsSol.has(k);gsSol.add(k);renderGSMain();if(fromWays||b.classList.contains("seecode")){const c=document.querySelector("#gsMain .gscode");if(c)c.scrollIntoView({behavior:"smooth",block:"nearest"});}return;}
   if(b.dataset.gssel){gsPick(b.dataset.gssel);return;}
+  if(b.dataset.r2sel){r2Pick(b.dataset.r2sel);return;}
+  if(b.dataset.r2act){r2Act(b.dataset.r2act);return;}
   if(b.dataset.gf){gsFilter=b.dataset.gf;document.querySelectorAll("#gsFilters .chip").forEach(x=>x.classList.toggle("on",x===b));renderGS();return;}
   if(b.dataset.gd!==undefined){gsDiff=b.dataset.gd;document.querySelectorAll("#gsDiff .chip").forEach(x=>x.classList.toggle("on",x===b));renderGS();return;}
   if(b.dataset.tab){lcTab=b.dataset.tab;showTab();return;}
@@ -1485,6 +2111,7 @@ document.addEventListener("toggle",e=>{const d=e.target;
   const pi=Number(d.dataset.pi);d.open?openPats.add(pi):openPats.delete(pi);},true);
 document.addEventListener("change",e=>{
   if(e.target.dataset.sd){SD.status[e.target.dataset.sd]=Number(e.target.value);sdSave();renderSD();}
+  if(e.target.dataset.r2){const k=e.target.dataset.r2;if(e.target.checked)S.r2[k]=today();else delete S.r2[k];save();renderR2();}
   if(e.target.dataset.gs){const k=e.target.dataset.gs;if(e.target.checked)S.gs[k]=today();else delete S.gs[k];save();renderGS();}
   if(e.target.dataset.ai){AI.status[e.target.dataset.ai]=Number(e.target.value);aiSave();renderAI();}
   if(e.target.dataset.cap){AI.cap[e.target.dataset.cap]=e.target.checked;aiSave();renderAI();}
@@ -1493,6 +2120,7 @@ document.addEventListener("input",e=>{
   if(e.target.dataset.nid){S.notes[Number(e.target.dataset.nid)]=e.target.value;save();document.querySelectorAll(`[data-note="${e.target.dataset.nid}"]`).forEach(x=>x.classList.toggle("has",!!e.target.value));}
   if(e.target.dataset.ainote){const k=e.target.dataset.ainote;AI.notes[k]=e.target.value;aiSave();document.querySelectorAll(`[data-ainote="${k}"]`).forEach(x=>{if(x!==e.target)x.value=e.target.value;});}
   if(e.target.dataset.guess){S.guess[Number(e.target.dataset.guess)]=e.target.value;save();}
+  if(e.target.id==="r2Search"){r2Query=e.target.value.trim().toLowerCase();renderR2();}
   if(e.target.id==="gsSearch"){gsQuery=e.target.value.trim().toLowerCase();renderGS();}
   if(e.target.id==="search"){query=e.target.value.trim().toLowerCase();renderAll();}
 });
@@ -1501,12 +2129,12 @@ $("#sdText").addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="
 $("#exportBtn").onclick=()=>{const a=document.createElement("a");a.href="data:application/json,"+encodeURIComponent(JSON.stringify({lc:S,sd:SD,ai:AI}));a.download="leetcode-tracker-"+today()+".json";a.click();toast("Backup downloaded");};
 $("#importFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(o.lc){S=Object.assign(BLANK(),o.lc);if(o.sd)SD=Object.assign({status:{},log:[]},o.sd);if(o.ai)AI=Object.assign({status:{},cap:{},build:{},notes:{}},o.ai);}else if(o.labels){S=Object.assign(BLANK(),o);}else throw 0;migrate();save();sdSave();aiSave();render();renderSD();renderAI();renderGS();toast("Backup imported");}catch{toast("That file is not a tracker backup");}};r.readAsText(f);e.target.value="";};
 $("#resetBtn").onclick=()=>{if(confirm("Delete all progress, LeetCode, Goldman, System Design and AI Fluency? Export a backup first if you want to keep it."))
-{S=BLANK();SD={status:{},log:[]};AI={status:{},cap:{},build:{},notes:{}};migrate();save();sdSave();aiSave();render();renderSD();renderAI();renderGS();toast("Reset done");}};
+{S=BLANK();SD={status:{},log:[]};AI={status:{},cap:{},build:{},notes:{}};migrate();save();sdSave();aiSave();render();renderSD();renderAI();renderGS();renderR2();toast("Reset done");}};
 
 /* top level: LeetCode (with Today / All questions / Progress), System Design, AI Fluency, About */
 let sec="lc",lcTab="today";
 function showTab(){const id=sec==="lc"?lcTab:sec;document.body.dataset.sec=sec;
-  document.title=({lc:"LeetCode",gs:"Goldman",sd:"System Design",ai:"AI Fluency",about:"About"}[sec]||"")+" · Prep Tracker";
+  document.title=({lc:"LeetCode",gs:"Goldman",r2:"GS Round 2",sd:"System Design",ai:"AI Fluency",about:"About"}[sec]||"")+" · Prep Tracker";
   document.querySelectorAll("#mainNav button").forEach(x=>x.classList.toggle("on",x.dataset.sec===sec));
   document.querySelectorAll("#subNav button").forEach(x=>x.classList.toggle("on",x.dataset.tab===lcTab));
   $("#subNav").style.display=sec==="lc"?"":"none";
@@ -1553,7 +2181,7 @@ async function syPush(){if(!syOn())return;if(syBusy){syAgain=true;return;}syBusy
 function syErr(e){if(e&&e.status===401)syShow("err","Token rejected. Paste a new one.");else if(e&&e.status===403)syShow("err","Token cannot write to this repo.");else if(e&&e.status===404)syShow("err","Repo or branch not found.");else if(e&&e.status)syShow("err","GitHub error "+e.status);else syShow("offline","Offline. Changes are kept here and sync when you are back online.");}
 function syApply(o){syQuiet=true;
   S=Object.assign(BLANK(),o.lc||{});SD=Object.assign({status:{},log:[]},o.sd||{});AI=Object.assign({status:{},cap:{},build:{},notes:{}},o.ai||{});for(const f of ["cap","build","notes"])if(!AI[f])AI[f]={};
-  migrate();_save();_sdSave();_aiSave();render();renderSD();renderAI();renderGS();syQuiet=false;}
+  migrate();_save();_sdSave();_aiSave();render();renderSD();renderAI();renderGS();renderR2();syQuiet=false;}
 /* on open, focus and connect: pick the newest version, or ask when both sides changed */
 async function syPullPublic(){if(!SY.repo){syShow("off");return;}
   try{const rem=await syGet();if(!rem){syShow("ro","");return;}
@@ -1585,7 +2213,7 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 window.addEventListener("pagehide",()=>{if(syTimer&&SY.dirty&&syOn()){clearTimeout(syTimer);syPush();}});
 window.addEventListener("online",()=>{if(syOn())syPull(false);});
 let syTick=null;function syStartTick(){if(syTick)return;syTick=setInterval(()=>{if(!syOn())return;if(SY.dirty&&!syBusy)syPush();else if(syState==="ok")syShow("ok");},30000);}
-load();sdLoad();aiLoad();render();renderSD();renderAI();renderGS();showTab();
+load();sdLoad();aiLoad();render();renderSD();renderAI();renderGS();renderR2();showTab();
 syBoot=false;syPull(false);
 </script>
 </body>
