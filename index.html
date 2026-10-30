@@ -1862,7 +1862,7 @@ R2.push(
 ]]
 ]},
 
-{id:"mock",t:"Mock Interview Questions",s:"90 questions. Answer out loud first, then open.",b:[
+{id:"mock",t:"Mock Interview Questions",s:"96 questions. Answer out loud first, then open.",b:[
 ["acc","Java and Spring (25)",[
 ["What are the four pillars of OOP?","Encapsulation, inheritance, polymorphism, abstraction. Give one example each from your code."],
 ["Interface vs abstract class?","Interface: contract, multiple allowed, no instance state. Abstract class: shared state and code, single inheritance."],
@@ -1945,6 +1945,14 @@ R2.push(
 ["How do you roll back a bad release?","Redeploy the last good version or flip the feature flag; keep DB changes backward-compatible."],
 ["What do you monitor in production?","Latency, traffic, errors, saturation, plus business metrics like accounts created."],
 ["How do you handle a production incident?","Scope it, mitigate first, communicate, find root cause, postmortem with action items."]
+]],
+["acc","AWS and cloud (6)",[
+["IAM user vs role? What is least privilege?","A user is a long-lived identity for a person. A role is assumed for short-lived credentials, used by services like EC2 or Lambda. Least privilege: grant only the actions and resources needed, nothing more."],
+["Public vs private subnet? Security group vs NACL?","Public subnets route to the internet; app servers and databases sit in private subnets behind a load balancer. Security groups are stateful and attach to instances. NACLs are stateless and attach to subnets."],
+["EC2 vs ECS/EKS vs Lambda?","EC2: full control of a server. ECS or EKS: run containers at scale. Lambda: short event-driven functions, no servers, pay per call, but cold starts and a 15-minute limit."],
+["How do you make an app highly available on AWS?","Run across multiple Availability Zones behind an Application Load Balancer, use an Auto Scaling group, RDS Multi-AZ, and health checks that replace bad instances."],
+["How do you protect secrets and data on AWS?","Secrets in Secrets Manager or Parameter Store, never in code. Encrypt at rest with KMS and in transit with TLS. IAM roles instead of access keys."],
+["How do you monitor and audit on AWS?","CloudWatch for metrics, logs and alarms. X-Ray for tracing requests. CloudTrail records who called which API, which matters for audits in a bank."]
 ]],
 ["acc","Behavioral and project (15)",[
 ["Tell me about yourself.","Present, past, future in 60 to 90 seconds. See the Resume section."],
