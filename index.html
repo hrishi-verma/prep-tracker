@@ -1862,7 +1862,7 @@ R2.push(
 ]]
 ]},
 
-{id:"mock",t:"Mock Interview Questions",s:"96 questions. Answer out loud first, then open.",b:[
+{id:"mock",t:"Mock Interview Questions",s:"101 questions. Answer out loud first, then open.",b:[
 ["acc","Java and Spring (25)",[
 ["What are the four pillars of OOP?","Encapsulation, inheritance, polymorphism, abstraction. Give one example each from your code."],
 ["Interface vs abstract class?","Interface: contract, multiple allowed, no instance state. Abstract class: shared state and code, single inheritance."],
@@ -1946,7 +1946,12 @@ R2.push(
 ["What do you monitor in production?","Latency, traffic, errors, saturation, plus business metrics like accounts created."],
 ["How do you handle a production incident?","Scope it, mitigate first, communicate, find root cause, postmortem with action items."]
 ]],
-["acc","AWS and cloud (6)",[
+["acc","AWS and cloud (11)",[
+["How do you move an app to AWS safely?","Inventory dependencies, lift and shift first, migrate data with replication, run in parallel, shift traffic gradually, keep rollback."],
+["S3 vs EBS vs RDS vs DynamoDB?","S3: object files. EBS: disk for one EC2. RDS: managed SQL database. DynamoDB: managed key-value NoSQL."],
+["SQS vs SNS vs Kafka?","SQS: queue, one consumer per message. SNS: pub/sub fan-out. Kafka: durable ordered log with replay and consumer groups."],
+["SQS standard vs FIFO?","Standard: very high throughput, at-least-once delivery, best-effort order. FIFO: strict order and deduplication within a message group, lower throughput. FIFO fits account events that must stay in order."],
+["How do you make a database on AWS highly available?","RDS Multi-AZ keeps a standby in another zone and fails over automatically. Read replicas spread read load; they are mainly for scale. Turn on automated backups."],
 ["IAM user vs role? What is least privilege?","A user is a long-lived identity for a person. A role is assumed for short-lived credentials, used by services like EC2 or Lambda. Least privilege: grant only the actions and resources needed, nothing more."],
 ["Public vs private subnet? Security group vs NACL?","Public subnets route to the internet; app servers and databases sit in private subnets behind a load balancer. Security groups are stateful and attach to instances. NACLs are stateless and attach to subnets."],
 ["EC2 vs ECS/EKS vs Lambda?","EC2: full control of a server. ECS or EKS: run containers at scale. Lambda: short event-driven functions, no servers, pay per call, but cold starts and a 15-minute limit."],
