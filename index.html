@@ -881,7 +881,7 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 
 <h3>How the page is organised</h3>
 <ul>
-<li>The top bar has five sections, LeetCode, Goldman, GS Round 2, System Design and AI Fluency, plus About. GS Round 2 is a study guide for the Goldman second round: 13 sections with search, a complete tick per section, and print. LeetCode has its own sub-tabs below it.</li>
+<li>The top bar has five sections, LeetCode, Goldman, GS Round 2, System Design and AI Fluency, plus About. GS Round 2 is a study guide for the Goldman second round: 15 sections with search, a complete tick per section, and print. LeetCode has its own sub-tabs below it.</li>
 <li><b>Today</b>: today's pattern with required and optional tiles, then the revision list.</li>
 <li><b>All questions</b>: every pattern as a collapsible block with a progress bar, search, filters (including Never revised), and per question a status dropdown, revision counter and note.</li>
 <li><b>Header</b>: the app is titled Prep Tracker; LeetCode, System Design and AI Fluency each open with three summary tiles in the same style.</li>
@@ -1603,6 +1603,246 @@ R2.push(
 "**Action:** what **you** did, step by step. This is the longest part.",
 "**Result:** the outcome, with a number if you have one, plus what you learned.",
 "Aim for 1.5 to 2 minutes. Stop and let them ask follow-ups."]]
+]},
+
+{id:"rbac",t:"RBAC Deep Dive: Backend and Frontend",s:"Your resume says you built RBAC end to end. Expect them to dig in.",b:[
+["p","Your resume: **\"Delivered a 0 to 1 Role-Based Access Control system end-to-end, owning the technical roadmap from architecture to production deployment and saving ~2 engineering weeks via automated Jenkins CI/CD validation.\"** Because you own it end to end, they can ask about any layer. Below is a standard, solid design. Swap in your real details where you see **[brackets]**."],
+["card","The idea in 30 seconds",[
+"**Authentication** answers who you are (login). **Authorization** answers what you may do. RBAC is a way to do authorization.",
+"Users get **roles** (for example Viewer, Analyst, Approver, Admin). Roles hold **permissions** (for example `account:view`, `account:approve`).",
+"Code checks **permissions**, not role names. Then adding a role never needs a code change.",
+"The **backend is the real gate**. The frontend only hides what the user cannot use, for a cleaner UI.",
+"**Deny by default.** No permission means no access."]],
+["acc","Core concepts",[
+["RBAC vs ABAC vs ACL",[["ul","",["**RBAC:** access by role. Simple to reason about and audit. Most business apps.","**ABAC:** access by attributes, for example region = user's region and amount < limit. Very flexible, harder to audit.","**ACL:** a list on each object of who may use it, like file sharing.","Real systems mix them: RBAC for features, plus data rules like 'a relationship manager sees only their own clients'."]]]],
+["Role vs permission",[["p","A permission is one action on one resource, written like `resource:action`. A role is a named bundle of permissions. Checking `hasAuthority('account:approve')` survives role changes; checking `hasRole('ADMIN')` everywhere does not."]]],
+["401 vs 403",[["p","**401 Unauthorized:** we do not know who you are (missing or bad token). **403 Forbidden:** we know who you are, and you are not allowed. Interviewers ask this often."]]],
+["Role hierarchy",[["p","Optional: Admin inherits everything Approver has, Approver inherits Analyst. Saves setup, but keep it shallow so it stays easy to audit."]]],
+["Separation of duties",[["p","In banks one person often must not do both steps, for example create a payment and approve it. This is called maker-checker or four-eyes. RBAC supports it by giving the two steps different permissions and adding a rule that the approver is not the creator."]]]]],
+["code","Backend: database schema",`CREATE TABLE users (
+  id          BIGINT PRIMARY KEY,
+  email       VARCHAR(255) UNIQUE NOT NULL,
+  active      BOOLEAN NOT NULL DEFAULT TRUE
+);
+CREATE TABLE roles (
+  id    BIGINT PRIMARY KEY,
+  name  VARCHAR(50) UNIQUE NOT NULL        -- 'VIEWER', 'APPROVER', 'ADMIN'
+);
+CREATE TABLE permissions (
+  id    BIGINT PRIMARY KEY,
+  code  VARCHAR(100) UNIQUE NOT NULL       -- 'account:view', 'account:approve'
+);
+CREATE TABLE user_roles (
+  user_id  BIGINT REFERENCES users(id),
+  role_id  BIGINT REFERENCES roles(id),
+  PRIMARY KEY (user_id, role_id)
+);
+CREATE TABLE role_permissions (
+  role_id        BIGINT REFERENCES roles(id),
+  permission_id  BIGINT REFERENCES permissions(id),
+  PRIMARY KEY (role_id, permission_id)
+);
+-- every grant and revoke is written here: who, what, when
+CREATE TABLE access_audit (
+  id          BIGINT PRIMARY KEY,
+  actor_id    BIGINT NOT NULL,
+  action      VARCHAR(50) NOT NULL,        -- 'GRANT_ROLE', 'REVOKE_ROLE'
+  target_id   BIGINT NOT NULL,
+  detail      VARCHAR(255),
+  created_at  TIMESTAMP NOT NULL
+);
+
+-- all permissions for one user
+SELECT DISTINCT p.code
+FROM user_roles ur
+JOIN role_permissions rp ON rp.role_id = ur.role_id
+JOIN permissions p       ON p.id = rp.permission_id
+WHERE ur.user_id = ?;`],
+["ol","Backend: how a request is checked (Spring Boot)",[
+"Request arrives with `Authorization: Bearer <token>`.",
+"A **JWT filter** in the Spring Security chain validates the signature, expiry, issuer and audience. Bad token → **401**.",
+"It loads the user's permissions (from the token, or from DB or cache) and puts them in the `SecurityContext` as authorities.",
+"**URL rules** in the security config block whole areas, for example `/admin/**` needs `admin:access`.",
+"**Method rules** with `@PreAuthorize` guard each endpoint or service method. Missing permission → **403**.",
+"**Data rules** inside the service check ownership, for example the account belongs to this user's clients.",
+"A global exception handler returns a clean JSON error. Denials are logged with user id and endpoint, never with the token."]],
+["code","Backend: Spring Security sketch",`@Configuration
+@EnableMethodSecurity
+public class SecurityConfig {
+  @Bean
+  SecurityFilterChain chain(HttpSecurity http, JwtAuthFilter jwtFilter) throws Exception {
+    http
+      .csrf(csrf -> csrf.disable())                 // stateless API with bearer tokens
+      .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      .authorizeHttpRequests(auth -> auth
+          .requestMatchers("/auth/**", "/health").permitAll()
+          .requestMatchers("/admin/**").hasAuthority("admin:access")
+          .anyRequest().authenticated())             // deny by default
+      .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+  }
+}
+
+@RestController
+@RequestMapping("/accounts")
+public class AccountController {
+  private final AccountService service;
+  public AccountController(AccountService service) { this.service = service; }
+
+  @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('account:view')")
+  public AccountDto get(@PathVariable long id, Authentication auth) {
+    return service.getForUser(id, auth.getName());   // also checks ownership
+  }
+
+  @PostMapping("/{id}/approve")
+  @PreAuthorize("hasAuthority('account:approve')")
+  public void approve(@PathVariable long id, Authentication auth) {
+    service.approve(id, auth.getName());             // rule: approver != creator
+  }
+}`],
+["acc","Backend design choices (be ready to defend these)",[
+["Permissions in the JWT, or looked up each request?",[["ul","",["**In the token:** fast, no DB call. But a removed role stays valid until the token expires, and the token grows.","**Looked up per request:** changes apply at once, but costs a DB call. Fix with a cache (for example Redis) with a short TTL, cleared when roles change.","A common middle: short-lived access tokens (5 to 15 minutes) with roles inside, plus refresh tokens. A revoke takes effect within minutes.","[Say which one you used and why.]"]]]],
+["How do you stop privilege escalation?",[["ul","",["Role management endpoints need their own permission, for example `role:assign`.","A user cannot grant a permission they do not hold, and cannot change their own roles.","Never trust a role or user id sent in the request body; take identity only from the verified token.","Audit every grant and revoke."]]]],
+["How do you make the role changes safe to deploy?",[["p","Seed roles and permissions with database migrations (Flyway or Liquibase) so every environment matches. Add tests that fail if an endpoint has no `@PreAuthorize`. [This is where your Jenkins CI/CD validation fits: describe what the pipeline checked automatically and how it saved about 2 engineering weeks.]"]]],
+["How do you test it?",[["ul","",["Unit tests for service rules (ownership, approver is not creator).","Controller tests with `@WebMvcTest` and `@WithMockUser(authorities = \"account:view\")` for allowed and denied cases.","A permission matrix test: for each role, call each endpoint, expect 200 or 403.","Always test the deny path, not just the happy path."]]]],
+["How does it scale across microservices?",[["p","Each service validates the JWT itself using the identity provider's public keys, so there is no central call on every request. Permission codes are shared, but each service enforces its own endpoints. A central service owns role management and the audit log."]]]]],
+["card","Frontend: what React does (and does not do)",[
+"After login, fetch the user's permissions once, for example `GET /me` returns `{ name, permissions: [...] }`.",
+"Keep them in an **AuthContext**, and expose a small `can('account:approve')` helper.",
+"**Routes:** a `ProtectedRoute` sends users without access to a 'not allowed' page.",
+"**Menus and buttons:** hide what the user can never use; disable with a tooltip when it is temporarily not allowed.",
+"**Handle 401 and 403 from the API** in one place: 401 → back to login, 403 → a friendly message. Roles can change while the page is open.",
+"**Never rely on the UI for security.** Anyone can call the API directly. The backend checks every request.",
+"Show a loading state until permissions arrive, so restricted items do not flash on screen."]],
+["code","Frontend: React sketch",`const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);       // { name, permissions: [] }
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    api.get('/me').then(setUser).catch(() => setUser(null)).finally(() => setLoading(false));
+  }, []);
+  const can = useCallback(p => !!user && user.permissions.includes(p), [user]);
+  return (
+    <AuthContext.Provider value={{ user, loading, can }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+export const useAuth = () => useContext(AuthContext);
+
+// show children only with the permission
+export function Can({ perm, children }) {
+  const { can } = useAuth();
+  return can(perm) ? children : null;
+}
+
+// React Router v6 route guard
+export function ProtectedRoute({ perm, children }) {
+  const { user, loading, can } = useAuth();
+  if (loading) return <Spinner />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (perm && !can(perm)) return <Navigate to="/forbidden" replace />;
+  return children;
+}
+
+// usage
+<Route path="/approvals" element={
+  <ProtectedRoute perm="account:approve"><Approvals /></ProtectedRoute>
+} />
+<Can perm="account:approve"><button onClick={approve}>Approve</button></Can>`],
+["card","Telling your RBAC story (STAR, about 2 minutes)",[
+"**Situation:** [Client and app, for example a fintech or government portal.] Access was [hard-coded checks, all-or-nothing admin, or manual], which was [risky or slow to change].",
+"**Task:** You owned RBAC from 0 to 1: roadmap, architecture, build and production rollout.",
+"**Action:** Designed the user, role and permission model; enforced it in Spring Boot with [JWT filter and @PreAuthorize]; built the React side with [route guards and permission-based UI]; added [an admin screen if real]; automated validation in Jenkins CI/CD.",
+"**Result:** Shipped to production; saved about 2 engineering weeks through automated CI/CD validation; [number of roles, users or services covered].",
+"**Learning:** [For example: check permissions not role names, and test the deny path.]"]],
+["acc","Questions they may ask about your RBAC",[
+["Walk me through the RBAC system you built.","Use the STAR card above. Start with the model (users, roles, permissions), then backend enforcement, then the frontend, then rollout and result."],
+["Why did you build it instead of using an off-the-shelf tool?","[Give the real reason, for example client constraints or needed custom data rules.] Also say what you reused: Spring Security, JWT, the existing identity provider."],
+["If an admin removes a role, when does it take effect?","Depends on where permissions live. In the token: when it expires, so keep access tokens short. Looked up with a cache: when the cache is cleared, which you do on every role change. [Say what yours did.]"],
+["How do you handle 'a manager sees only their team's data'?","That is a data rule, not a role. Check ownership in the service or filter in the query, for example `WHERE client.manager_id = :currentUserId`. Return 404 or 403 for records outside the user's scope."],
+["Is hiding a button in React enough?","No. It only improves the UI. The API must reject the call with 403, because anyone can call it with curl or the browser dev tools."],
+["How do you audit access?","Log every grant, revoke and denied request with who, what and when, in a table the users cannot edit. Banks need this for audits and regulators."],
+["What would you improve?","[Your honest answer, for example: move permission checks into a shared library, add an admin UI with approval for role changes, or alert on unusual denials.]"]]]
+]},
+
+{id:"singpass",t:"SingPass Login (OIDC) Deep Dive",s:"Your resume says SingPass auth for 1M+ users. Know the login flow cold.",b:[
+["p","Your resume: **\"Launched high-throughput Java Spring Boot REST APIs with SingPass authentication, automating registration and verification for 1M+ users and reducing onboarding latency ~35%.\"** SingPass is Singapore's national digital identity. Apps let users log in with it using **OpenID Connect (OIDC)**, which sits on top of OAuth 2.0. You worked on the **login flow**, so that is the focus here. Where the details depend on the SingPass version your project used, they are in **[brackets]** for you to confirm."],
+["card","The idea in 30 seconds",[
+"**OAuth 2.0** is about access: it lets an app get a token to call an API. **OIDC** adds identity: an **ID token** that says who the user is.",
+"We used the **authorization code flow**: the browser only ever sees a short-lived code. Our **backend** swaps the code for tokens using its own credentials.",
+"SingPass proves the person's identity. Our app then decides what they may do (that is our own authorization, for example RBAC).",
+"The backend checks the ID token carefully: signature, issuer, audience, expiry and nonce."]],
+["ol","The login flow, step by step",[
+"User clicks **Log in with SingPass** in our React app.",
+"Our backend creates a random **state** and **nonce** [and a PKCE **code_verifier** if your version used PKCE], saves them for this browser session, and redirects to SingPass's **authorize endpoint** with `client_id`, `redirect_uri`, `scope=openid`, `response_type=code`, `state` and `nonce`.",
+"The user logs in on SingPass, usually by scanning a QR code with the SingPass app.",
+"SingPass redirects back to our registered **redirect_uri** with `code` and `state`.",
+"Backend checks **state** matches what it saved. If not, reject (it stops CSRF, someone forcing their login into your session).",
+"Backend calls SingPass's **token endpoint** with the code. It proves who it is with a **client assertion**: a short JWT signed with our private key [private_key_jwt]. SingPass checks it with our public key, published at our **JWKS** URL.",
+"SingPass returns an **ID token** [encrypted to our public key in SingPass Login, so we decrypt it first with our private key].",
+"Backend **verifies** the ID token: signature with SingPass's public keys (from their JWKS, cached), `iss` is SingPass, `aud` is our client id, not expired, and `nonce` matches.",
+"Read the user's identity from the `sub` claim [in SingPass this held the NRIC and a UUID]. Find or create the user, run our registration and verification logic, then issue **our own** session or JWT.",
+"Redirect the browser into the app. SingPass's tokens never go to the browser."]],
+["code","Backend: callback handler sketch (simplified)",`@GetMapping("/auth/singpass/callback")
+public ResponseEntity<Void> callback(@RequestParam String code,
+                                     @RequestParam String state,
+                                     HttpSession session) {
+  LoginAttempt attempt = (LoginAttempt) session.getAttribute("singpassLogin");
+  if (attempt == null || !attempt.state().equals(state)) {
+    throw new AuthException("Invalid state");             // CSRF or expired attempt
+  }
+  session.removeAttribute("singpassLogin");               // one use only
+
+  TokenResponse tokens = singpassClient.exchangeCode(code, clientAssertion());
+  IdTokenClaims claims = idTokenVerifier.verify(
+      tokens.idToken(),            // decrypt, then check signature with SingPass JWKS
+      attempt.nonce());            // also checks iss, aud, exp
+
+  User user = onboardingService.findOrRegister(claims.subject());
+  String appToken = jwtIssuer.issueFor(user);               // our own token, our own roles
+  return ResponseEntity.status(HttpStatus.FOUND)
+      .header(HttpHeaders.SET_COOKIE, secureCookie(appToken).toString())
+      .location(URI.create("/app"))
+      .build();
+}`],
+["acc","Key terms (short answers)",[
+["Authorization code flow","The browser gets only a one-time code. The backend exchanges it for tokens over a server-to-server call with client credentials. It is the safe choice for apps with a backend."],
+["state vs nonce","**state** ties the callback to the login this browser started, stopping CSRF. **nonce** is put inside the ID token, so a stolen or replayed token is rejected."],
+["PKCE","The client makes a random secret (code_verifier) and sends only its hash at the start. At the token exchange it sends the secret. A stolen code is useless without it. Required for public clients like mobile apps, and now recommended for all."],
+["ID token vs access token","**ID token:** a JWT for our app that says who logged in. **Access token:** used to call the provider's APIs. Our app needs the ID token to log the user in."],
+["JWKS","A URL that publishes public keys as JSON. SingPass uses ours to check our client assertion; we use theirs to check the ID token signature. Keys have a `kid`, which allows rotation."],
+["private_key_jwt","Instead of a shared client secret, the app signs a short JWT with its private key. Nothing secret is ever sent, and keys can be rotated."],
+["JWS vs JWE","**JWS** is signed: anyone can read it, nobody can change it. **JWE** is encrypted: only the key holder can read it. A token can be signed and then encrypted."]]],
+["acc","Security points to mention",[
+["Checks on the ID token","Signature, `iss`, `aud`, `exp` and `iat` with small clock-skew tolerance, and `nonce`. Reject on any failure and log the reason, not the token."],
+["Redirect URI","Registered exactly with SingPass. Never build it from user input, or attackers can steal codes with an open redirect."],
+["Key handling","Private keys in a secrets manager or HSM, never in code or Git. Cache SingPass's JWKS, and refetch when a token has an unknown `kid`, so their key rotation does not break login."],
+["Sensitive data","NRIC is sensitive personal data under Singapore's PDPA. Store only what you need, encrypt it at rest, and mask it in logs, for example `S****567A`."],
+["Our session after login","Issue our own short-lived token or session in an HttpOnly, Secure, SameSite cookie. Do not put tokens in localStorage, where XSS can read them."]]],
+["acc","Failures and edge cases",[
+["User cancels on SingPass","SingPass redirects back with an `error` parameter such as `access_denied`. Show a clear message and a retry button."],
+["SingPass is slow or down","Timeouts on the token call, a few retries with backoff for network errors only, a circuit breaker, and a friendly 'try again later' page. Alert the team."],
+["Code reused or expired","Codes are single use and short-lived. A second exchange fails; treat it as an error and restart the login."],
+["Double callback (user refreshes)","State is removed after first use, so the second request fails cleanly. Registration is idempotent with a unique constraint on the user's SingPass id, so no duplicate user is created."],
+["How do you test without real people?","Use SingPass's staging environment with test accounts [confirm what your team used], and mock the provider with WireMock in integration tests, including bad signatures, wrong nonce and expired tokens."]]],
+["card","Telling your SingPass story (STAR, about 2 minutes)",[
+"**Situation:** [Government or fintech client] needed users to register and verify identity online. Before, it was [manual or slow].",
+"**Task:** Build Spring Boot REST APIs with SingPass login to automate registration and verification, at 1M+ users.",
+"**Action:** Implemented the OIDC authorization code flow: state and nonce, token exchange with [private_key_jwt], ID token verification, then mapping the SingPass identity to our user and running verification. [Name the hard part, for example key rotation, clock skew, or error handling.]",
+"**Result:** Automated onboarding for 1M+ users and cut onboarding latency about 35%. [Say what caused the 35%, for example caching JWKS, removing manual steps, or running checks in parallel.]",
+"**Learning:** [For example: treat every token as untrusted until fully verified, and plan for the provider being down.]"]],
+["acc","Questions they may ask about SingPass",[
+["Walk me through the SingPass login flow.","Use the 10 steps above. Keep it to: redirect with state and nonce, user logs in, code comes back, backend checks state, exchanges the code, verifies the ID token, creates our own session."],
+["Why not let React talk to SingPass and get tokens directly?","The token exchange needs our private key, which must never be in a browser. Keeping tokens on the server also keeps them away from XSS."],
+["What is the difference between OAuth 2.0 and OIDC?","OAuth 2.0 is for access to APIs (access tokens). OIDC adds a standard ID token and user identity on top, so it is used for login."],
+["How did you verify the ID token?","[Decrypt it with our private key,] check the signature with SingPass's public key from their JWKS, then check issuer, audience, expiry and nonce. Only then trust `sub`."],
+["What did the 35% latency cut come from?","[Your real answer. Be ready with one or two concrete changes and how you measured before and after.]"],
+["How did you handle 1M+ users?","Stateless Spring Boot services behind a load balancer, cached SingPass public keys, connection pooling and timeouts on outbound calls, and idempotent registration. [Add what was real: instances, database, peak load.]"],
+["How does this relate to Goldman's client onboarding?","Same shape: verify identity with a trusted provider, then run KYC and create the account. The lessons carry over: strict token checks, idempotency, audit logs and handling a slow external provider."],
+["How do you link SingPass to your RBAC?","SingPass tells us who the person is. After login we look up their roles in our own system and put those permissions in our token. Identity comes from SingPass; permissions come from us."]]]
 ]},
 
 {id:"java",t:"Java Core Concepts",s:"Each topic: simple idea, why they ask, a question, a strong answer, mistakes.",b:[
