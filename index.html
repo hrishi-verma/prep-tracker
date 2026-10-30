@@ -881,7 +881,7 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 
 <h3>How the page is organised</h3>
 <ul>
-<li>The top bar has five sections, LeetCode, Goldman, GS Round 2, System Design and AI Fluency, plus About. GS Round 2 is a study guide for the Goldman second round: 16 sections with search, a complete tick per section, and print. LeetCode has its own sub-tabs below it.</li>
+<li>The top bar has five sections, LeetCode, Goldman, GS Round 2, System Design and AI Fluency, plus About. GS Round 2 is a study guide for the Goldman second round: 17 sections with search, a complete tick per section, and print. LeetCode has its own sub-tabs below it.</li>
 <li><b>Today</b>: today's pattern with required and optional tiles, then the revision list.</li>
 <li><b>All questions</b>: every pattern as a collapsible block with a progress bar, search, filters (including Never revised), and per question a status dropdown, revision counter and note.</li>
 <li><b>Header</b>: the app is titled Prep Tracker; LeetCode, System Design and AI Fluency each open with three summary tiles in the same style.</li>
@@ -1952,6 +1952,323 @@ public ResponseEntity<Void> callback(@RequestParam String code,
 ["How did you handle 1M+ users?","Stateless Spring Boot services behind a load balancer, cached SingPass public keys, connection pooling and timeouts on outbound calls, and idempotent registration. [Add what was real: instances, database, peak load.]"],
 ["How does this relate to Goldman's client onboarding?","Same shape: verify identity with a trusted provider, then run KYC and create the account. The lessons carry over: strict token checks, idempotency, audit logs and handling a slow external provider."],
 ["How do you link SingPass to your RBAC?","SingPass tells us who the person is. After login we look up their roles in our own system and put those permissions in our token. Identity comes from SingPass; permissions come from us."]]]
+]},
+
+{id:"oop",t:"Java OOP Concepts and Best Practices",s:"They said this round is heavy on OOP. Know the why, the rules, and how to design with it.",b:[
+["p","\"Heavy on OOP\" usually means three things: **explain** concepts clearly with examples, **design** a few small classes out loud, and **spot problems** in a piece of code and say how to fix them. Every concept here has a definition, a code example, and the follow-ups managers like. Use examples from banking (accounts, payments, clients) where you can; it fits the team."],
+["card","The 60-second version",[
+"**Class** is a blueprint; **object** is one instance with its own state.",
+"**Encapsulation:** hide the data, expose behavior, protect the rules (invariants).",
+"**Inheritance:** IS-A reuse with `extends`. Use carefully; prefer composition.",
+"**Polymorphism:** one call, many behaviors. Overloading at compile time, overriding at run time.",
+"**Abstraction:** show what it does, hide how. Abstract classes and interfaces.",
+"**SOLID** keeps classes small, focused and easy to change.",
+"**Best practice:** program to interfaces, favor composition, keep things immutable and private by default."]],
+["topic","Class, object and constructors","A class defines fields and methods. `new` creates an object on the heap and runs a constructor to set it up.","Basics, and checks you know constructor rules.","What happens when you write `new SavingsAccount(\"A1\")`?","Memory is allocated on the heap, fields get default values, the parent constructor runs first (`super()`, all the way up to `Object`), then field initializers and the constructor body. The reference is returned. If you write no constructor, Java adds a no-arg one; if you write any constructor, it does not.","Thinking constructors are inherited (they are not). Forgetting that `this(...)` or `super(...)` must be the first line."],
+["topic","Encapsulation","Keep fields `private`, change state only through methods that enforce the rules.","It is the pillar that protects data. Banks care about invariants like 'balance never goes negative'.","Why not just make the fields public?","Public fields let any code break the rules, for example set a negative balance. With methods like `deposit` and `withdraw` the class validates every change in one place, and I can change the internal representation without breaking callers.","Saying encapsulation is 'getters and setters'. A setter for every field is barely better than a public field. Expose behavior, not raw data."],
+["code","Encapsulation done right",`public class Account {
+    private final String id;
+    private BigDecimal balance = BigDecimal.ZERO;
+
+    public Account(String id) {
+        this.id = Objects.requireNonNull(id, "id");
+    }
+
+    public void deposit(BigDecimal amount) {
+        requirePositive(amount);
+        balance = balance.add(amount);
+    }
+
+    public void withdraw(BigDecimal amount) {
+        requirePositive(amount);
+        if (balance.compareTo(amount) < 0) {
+            throw new InsufficientFundsException(id, amount);
+        }
+        balance = balance.subtract(amount);
+    }
+
+    public BigDecimal getBalance() { return balance; }   // read only, no setter
+
+    private static void requirePositive(BigDecimal amount) {
+        if (amount == null || amount.signum() <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+    }
+}`],
+["topic","Inheritance","A subclass `extends` a parent and gets its non-private members. It is an IS-A relationship. Java allows one parent class but many interfaces.","They want to see you know when it fits and when it hurts.","Why does Java not allow multiple class inheritance?","To avoid the diamond problem: if two parents had the same method with state behind it, which one wins? Java allows many interfaces instead. If two interfaces have the same default method, the class must override it and can pick one with `A.super.method()`.","Using inheritance just to reuse code when there is no real IS-A. Deep hierarchies (more than 2 or 3 levels) that are hard to change."],
+["topic","Polymorphism","One reference type, many object types. The method that runs depends on the real object at run time (dynamic dispatch).","Core of OOP, and the base of patterns like Strategy.","Compile-time vs run-time polymorphism?","Compile-time is **overloading**: same name, different parameters, chosen by the compiler from the declared types. Run-time is **overriding**: a subclass replaces a parent method, and the JVM picks it based on the actual object. Example: `Account a = new SavingsAccount(); a.monthlyFee();` runs SavingsAccount's version.","Saying overloading is run-time. Thinking fields are polymorphic (they are not, only instance methods)."],
+["topic","Abstraction","Show what something does and hide how. In Java: abstract classes and interfaces.","They check you can design to a contract.","Give a real example of abstraction.","A `PaymentGateway` interface with `charge(Payment)`. Services call the interface; the Stripe or bank implementation is hidden. I can swap or mock it in tests without changing the callers.","Mixing up abstraction and encapsulation. Abstraction is about the outside view (what), encapsulation is about protecting the inside (how)."],
+["topic","Interface vs abstract class","Interface: a contract, no instance state, a class can implement many. Abstract class: a partial class with state and constructors, a class extends only one.","Asked in almost every Java interview.","When do you choose which?","Interface when unrelated classes share a capability (`Comparable`, `PaymentGateway`), or I want many implementations. Abstract class when related classes share state and code, for example `Account` with id and balance and a template method. Since Java 8 interfaces have `default` and `static` methods, and since Java 9 `private` methods, but still no instance fields. Interface fields are always `public static final`.","Saying interfaces cannot have any method bodies (old answer). Saying abstract classes cannot have constructors (they can; subclasses call them)."],
+["topic","Overriding rules","A subclass method with the same name and parameters replaces the parent's.","Rules are a favorite for 'will this compile?' questions.","What are the rules for overriding?","Same name and parameters. Return type same or a subtype (covariant). Access same or wider, never narrower. Checked exceptions same, narrower or none, never broader. `final`, `static` and `private` methods are not overridden (static ones are hidden). Use `@Override` so the compiler catches mistakes.","Forgetting `@Override` and accidentally overloading, for example `equals(Account o)` instead of `equals(Object o)`."],
+["topic","Overloading rules","Same method name, different parameter list in the same class.","Tricky resolution questions.","Which overload does Java pick?","The compiler picks the most specific match from the declared types, in phases: exact or widening first, then autoboxing, then varargs. Return type alone cannot overload. `print(null)` with `print(Object)` and `print(String)` picks String (more specific). With `print(String)` and `print(Integer)` it is ambiguous and does not compile.","Thinking the run-time type decides an overload. It is decided at compile time."],
+["topic","static vs instance","`static` belongs to the class, one copy shared by all objects. Instance members belong to each object.","Shows you understand memory and design.","Can a static method use instance fields? Can you override a static method?","No, a static method has no `this`; it needs an object reference. Static methods are not overridden, they are **hidden**: the version called depends on the reference type, not the object. Use static for stateless helpers and factories, not for shared mutable state, which causes thread-safety problems.","Using static fields as global mutable state. Calling static methods through instances, which looks polymorphic but is not."],
+["topic","final","`final` variable: assigned once. `final` method: cannot be overridden. `final` class: cannot be extended (like `String`).","Ties into immutability and safety.","Does `final List<String> list` make the list immutable?","No. Only the reference cannot change; the list contents can. For an unmodifiable list use `List.of(...)` or `Collections.unmodifiableList`. Lambdas can use only final or effectively final local variables.","Confusing a final reference with an immutable object."],
+["topic","Access modifiers","`private`: this class. Default (no keyword): same package. `protected`: same package plus subclasses. `public`: everyone.","Encapsulation in practice.","What should be the default choice?","The narrowest that works: private fields, package-private or private helpers, public only for the real API. A smaller public surface is easier to change and safer.","Thinking `protected` means only subclasses; it also includes the whole package."],
+["topic","Composition vs inheritance","Composition is HAS-A: a class holds other objects and delegates to them. Inheritance is IS-A.","\"Favor composition over inheritance\" is a classic best-practice question.","Why favor composition?","Inheritance ties the subclass to the parent's internals; a parent change can break children (fragile base class). Composition lets me swap parts at run time and test them alone. Example: `Account` has an `InterestPolicy` instead of subclasses for every interest rule.","Building class explosions like `PremiumSavingsAccountWithOverdraft`. Use a strategy or decorator instead."],
+["topic","Association, aggregation, composition","Association: objects know each other. Aggregation: a weak whole-part, parts live on their own (Team and Employee). Composition: a strong whole-part, parts die with the whole (Order and OrderLine).","UML and modeling questions.","Client and Account: which relationship?","Usually association or aggregation: an account can be transferred or closed independently of the client record. Order and its lines is composition: delete the order and its lines go too.","Treating the three as the same thing."],
+["topic","equals and hashCode","`equals` decides logical equality; `hashCode` must match for equal objects.","Bugs here break HashMap and HashSet.","What is the contract?","If `a.equals(b)` then `a.hashCode() == b.hashCode()`. Equal hash codes do not require equal objects. `equals` must be reflexive, symmetric, transitive, consistent, and `x.equals(null)` is false. Use the same fields in both, ideally immutable ones. Records generate both for you.","Overriding only one of them. Using mutable fields, so the object gets 'lost' in a HashSet after it changes."],
+["topic","Immutability","An immutable object cannot change after it is built, like `String`, `BigDecimal`, `LocalDate`.","Thread safety and correctness, very relevant for money and trades.","How do you make a class immutable?","Make the class `final`, fields `private final`, set them in the constructor, no setters, and make **defensive copies** of mutable inputs and outputs (lists, dates). To 'change' it, return a new object. Or use a `record` with immutable field types.","Forgetting defensive copies, so a caller can still change the list inside."],
+["topic","Object class methods","Every class extends `Object`: `equals`, `hashCode`, `toString`, `getClass`, `clone`, `finalize` (deprecated), `wait`, `notify`, `notifyAll`.","Checks fundamentals.","Should you use `clone()`?","Usually no. It is shallow by default and awkward with final fields. Prefer a copy constructor or static factory like `Account.copyOf(other)`.","Not knowing `wait` and `notify` are on Object, not Thread."],
+["topic","Inner, nested and anonymous classes","Static nested class: no link to an outer object. Inner class: holds a hidden reference to the outer object. Anonymous class: an unnamed one-off implementation. A lambda is shorter for functional interfaces.","Builder pattern and memory leak questions.","Static nested vs inner class: which do you prefer?","Static nested, unless I really need the outer instance. An inner class keeps the outer object alive, which can leak memory. The Builder is usually a static nested class.","Not knowing `this` inside a lambda means the enclosing object, while inside an anonymous class it means the anonymous object."],
+["topic","Enums","Enums are full classes with a fixed set of instances. They can have fields, constructors, methods and even per-constant behavior.","Better than int or String constants.","Why use an enum instead of String constants?","Type safety (no typos), a fixed set the compiler checks, switch support, and you can attach data and behavior: `AccountType.SAVINGS.minimumBalance()`. An enum is also the simplest thread-safe singleton.","Using `ordinal()` for stored values; reordering constants breaks data. Store the name instead."],
+["topic","Records and sealed classes (Java 16 and 17)","A `record` is a short immutable data class with constructor, getters, equals, hashCode and toString generated. A `sealed` class lists exactly which classes may extend it.","Shows you are current with modern Java.","When would you use a record?","For data carriers: DTOs, API responses, value objects like `Money(BigDecimal amount, Currency currency)`. I can add validation in a compact constructor. Records are final and cannot extend other classes, but can implement interfaces. Sealed hierarchies let `switch` check that all cases are handled.","Using records for JPA entities (entities need a no-arg constructor and mutability)."],
+["topic","Liskov Substitution in practice","A subclass must work anywhere its parent is expected, without surprises.","The most misunderstood SOLID rule, often asked with Square and Rectangle.","Why is Square extends Rectangle a problem?","Code that calls `setWidth(5)` then `setHeight(10)` on a Rectangle expects area 50. A Square changes both sides and returns 100, so it breaks callers. Better: separate immutable classes behind a `Shape` interface with `area()`.","Throwing `UnsupportedOperationException` in a subclass override; that is a Liskov smell."],
+["acc","SOLID with before and after code",[
+["S: Single Responsibility",[["p","A class should have one reason to change."],["code","Before: one class does everything",`class AccountService {
+    void openAccount(Request r) { /* validate, save to DB, send email, write audit */ }
+}`],["code","After: each class has one job",`class AccountService {
+    private final AccountValidator validator;
+    private final AccountRepository repository;
+    private final NotificationService notifications;
+
+    AccountService(AccountValidator v, AccountRepository r, NotificationService n) {
+        this.validator = v; this.repository = r; this.notifications = n;
+    }
+
+    Account open(Request r) {
+        validator.validate(r);
+        Account a = repository.save(Account.from(r));
+        notifications.accountOpened(a);
+        return a;
+    }
+}`]]],
+["O: Open/Closed",[["p","Open for extension, closed for modification: add new behavior with new classes, not by editing a growing `if/else`."],["code","Before and after",`// Before: every new type means editing this method
+BigDecimal fee(Account a) {
+    if (a.type() == SAVINGS) return new BigDecimal("0");
+    else if (a.type() == CHECKING) return new BigDecimal("5");
+    // ... more else-ifs
+}
+
+// After: add a new FeePolicy class, no edits here
+interface FeePolicy { BigDecimal monthlyFee(Account a); }
+class SavingsFee implements FeePolicy {
+    public BigDecimal monthlyFee(Account a) { return BigDecimal.ZERO; }
+}
+class CheckingFee implements FeePolicy {
+    public BigDecimal monthlyFee(Account a) { return new BigDecimal("5.00"); }
+}`]]],
+["L: Liskov Substitution",[["p","Subtypes must keep the parent's promises: accept the same inputs, give compatible outputs, throw no surprise exceptions. See the Square and Rectangle topic above."]]],
+["I: Interface Segregation",[["p","Many small interfaces beat one big one, so classes do not implement methods they do not need."],["code","Example",`// Before: a read-only report must implement write methods too
+interface AccountStore { Account find(String id); void save(Account a); void delete(String id); }
+
+// After
+interface AccountReader { Account find(String id); }
+interface AccountWriter { void save(Account a); void delete(String id); }`]]],
+["D: Dependency Inversion",[["p","High-level code depends on interfaces, not concrete classes. The concrete class is passed in (dependency injection). This is exactly what Spring does with constructor injection, and it makes testing with mocks easy."],["code","Example",`class PaymentService {
+    private final PaymentGateway gateway;          // interface, not StripeGateway
+    PaymentService(PaymentGateway gateway) { this.gateway = gateway; }
+}`]]]]],
+["acc","Design patterns they ask about",[
+["Singleton (thread-safe)",[["p","One instance for the whole app. In Spring, beans are singletons by default, so you rarely write this by hand. Know the safe ways:"],["code","Three safe versions",`// 1. Enum: simplest, safe against serialization and reflection
+public enum Config { INSTANCE; }
+
+// 2. Holder idiom: lazy and thread-safe, no locking
+public class Registry {
+    private Registry() {}
+    private static class Holder { static final Registry INSTANCE = new Registry(); }
+    public static Registry getInstance() { return Holder.INSTANCE; }
+}
+
+// 3. Double-checked locking: needs volatile
+public class Cache {
+    private static volatile Cache instance;
+    private Cache() {}
+    public static Cache getInstance() {
+        if (instance == null) {
+            synchronized (Cache.class) {
+                if (instance == null) instance = new Cache();
+            }
+        }
+        return instance;
+    }
+}`],["p","**Follow-up:** why `volatile`? Without it another thread can see a reference to a half-built object, because writes can be reordered."]]],
+["Factory",[["p","One place decides which class to create, so callers do not use `new` with concrete types."],["code","Example",`public static FeePolicy forType(AccountType type) {
+    return switch (type) {
+        case SAVINGS -> new SavingsFee();
+        case CHECKING -> new CheckingFee();
+    };
+}`]]],
+["Builder",[["p","For objects with many fields, some optional. Readable, and the result can be immutable."],["code","Example",`Client c = Client.builder()
+        .legalName("Acme Corp")
+        .country("US")
+        .riskRating(RiskRating.LOW)
+        .build();      // build() validates required fields`]]],
+["Strategy",[["p","Swap an algorithm at run time behind an interface. The FeePolicy above is a strategy. Common in pricing, fees, risk scoring and validation rules."]]],
+["Observer",[["p","Subscribers are notified when something happens. Example: `AccountOpened` event, with listeners for email, audit and CRM sync. In Spring: `ApplicationEventPublisher` and `@EventListener`; across services: Kafka."]]],
+["Decorator",[["p","Wrap an object to add behavior without changing it, both implementing the same interface. Example: a `LoggingPaymentGateway` or `RetryingPaymentGateway` that wraps the real gateway. Java I/O streams work this way."]]],
+["Adapter",[["p","Make an existing class fit an interface you need. Example: wrap a vendor KYC client so it implements your `IdentityVerifier` interface."]]],
+["Template Method",[["p","An abstract class defines the steps of an algorithm; subclasses fill in some steps. Example: `abstract class Onboarding { final void run() { validate(); verify(); createAccount(); } }` with subclasses for individual and corporate clients."]]]]],
+["card","Best practices (Effective Java style)",[
+"**Program to interfaces:** `List<String> names = new ArrayList<>();`, and accept interfaces in method parameters.",
+"**Favor composition over inheritance.** Design for inheritance on purpose, or make the class `final`.",
+"**Minimize mutability:** final fields, immutable value objects, `List.of`.",
+"**Minimize accessibility:** private by default, public only for the real API.",
+"**Constructor injection** for required dependencies; fields `final`.",
+"**Static factory methods** with clear names (`Money.of`, `Account.open`) instead of many constructors.",
+"**Builder** when there are more than 3 or 4 parameters.",
+"**Validate early, fail fast:** check arguments at the top of public methods (`Objects.requireNonNull`).",
+"**No null returns for collections:** return an empty list. Use `Optional` for 'maybe no value' return types, not for fields or parameters.",
+"**Use `BigDecimal` for money,** never `double`. Compare with `compareTo`, not `equals` (scale matters in equals).",
+"**Enums instead of int or String constants.**",
+"**Override `equals` and `hashCode` together;** always add `@Override`.",
+"**try-with-resources** for anything that must be closed.",
+"**Catch specific exceptions,** never swallow them silently; log with context and rethrow or handle.",
+"**Use a logger (SLF4J), not `System.out`;** never log passwords, tokens or personal data.",
+"**Small methods, clear names,** one level of abstraction per method.",
+"**Law of Demeter:** avoid chains like `a.getB().getC().doIt()`; ask the object to do the work."]],
+["acc","Code smells to spot (they may show you code)",[
+["Switch or if-else on a type field","Replace with polymorphism or a strategy (Open/Closed)."],
+["God class (thousands of lines, many jobs)","Split by responsibility (Single Responsibility)."],
+["Long parameter lists","Introduce a parameter object or a builder."],
+["Public mutable fields or setters for everything","Encapsulate; expose behavior like `withdraw` instead of `setBalance`."],
+["Primitive obsession (money as double, ids as raw String everywhere)","Value objects: `Money`, `AccountId`, ideally records."],
+["Deep inheritance trees","Flatten with composition and interfaces."],
+["Subclass override that throws UnsupportedOperationException","Liskov violation; rethink the hierarchy or split the interface."],
+["Catching Exception and doing nothing","Hidden failures. Catch specific types, log, and handle or rethrow."],
+["Static mutable state","Thread-safety bugs and hard tests. Use injected beans or immutable data."]]],
+["acc","Tricky \"what does this print?\" questions",[
+["Fields are not polymorphic",[["code","",`class Parent { String name = "parent"; String getName() { return name; } }
+class Child extends Parent { String name = "child"; @Override String getName() { return name; } }
+
+Parent p = new Child();
+System.out.println(p.name);       // ?
+System.out.println(p.getName());  // ?`],["p","**Answer:** `parent`, then `child`. Fields are picked by the reference type; overridden methods by the real object."]]],
+["Static methods are hidden, not overridden",[["code","",`class A { static String who() { return "A"; } }
+class B extends A { static String who() { return "B"; } }
+
+A a = new B();
+System.out.println(a.who());   // ?`],["p","**Answer:** `A`. Static methods are bound to the declared type at compile time."]]],
+["Overload with null",[["code","",`void print(Object o) { System.out.println("Object"); }
+void print(String s) { System.out.println("String"); }
+
+print(null);   // ?`],["p","**Answer:** `String`, the most specific match. If the second method took `Integer` instead, `print(null)` would not compile (ambiguous)."]]],
+["Overridable method called from a constructor",[["code","",`class Base {
+    Base() { describe(); }
+    void describe() { System.out.println("base"); }
+}
+class Derived extends Base {
+    private String label = "derived";
+    @Override void describe() { System.out.println(label); }
+}
+
+new Derived();   // ?`],["p","**Answer:** `null`. Base's constructor runs before Derived's fields are set, but the override already runs. Best practice: never call overridable methods from constructors."]]],
+["equals without hashCode",[["code","",`class Id {
+    final String v;
+    Id(String v) { this.v = v; }
+    @Override public boolean equals(Object o) {
+        return o instanceof Id other && v.equals(other.v);
+    }
+}
+Set<Id> set = new HashSet<>();
+set.add(new Id("A1"));
+System.out.println(set.contains(new Id("A1")));   // ?`],["p","**Answer:** almost always `false`. The two objects have different default hash codes, so the set looks in a different bucket. Fix: override `hashCode` with the same field."]]],
+["Overloading vs overriding mix-up",[["code","",`class Money {
+    final long cents;
+    Money(long c) { cents = c; }
+    public boolean equals(Money other) { return other != null && cents == other.cents; }
+}
+Object a = new Money(100);
+Object b = new Money(100);
+System.out.println(a.equals(b));   // ?`],["p","**Answer:** `false`. `equals(Money)` overloads instead of overriding `equals(Object)`, so `Object.equals` runs and compares references. `@Override` would have caught it at compile time."]]],
+["Default method diamond",[["code","",`interface A { default String hi() { return "A"; } }
+interface B { default String hi() { return "B"; } }
+class C implements A, B { }`],["p","**Answer:** compile error. C must override `hi()` and can call `A.super.hi()` or `B.super.hi()`."]]]]],
+["acc","Mini design exercise: accounts for client onboarding",[
+["The prompt","\"Design classes for client accounts. Different account types have different fees and interest. Clients can be individuals or companies. Opening an account must notify other systems.\""],
+["How to talk through it",[["ol","",["Clarify: account types, who sets the rules, must types be added later? (Yes, so plan for extension.)","Name the nouns: Client (Individual, Corporate), Account, Money, FeePolicy, InterestPolicy, AccountEvent.","Pick relationships: Client has many Accounts (association); Account has a FeePolicy and InterestPolicy (composition plus strategy).","Make values immutable: Money and ids as records.","Use an interface for the outside world: `AccountEventPublisher`, implemented with Kafka in production and a fake in tests.","Mention SOLID as you go, briefly, and stop to check with the interviewer."]],["code","Sketch",`public record Money(BigDecimal amount, Currency currency) {
+    public Money {
+        Objects.requireNonNull(amount); Objects.requireNonNull(currency);
+        amount = amount.setScale(2, RoundingMode.HALF_EVEN);
+    }
+    public Money plus(Money o) { requireSame(o); return new Money(amount.add(o.amount), currency); }
+    private void requireSame(Money o) {
+        if (!currency.equals(o.currency)) throw new IllegalArgumentException("Currency mismatch");
+    }
+}
+
+public sealed interface Client permits IndividualClient, CorporateClient {
+    String id();
+    String displayName();
+}
+public record IndividualClient(String id, String firstName, String lastName) implements Client {
+    public String displayName() { return firstName + " " + lastName; }
+}
+public record CorporateClient(String id, String legalName, String registrationNo) implements Client {
+    public String displayName() { return legalName; }
+}
+
+public interface FeePolicy { Money monthlyFee(Account a); }
+public interface InterestPolicy { Money monthlyInterest(Account a); }
+
+public class Account {
+    private final String id;
+    private final Client owner;
+    private final FeePolicy feePolicy;
+    private final InterestPolicy interestPolicy;
+    private Money balance;
+
+    public Account(String id, Client owner, Money opening, FeePolicy fee, InterestPolicy interest) {
+        this.id = id; this.owner = owner; this.balance = opening;
+        this.feePolicy = fee; this.interestPolicy = interest;
+    }
+    public void applyMonthEnd() {
+        balance = balance.plus(interestPolicy.monthlyInterest(this));
+        // subtract fee similarly; keep the rule inside the class
+    }
+    public String id() { return id; }
+    public Money balance() { return balance; }
+}
+
+public class AccountOpeningService {
+    private final AccountRepository repo;
+    private final AccountEventPublisher events;
+    public AccountOpeningService(AccountRepository repo, AccountEventPublisher events) {
+        this.repo = repo; this.events = events;
+    }
+    public Account open(Client c, AccountType type, Money opening) {
+        Account a = AccountFactory.create(c, type, opening);
+        repo.save(a);
+        events.publish(new AccountOpened(a.id(), c.id()));
+        return a;
+    }
+}`]]],
+["Why this design is good","New account type: add a policy class and a factory case, nothing else changes (Open/Closed). Policies test alone (Single Responsibility). Service depends on interfaces (Dependency Inversion). Money is immutable and cannot mix currencies."]]],
+["acc","OOP mock questions (25)",[
+["What are the four pillars of OOP? Give a banking example of each.","Encapsulation: Account protects balance. Inheritance: SavingsAccount extends Account. Polymorphism: `account.monthlyFee()` differs by type. Abstraction: `PaymentGateway` interface hides the vendor."],
+["Is Java fully object-oriented?","Not 100%: it has primitives (`int`, `double`) and static members. Wrapper classes and autoboxing bridge the gap."],
+["Can you override a private or static method?","No. Private methods are not visible to subclasses. Static methods are hidden, not overridden."],
+["Can a constructor be private? Why?","Yes: singletons, static factory methods, and utility classes that should never be created."],
+["Can an abstract class have a constructor?","Yes. It runs when a subclass is created, to set up shared state."],
+["Can an abstract class have no abstract methods?","Yes. It just prevents direct creation, for example a base class meant only for extension."],
+["Can an interface have state?","No instance fields. Only constants, which are `public static final`."],
+["What is the diamond problem and how does Java handle it?","Two parents with the same method. Java allows only one parent class; for clashing default methods in interfaces, the class must override and choose."],
+["What is covariant return type?","An override may return a subtype of the parent's return type, for example `SavingsAccount copy()` overriding `Account copy()`."],
+["Difference between `this` and `super`?","`this` is the current object (or calls another constructor in the same class). `super` reaches the parent's members or constructor."],
+["What is constructor chaining?","Calling one constructor from another with `this(...)`, or the parent's with `super(...)`, as the first line."],
+["What is the order of initialization?","Static blocks and fields once when the class loads (parent first). Then for each object: parent constructor, then field initializers and instance blocks, then the constructor body."],
+["What is a marker interface?","An interface with no methods that tags a class, like `Serializable`. Today annotations usually do this job."],
+["What is a functional interface?","An interface with exactly one abstract method, usable with lambdas, like `Runnable`, `Comparator`, `Function`. `@FunctionalInterface` enforces it."],
+["Why is String immutable?","Security (paths, URLs, class names cannot change), safe sharing in the string pool, thread safety, and cached hash codes for HashMap keys."],
+["How do you make a class immutable?","Final class, private final fields, no setters, defensive copies of mutable parts, or a record."],
+["Composition vs inheritance: which do you prefer and why?","Composition by default: looser coupling, easier testing, change behavior at run time. Inheritance only for a true IS-A with a stable parent."],
+["Explain the SOLID principles quickly.","One responsibility per class; extend without editing; subtypes keep promises; small focused interfaces; depend on abstractions."],
+["What is the difference between aggregation and composition?","Aggregation: parts can live alone. Composition: parts die with the whole."],
+["What is dynamic method dispatch?","The JVM picks the overridden method at run time from the actual object, using the class's method table."],
+["What is the difference between an abstract method and a default method?","Abstract has no body and must be implemented. Default has a body in the interface and can be overridden."],
+["What is the Liskov Substitution Principle?","A subclass must be usable wherever the parent is, without breaking behavior. Square and Rectangle is the classic violation."],
+["When do you use the Builder pattern?","Many parameters or optional fields, and when you want an immutable result with validation in `build()`."],
+["How does Spring relate to OOP principles?","Dependency injection is Dependency Inversion in practice; beans are coded to interfaces; AOP adds behavior like transactions and logging through proxies, a decorator idea."],
+["Show me a piece of bad OOP code you fixed.","[Your real example. Shape: what the code did, the smell (for example a huge switch on type), the refactor (strategy or polymorphism), the result (easier to add types, fewer bugs).]"]]],
+["card","Quick revision",[
+"Overloading: compile time, parameters differ. Overriding: run time, same signature, `@Override`.",
+"Fields and static methods are not polymorphic; instance methods are.",
+"Interface: contract, many, no state. Abstract class: shared state and code, one.",
+"equals and hashCode together, same fields, immutable fields.",
+"Immutable: final class, private final fields, no setters, defensive copies, or a record.",
+"Composition over inheritance. Program to interfaces. Constructor injection.",
+"Singleton: enum or holder idiom; double-checked locking needs volatile.",
+"Never call overridable methods in a constructor.",
+"Money in BigDecimal, compare with compareTo."]]
 ]},
 
 {id:"java",t:"Java Core Concepts",s:"Each topic: simple idea, why they ask, a question, a strong answer, mistakes.",b:[
