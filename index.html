@@ -881,7 +881,7 @@ details.pat[style*="--h"]:hover{border-color:hsl(var(--h) 60% 82%)}
 
 <h3>How the page is organised</h3>
 <ul>
-<li>The top bar has five sections, LeetCode, Goldman, GS Round 2, System Design and AI Fluency, plus About. GS Round 2 is a study guide for the Goldman second round: 15 sections with search, a complete tick per section, and print. LeetCode has its own sub-tabs below it.</li>
+<li>The top bar has five sections, LeetCode, Goldman, GS Round 2, System Design and AI Fluency, plus About. GS Round 2 is a study guide for the Goldman second round: 16 sections with search, a complete tick per section, and print. LeetCode has its own sub-tabs below it.</li>
 <li><b>Today</b>: today's pattern with required and optional tiles, then the revision list.</li>
 <li><b>All questions</b>: every pattern as a collapsible block with a progress bar, search, filters (including Never revised), and per question a status dropdown, revision counter and note.</li>
 <li><b>Header</b>: the app is titled Prep Tracker; LeetCode, System Design and AI Fluency each open with three summary tiles in the same style.</li>
@@ -1605,8 +1605,117 @@ R2.push(
 "Aim for 1.5 to 2 minutes. Stop and let them ask follow-ups."]]
 ]},
 
+{id:"lines",t:"Resume Line by Line",s:"Every line they can point at, what it means, and how to defend it.",b:[
+["p","Managers often share your resume on screen and say **\"tell me about this line\"**. For each bullet below you get: what it means in plain words, how you can explain the work, how the number was measured, and the follow-ups to expect. Anything the resume does not say is in **[brackets]** for you to fill in with the truth. Never guess a number in the interview; say \"about\" and explain how it was measured."],
+["card","The rule for every number",[
+"**Before:** what it was. **After:** what it became. **How measured:** which tool or report. **Your part:** what you did versus the team.",
+"Example: \"Render time went from [X ms] to [Y ms], about 45% less, measured with [React Profiler and Lighthouse] on [the main dashboard]. I [found the cause and led the fix]; [two teammates] helped ship it.\"",
+"If you do not remember exactly, say so: \"It was about 45%. We measured it with [tool] before and after the release.\" Honest and specific beats precise and shaky."]],
+["card","Check these before Monday",[
+"**\"4+ years\" vs your dates.** Accenture Feb 2021 to Jul 2024 is about 3 years 5 months. If asked: \"About three and a half years full time at Accenture, [plus the other paid work you count, for example teaching or freelance].\" Only say what is true; if nothing else counts, say \"about three and a half years\".",
+"**InsightHub on GitHub today** is an error tracker for the Education Enlightened site, and its README says the ML model is **shadow-only**, trained on synthetic data. Your resume describes the original log-monitoring design with ML anomaly detection. If they open the repo, explain how it evolved (see the project below). Know where \"sub-100 ms\", \"10+ services\", \"MTTD ~50%\" and \"3x faster\" came from: [your test setup].",
+"**Motif project:** \"486 structural motifs\" is one N-hop motif per node of a 486-node graph. Be ready to say exactly that. The core extraction uses your own BFS on adjacency lists; NetworkX is in the requirements [say where you used it].",
+"**Skills list:** anything listed can be asked. Rust, C++, Angular, Azure, Google Cloud, PyTorch and React Server Components are the likely surprise questions. Know your honest level for each, for example \"coursework level\" or \"used in one project\".",
+"**The InsightHub repo has AI agent docs** (`CLAUDE.md`, `docs/agents`). If asked, be clear about what you designed and decided yourself, and how you reviewed the code."]],
+["acc","Summary (the first thing they read)",[
+["\"Full-stack software engineer with 4+ years building scalable distributed systems, REST APIs, and React frontends at enterprise scale (500K+ MAU, 1M+ users).\"",[["p","**What it means:** you build both sides, at real scale. The 500K+ comes from the React overhaul (monthly active sessions) and the 1M+ from SingPass onboarding."],["p","**Defend:** \"500K+ is monthly active sessions on the app whose React UI I overhauled. 1M+ is users who registered through the SingPass onboarding APIs.\" For 4+ years, use the line in the card above."]]],
+["\"Owned end-to-end system design and technical roadmap across cross-functional teams at Accenture.\"",[["p","**Point to proof:** the RBAC system (0 to 1, architecture to production) and the UI modernization across 4 squads."],["p","**Follow-up:** \"What does owning the roadmap mean?\" Answer: you broke the work into milestones, chose the design, agreed scope with [the product owner or client lead], and tracked delivery. [Give one real decision you made.]"]]],
+["\"Strong record in performance optimization, component-driven UI architecture, and SLO/SLA ownership.\"",[["p","**Proof points:** render time cut about 45%, p99 latency down about 40%, 16x speed-up, deploys from 40 to 12 minutes, a shared design system, and 99.9% uptime."],["p","**Know the terms:** an **SLA** is the promise to the customer, for example 99.9% uptime. An **SLO** is the internal target that keeps you inside it. An **SLI** is the measurement, for example the success rate of requests. 99.9% uptime allows about 43 minutes of downtime a month."]]],
+["\"M.S. in Computer Science from the University of Utah (GPA 3.9), focused on machine learning, LLM-powered applications, and distributed systems.\"",[["p","**Defend:** name [2 or 3 real courses], your independent study on graph compression with the SCI Institute, and InsightHub as the distributed systems project. Keep it short; this role is about Java, React, SQL and AWS."]]]]],
+["acc","Senior Software Engineer, Accenture (Nov 2023 to Jul 2024, remote)",[
+["\"Led full-stack overhaul of a React/Redux UI, cutting API calls 30%, reducing client render time ~45%, and improving Core Web Vitals across 500K+ monthly active sessions; mentored 3 junior engineers.\"",[
+["p","**Plain words:** the app was slow and chatty. You made it fetch less and render faster, for a large user base."],
+["ul","How you can explain the work [confirm which you did]",["**Fewer API calls:** cache server data so screens stop refetching (for example RTK Query or a cache in Redux), remove duplicate calls fired by `useEffect`, batch small requests, debounce search inputs.","**Faster render:** `React.memo`, `useMemo` and `useCallback` on hot paths, memoized Redux selectors (reselect) so components re-render only when their data changes, list virtualization for long tables, code splitting with `React.lazy`.","**Core Web Vitals:** LCP (main content loads fast), INP (page reacts fast to clicks), CLS (layout does not jump). Fixes include smaller bundles, lazy images, reserved space for images and ads."]],
+["p","**How measured:** API calls from [network logs or APM] per session before and after. Render time with [React Profiler or Lighthouse or real-user monitoring]. Core Web Vitals from [Lighthouse or Google's CrUX report]."],
+["p","**Follow-ups:** \"What was the biggest single win?\" [name one]. \"How did you find the slow parts?\" React Profiler flame chart, then fix the top offenders first. \"How did you mentor?\" [pairing, code review, a short talk on profiling]."]]],
+["\"Spearheaded Spring Boot microservices with hardened RESTful API security and SLO/SLA ownership, driving 40% higher transaction throughput and achieving 99.9% uptime.\"",[
+["p","**Plain words:** you led backend services, made the APIs secure, and owned their reliability targets."],
+["ul","Hardened API security [say which]",["Authentication with JWT or OAuth2, authorization with roles (see the RBAC section).","Input validation, rate limiting, HTTPS only, secrets out of code, dependency scanning.","Error responses that do not leak stack traces."]],
+["ul","40% higher throughput: common causes [say which were yours]",["Connection pool tuning (HikariCP), fixing N+1 queries, adding indexes.","Caching hot reads in Redis.","Moving slow work to async with SQS or Kafka.","Horizontal scaling of stateless instances."]],
+["p","**How measured:** requests or transactions per second at the same latency, from [load tests with JMeter or Gatling, or production dashboards in Grafana]. 99.9% from [uptime monitoring or the SLO dashboard] over [period]."],
+["p","**Follow-ups:** \"What did you do when you were close to breaking the SLO?\" [freeze risky deploys, fix the top error]. \"Throughput up 40% compared to what?\" Same hardware, same latency target, before and after [the change]."]]],
+["\"Owned cloud infrastructure performance optimization on AWS (S3, DynamoDB, SQS, EC2) with Kubernetes orchestration, improving system performance 25% and slashing CI/CD deployment time from ~40 min to 12 min.\"",[
+["p","**Plain words:** the services ran on AWS with Kubernetes on EC2. You made them faster and made deploys much quicker."],
+["ul","Performance 25% [say what 'performance' measured, for example p95 latency]",["Right-sized EC2 instances and Kubernetes resource requests and limits.","DynamoDB: better partition keys to avoid hot partitions, queries instead of scans.","SQS: batch send and receive, long polling.","S3 for static and large files instead of serving them from the app."]],
+["ul","Deploys from ~40 to 12 minutes [say which you did]",["Run test stages in parallel.","Cache dependencies and Docker layers between builds.","Smaller Docker images (multi-stage builds).","Build only the services that changed.","Rolling updates in Kubernetes instead of slow manual steps."]],
+["p","**Follow-ups:** \"EC2 vs EKS?\" You ran Kubernetes on EC2 [or EKS, confirm]. \"How did you avoid downtime during deploys?\" Rolling updates with readiness probes; rollback to the previous image."]]]]],
+["acc","Software Engineer, Accenture (Jun 2022 to Nov 2023, Bangalore)",[
+["\"Delivered 0 to 1 Role-Based Access Control system end-to-end, owning technical roadmap from architecture to production deployment and saving ~2 engineering weeks via automated Jenkins CI/CD validation.\"",[["p","**Full deep dive:** see the **RBAC Deep Dive** section. Short version: users, roles and permissions in SQL, enforced in Spring Boot, mirrored in the React UI, audited, and validated automatically in Jenkins."],["p","**The 2 weeks:** [what was manual before, for example testing every role against every endpoint by hand, and what the pipeline now checks on every build]."]]],
+["\"Launched high-throughput Java Spring Boot REST APIs with SingPass authentication, automating registration and verification for 1M+ users and reducing onboarding latency ~35%.\"",[["p","**Full deep dive:** see the **SingPass Login (OIDC) Deep Dive** section."],["p","**The 35%:** [what it measured, for example time from start of registration to verified account, and what changed it]. **High-availability microservices:** multiple instances across zones behind a load balancer, health checks, no single point of failure [confirm your setup]."]]],
+["\"Drove UI modernization across 4 product squads, translating Figma designs into responsive SCSS, Material-UI, and Tailwind CSS components, lifting user satisfaction 30%, cutting design-to-delivery ~20%, and setting org-wide front-end standards and a shared design system.\"",[
+["p","**Plain words:** four teams had inconsistent UIs. You built shared components from the designers' Figma files and set standards so everyone builds the same way."],
+["ul","Talking points",["**Design system:** shared tokens (colors, spacing, type), a component library, and docs [for example Storybook].","**Why three styling tools?** [Material-UI for complex widgets, Tailwind for layout, SCSS in older screens being migrated.] Say which was the standard going forward.","**Standards:** lint rules, accessibility checks (WCAG), a PR checklist."]],
+["p","**How measured:** user satisfaction from [a survey or CSAT score] before and after. Design-to-delivery from [ticket time in Jira from design ready to released]."],
+["p","**Follow-up:** \"How did you get 4 squads to adopt it?\" [Demos, migration guides, pairing, making the shared component the easiest option.]"]]]]],
+["acc","Associate Software Engineer, Accenture (Feb 2021 to Jun 2022, Bangalore)",[
+["\"Directed 0 to 1 development of a reusable, responsive React.js form generator with modular component architecture, accelerating feature delivery 20% and standardizing form logic across 5+ product teams serving 10K+ users.\"",[
+["p","**Plain words:** instead of hand-coding every form, teams describe a form in config and your generator renders it."],
+["code","The idea in code",`const schema = [
+  { name: 'email', type: 'email', label: 'Email', required: true },
+  { name: 'country', type: 'select', label: 'Country', options: ['IN', 'SG'] },
+];
+
+function FormGenerator({ schema, onSubmit }) {
+  const [values, setValues] = useState({});
+  const [errors, setErrors] = useState({});
+  const submit = e => {
+    e.preventDefault();
+    const errs = validate(schema, values);        // one shared rule set
+    setErrors(errs);
+    if (Object.keys(errs).length === 0) onSubmit(values);
+  };
+  return (
+    <form onSubmit={submit}>
+      {schema.map(f => {
+        const Field = FIELD_TYPES[f.type];        // registry: text, email, select...
+        return <Field key={f.name} {...f} value={values[f.name] ?? ''}
+                 error={errors[f.name]}
+                 onChange={v => setValues(s => ({ ...s, [f.name]: v }))} />;
+      })}
+      <button type="submit">Submit</button>
+    </form>
+  );
+}`],
+["p","**Follow-ups:** \"How did you handle conditional fields or custom widgets?\" [a `showIf` rule in the schema, and a registry so teams add their own field types]. \"How measured 20%?\" [story points or time to build a form screen before and after]."]]],
+["\"Implemented 50+ production REST API integrations end-to-end via Fetch/Axios with Redux and MobX, owning data flow architecture and achieving consistent sub-200 ms response times.\"",[
+["p","**Plain words:** you connected the UI to 50+ backend endpoints and designed how data flows into the app state."],
+["ul","Talking points",["Axios interceptors for auth headers, error handling and retries in one place.","Redux for shared app state; MobX in [the project that already used it]. Be ready to compare: Redux is explicit actions and one store; MobX is observable state that updates automatically.","Loading, error and empty states for each call; cancel stale requests."]],
+["p","**Careful with sub-200 ms:** the frontend does not control server time alone. Say what it measured, for example [p95 time seen in the browser for those calls], and what you did: caching, smaller payloads, pagination, parallel requests instead of chains."]]],
+["\"Resolved 50+ critical production edge cases through algorithmic tuning and Grafana-driven reliability monitoring, achieving a 16x speed boost and eliminating ~40% of p99 latency across core user flows.\"",[
+["p","**Know p99:** the time under which 99% of requests finish. It shows the slowest real experiences, which averages hide."],
+["p","**16x story (have one ready):** [the slow operation, for example a nested loop over two lists, O(n squared)], replaced with [a hash map lookup, O(n)], so [N ms] became [N/16 ms]. Explain how you found it: a Grafana panel showed the spike, logs or a profiler pointed to the code."],
+["p","**Follow-ups:** \"What kind of edge cases?\" [timeouts, empty or huge inputs, race conditions, bad data from upstream]. \"How did you stop them coming back?\" Tests for each case and alerts on the metric."]]]]],
+["acc","Project: InsightHub (github.com/hrishi-verma/InsightHub)",[
+["Resume lines",[["ul","",["\"Engineered a decentralized log aggregation platform with ML-powered anomaly detection and high-throughput microservices ingestion, achieving sub-100 ms alert latency across 10+ services.\"","\"Shipped a full-stack monitoring dashboard in React.js and Node.js with real-time SLO/SLA tracking, cutting mean time to detection (MTTD) ~50% and enabling on-call engineers to triage incidents 3x faster.\""]]]],
+["What it is today (from the repo)",[["p","An error tracker for the Education Enlightened website. The site's browser code and API send error reports; InsightHub scrubs personal data, groups reports into issues, raises alerts for new issues, spikes and regressions, and shows it all on a dashboard. It started as a general log-monitoring design (archived in `docs/archive/original-design.md`)."],["code","Architecture",`Website (browser + API)
+   |  POST /api/v1/events   (API key, scrubbed, rate-limited)
+   v
+backend (Node/Express) --> Kafka topic "error-events" --> processor (Node)
+   ^                        (key = project id)             |  group, store, alert rules
+   |  login + read API                                     v
+dashboard (Next.js)                         Postgres + TimescaleDB
+                                                   |
+                              ml-engine (Flask, Isolation Forest, shadow only)`]]],
+["How a report flows",[["ol","",["Client sends an event with an API key. Backend validates it with a strict schema (zod), rate-limits, and **scrubs personal data** (emails, tokens, home-directory paths) before anything is stored.","Backend publishes to Kafka with the **project id as the message key**, so one project's events stay in order on one partition.","The processor consumes, computes a **fingerprint** from the in-app stack frames, and groups the event into an issue.","It stores the event in Postgres/TimescaleDB (90-day retention) and runs **alert rules**: new issue, spike, regression after resolve.","Bad messages go to a **dead-letter topic** so one bad event does not block the stream.","The dashboard reads through a login-protected API. Session in an HttpOnly cookie, a strict Content Security Policy, no tokens in JavaScript."]]]],
+["Why Kafka here?","It absorbs traffic spikes, decouples ingestion from processing (the API stays fast even if the processor is slow), and lets you replay events. Keying by project keeps per-project order."],
+["Why is the ML shadow-only?","Honest answer from the repo: the Isolation Forest model was trained on synthetic data and its inputs (latency, log level) do not fit error events yet. Its score is stored and shown as experimental but never triggers alerts. Rules decide alerts. This shows judgment: you do not let an unproven model page people."],
+["What is Isolation Forest?","An anomaly detection model that builds random trees which split the data. Unusual points get isolated in fewer splits, so a short average path means \"anomaly\". It needs no labels."],
+["Where do sub-100 ms, 10+ services, MTTD ~50% and 3x come from?","[Fill in truthfully: your test setup, how many services or simulated sources, how you measured alert latency (event received to alert fired), and what MTTD was compared to, for example Sentry alone or manual log checks.] If these came from the original log design in a test environment, say so."],
+["What would you improve?","Retrain the model on real error data with useful features (event rate per issue, new stack frames), add tracing, and add more alert channels. [Say what is on your ROADMAP.md.]"]]],
+["acc","Project: Motif-Based Graph Compression (independent study, University of Utah SCI Institute)",[
+["Resume lines",[["ul","",["\"Owned end-to-end research implementation of a Python/NetworkX graph compression algorithm, identifying 486 structural motifs across a 4K-edge network and achieving 26% size reduction while preserving full topological integrity.\"","\"Deployed an interactive React + D3.js visualization dashboard with real-time motif filtering across 4,000+ edges, cutting researcher manual validation time from 6+ hours to under 20 minutes.\""]]]],
+["The pipeline (from the repo)",[["ol","",["**Data:** a weighted, undirected Facebook social graph from SNAP: 486 nodes, 4,000+ edges.","**Motifs:** for each node, BFS collects its N-hop neighborhood. That neighborhood is the node's motif, with the node as its **source**. 486 nodes give 486 motifs.","**MST:** a minimum spanning tree for each motif (Prim's algorithm) keeps its strongest backbone.","**Shape signature:** 0-dimensional persistence from the MST edge weights (when components merge as the weight threshold grows).","**Similarity:** Wasserstein distance between those signatures.","**Clustering:** agglomerative clustering groups similar motifs (15, 30 and 50 cluster versions).","**Compression and UI:** React + D3 force graph where each motif can collapse into its source node and expand again."]]]],
+["Explain the collapse algorithm",[["p","Each motif collapses into its own structure, shown by its source node. A `Map` from node to owning motif tracks who owns each hidden node. If a motif's source is hidden inside an earlier motif, it is **extracted** and becomes visible as the new motif's representative. Shared non-source nodes stay with the first motif that claimed them. On expand, a motif releases its nodes, but never another motif's source node."],["p","Example: M1 = source A with [A, B, C, D]; M2 = source B with [B, E, F]. After both collapse: A shows M1 owning [A, C, D]; B shows M2 owning [B, E, F]."]]],
+["Likely follow-ups",[["ul","",["**\"What is a motif?\"** Usually a small recurring subgraph pattern, like a triangle. Here it is each node's N-hop neighborhood. Say this clearly so you are not caught out.","**\"Why NetworkX?\"** [Say where you used it.] The extraction itself is a BFS on adjacency lists, O(V + E).","**\"How did you measure 26%?\"** [What size: visible nodes plus edges before vs after collapse, or bytes.] \"Topological integrity\" means you can expand back to the exact original graph.","**\"6+ hours to 20 minutes?\"** [How the researchers checked motifs before (manual plots or scripts) and after (filter and click in the dashboard).]","**\"Wasserstein distance?\"** The minimum cost to move one distribution into another, like moving piles of earth. Good for comparing persistence diagrams.","**\"D3 performance with 4,000 edges?\"** Force simulation tuning, collapsing reduces drawn nodes, position-preserving updates so the layout does not jump."]]]]]],
+["acc","Achievements and skills",[
+["\"Mentored 100+ students as DSA Bootcamp Instructor at TechHub (95% satisfaction); TA at VTU India, resolving 700+ advanced Algorithms queries.\"","Shows you can explain hard ideas simply, which helps in this interview too. 95% from [student feedback forms]. Have one example of explaining a hard topic, for example dynamic programming, simply."],
+["\"1st place, Verve 2018 and 2019 coding competitions (200+ participants).\"","College-level coding contests. Mention only if asked; it supports your Round 1 result."],
+["Any skill on the list","Be ready to give one real use per skill. For ones you used lightly, say so: \"I used Rust in [a course project]; I am not production-level in it.\" Honesty about level is respected; bluffing is not."],
+["AI / ML line (RAG, MCP, Anthropic and OpenAI APIs)","Not central for this role. If asked: [your real project, for example this prep tracker or a RAG demo]. Keep it to 30 seconds and steer back to Java, React, SQL and AWS."]]]
+]},
+
 {id:"rbac",t:"RBAC Deep Dive: Backend and Frontend",s:"Your resume says you built RBAC end to end. Expect them to dig in.",b:[
-["p","Your resume: **\"Delivered a 0 to 1 Role-Based Access Control system end-to-end, owning the technical roadmap from architecture to production deployment and saving ~2 engineering weeks via automated Jenkins CI/CD validation.\"** Because you own it end to end, they can ask about any layer. Below is a standard, solid design. Swap in your real details where you see **[brackets]**."],
+["p","Your resume: **\"Delivered 0 to 1 Role-Based Access Control system end-to-end, owning technical roadmap from architecture to production deployment and saving ~2 engineering weeks via automated Jenkins CI/CD validation.\"** Because you own it end to end, they can ask about any layer. Below is a standard, solid design. Swap in your real details where you see **[brackets]**."],
 ["card","The idea in 30 seconds",[
 "**Authentication** answers who you are (login). **Authorization** answers what you may do. RBAC is a way to do authorization.",
 "Users get **roles** (for example Viewer, Analyst, Approver, Admin). Roles hold **permissions** (for example `account:view`, `account:approve`).",
